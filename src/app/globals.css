@@ -1,0 +1,82 @@
+@import "tailwindcss";
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+/* Custom animations for hero carousel */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn 1s ease-out;
+}
+
+/* Smooth transitions for carousel */
+.carousel-slide {
+  transition: opacity 1s ease-in-out;
+}
+
+/* Button hover effects */
+.btn-primary {
+  background-color: rgb(21 128 61);
+  color: white;
+  transition: background-color 0.2s;
+}
+
+.btn-primary:hover {
+  background-color: rgb(22 101 52);
+}
+
+.btn-outline {
+  border: 2px solid white;
+  color: white;
+  transition: all 0.2s;
+}
+
+.btn-outline:hover {
+  background-color: white;
+  color: rgb(21 128 61);
+}
+
+/* Card hover effects */
+.hostel-card {
+  transition: all 0.3s;
+}
+
+.hostel-card:hover {
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  transform: scale(1.05);
+}
+
+/* Amenity icon animations */
+.amenity-item {
+  transition: all 0.2s;
+}
+
+.amenity-item:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}

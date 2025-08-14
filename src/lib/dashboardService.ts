@@ -1,0 +1,446 @@
+import { apiClient } from "./api";
+import { config } from "./config";
+
+// Dashboard data types based on actual NestJS backend response
+export interface DashboardMetrics {
+  // General metrics
+  generalMetrics: {
+    totalStudents: number;
+    totalApplications: number;
+    availableBeds: number;
+    totalRevenue: number;
+    changePercentage: number;
+  };
+
+  // Occupancy data
+  occupancy: {
+    totalHostels: number;
+    averageOccupancyRate: number;
+    totalBeds: number;
+    occupiedBeds: number;
+  };
+
+  // Hostel occupancy breakdown
+  hostelOccupancy: Array<{
+    hostelId: string;
+    hostelName: string;
+    totalBeds: number;
+    occupiedBeds: number;
+    availableBeds: number;
+    occupancyRate?: number;
+    occupancyPercentage?: number;
+    blocks?: Array<Record<string, unknown>>;
+  }>;
+
+  // Revenue data
+  revenue: {
+    totalRevenue: number;
+    totalPayments: number;
+    pendingPayments: number;
+    successRate: number;
+  };
+
+  // Financial metrics
+  financialMetrics: {
+    totalRevenue: number;
+    pendingPayments: number;
+    successfulPayments: number;
+    failedPayments: number;
+    successRate: number;
+  };
+
+  // Applications data
+  applications: {
+    totalApplications: number;
+    approvedApplications: number;
+    pendingApplications: number;
+    approvalRate: number;
+  };
+
+  // Application metrics
+  applicationMetrics: {
+    totalApplications: number;
+    pendingApplications: number;
+    approvedApplications: number;
+    rejectedApplications: number;
+  };
+
+  // Maintenance data
+  maintenance: {
+    totalTickets: number;
+    openTickets: number;
+    resolvedTickets: number;
+    resolutionRate: number;
+    averageResolutionTime: number;
+  };
+
+  // Maintenance metrics
+  maintenanceMetrics: {
+    totalTickets: number;
+    openTickets: number;
+    inProgressTickets: number;
+    resolvedTickets: number;
+    averageResolutionTime: number;
+  };
+
+  // Student metrics
+  studentMetrics: {
+    totalStudents: number;
+    activeStudents: number;
+    newStudents: number;
+    studentsByFaculty: Array<{ faculty: string; count: number }>;
+    studentsByLevel: Array<{ level: string; count: number }>;
+  };
+
+  // Role metrics
+  roleMetrics: {
+    role: string;
+  };
+
+  // Charts data
+  charts: Array<{
+    title: string;
+    type: string;
+    data: Array<{ label: string; value: number }> | { labels: string[]; datasets: Array<{ label: string; data: number[] }> };
+  }>;
+
+  // Recent activities
+  recentActivities: Array<{
+    id: string;
+    type: string;
+    title: string;
+    description: string;
+    timestamp: string;
+    status: string;
+  }>;
+
+  // Pending items
+  pendingItems: Array<{ id: string; type: string; title: string; description: string }>;
+
+  // Quick actions
+  quickActions: Array<{ id: string; title: string; description: string; action: string }>;
+
+  // Last updated timestamp
+  lastUpdated: string;
+
+  // User role
+  role: string;
+}
+
+export interface DashboardFilters {
+  period?: "week" | "month" | "year";
+  startDate?: string;
+  endDate?: string;
+  hostel?: string;
+  faculty?: string;
+}
+
+export interface DashboardResponse {
+  success?: boolean;
+  data?: DashboardMetrics;
+  filters?: DashboardFilters;
+  userRole?: string;
+  timestamp?: string;
+  // Allow the response to be the data directly
+  [key: string]: unknown;
+}
+
+/**
+ * Dashboard Service
+ * Handles all dashboard-related API calls with proper authentication and error handling
+ */
+export class DashboardService {
+  /**
+   * Fetch dashboard data with optional filters
+   * @param filters - Optional filters for the dashboard data
+   * @returns Promise<DashboardMetrics>
+   */
+  static async getDashboardData(
+    filters: DashboardFilters = {}
+  ): Promise<DashboardMetrics> {
+    // Build query parameters
+    const params = new URLSearchParams();
+
+    if (filters.period) params.append("period", filters.period);
+    if (filters.startDate) params.append("startDate", filters.startDate);
+    if (filters.endDate) params.append("endDate", filters.endDate);
+    if (filters.hostel) params.append("hostel", filters.hostel);
+    if (filters.faculty) params.append("faculty", filters.faculty);
+
+    // Helper function to make API call
+    const makeApiCall = async (token: string) => {
+      console.log("Making API call to:", `/reports/dashboard?${params.toString()}`);
+      
+      const response = await apiClient.get<DashboardResponse>(
+        `/reports/dashboard?${params.toString()}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      console.log("API response received:", response.data);
+
+      // Check if response has the expected structure
+      // The backend might return the data directly or in a nested structure
+      if (response.data.success === false) {
+        throw new Error("Failed to fetch dashboard data");
+      }
+
+      // Return the data directly if it's already in the correct format
+      // or extract from response.data.data if it's nested
+      const dashboardData = response.data.data || response.data;
+      return dashboardData as DashboardMetrics;
+    };
+
+    try {
+      // Get auth token from localStorage
+      const token = localStorage.getItem("auth_token") || localStorage.getItem("student_token");
+      
+      if (!token) {
+        // If no token found, redirect to appropriate login page
+        const isStudentPage = window.location.pathname.includes('/student');
+        const loginUrl = isStudentPage ? "/student/auth/login" : "/auth/login";
+        window.location.href = loginUrl;
+        throw new Error("No authentication token found. Please login to access live dashboard data.");
+      }
+      
+      console.log("Making API call with token:", token ? "Token found" : "No token");
+
+      // Make API call with authentication
+      return await makeApiCall(token);
+    } catch (error: unknown) {
+      console.error("Dashboard service error:", error);
+
+      // Handle authentication errors
+      if (error && typeof error === 'object' && 'response' in error && error.response && typeof error.response === 'object' && 'status' in error.response && error.response.status === 401) {
+        // Clear tokens and redirect to appropriate login page
+        localStorage.removeItem("auth_token");
+        localStorage.removeItem("student_token");
+        
+        const isStudentPage = window.location.pathname.includes('/student');
+        const loginUrl = isStudentPage ? "/student/auth/login" : "/auth/login";
+        window.location.href = loginUrl;
+        throw new Error("Authentication failed. Please login again to access live dashboard data.");
+      }
+
+      // Handle other errors
+      if (error && typeof error === 'object' && 'response' in error && error.response && typeof error.response === 'object' && 'data' in error.response && error.response.data && typeof error.response.data === 'object' && 'message' in error.response.data) {
+        throw new Error(String(error.response.data.message));
+      }
+
+      throw new Error("Failed to fetch dashboard data. Please try again.");
+    }
+  }
+
+  /**
+   * Get real-time dashboard updates
+   * @param filters - Optional filters
+   * @param callback - Callback function to handle updates
+   * @returns Function to stop polling
+   */
+  static startRealTimeUpdates(
+    filters: DashboardFilters = {},
+    callback: (data: DashboardMetrics) => void,
+    interval: number = config.dashboard.refreshInterval
+  ): () => void {
+    let isPolling = true;
+
+    const poll = async () => {
+      if (!isPolling) return;
+
+      try {
+        const data = await this.getDashboardData(filters);
+        callback(data);
+      } catch (error) {
+        console.error("Real-time update error:", error);
+      }
+
+      if (isPolling) {
+        setTimeout(poll, interval);
+      }
+    };
+
+    // Start polling
+    poll();
+
+    // Return function to stop polling
+    return () => {
+      isPolling = false;
+    };
+  }
+
+  /**
+   * Export dashboard data to CSV
+   * @param data - Dashboard data to export
+   * @param filename - Name of the exported file
+   */
+  static exportToCSV(
+    data: DashboardMetrics,
+    filename: string = "dashboard-data.csv"
+  ): void {
+    try {
+      // Convert data to CSV format
+      const csvContent = this.convertToCSV(data);
+
+      // Create and download file
+      const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+      const link = document.createElement("a");
+
+      if (link.download !== undefined) {
+        const url = URL.createObjectURL(blob);
+        link.setAttribute("href", url);
+        link.setAttribute("download", filename);
+        link.style.visibility = "hidden";
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      }
+    } catch (error) {
+      console.error("Export error:", error);
+      throw new Error("Failed to export data");
+    }
+  }
+
+  /**
+   * Convert dashboard data to CSV format
+   * @param data - Dashboard data
+   * @returns CSV string
+   */
+  private static convertToCSV(data: DashboardMetrics): string {
+    const lines: string[] = [];
+
+    // Add header
+    lines.push("Dashboard Report");
+    lines.push(`Generated: ${new Date().toLocaleString()}`);
+    lines.push("");
+
+    // Add summary metrics
+    lines.push("Summary Metrics");
+    lines.push("Metric,Value");
+    lines.push(`Total Students,${data.generalMetrics.totalStudents}`);
+    lines.push(`Total Applications,${data.generalMetrics.totalApplications}`);
+    lines.push(`Available Beds,${data.generalMetrics.availableBeds}`);
+    lines.push(`Total Revenue,₦${data.generalMetrics.totalRevenue.toLocaleString()}`);
+    lines.push(`Occupancy Rate,${data.occupancy.averageOccupancyRate}%`);
+    lines.push(`Total Hostels,${data.occupancy.totalHostels}`);
+    lines.push("");
+
+    // Add hostel distribution
+    lines.push("Hostel Distribution");
+    lines.push("Hostel,Total Beds,Occupied Beds,Available Beds,Occupancy Rate");
+    data.hostelOccupancy.forEach((hostel) => {
+      lines.push(
+        `${hostel.hostelName},${hostel.totalBeds},${hostel.occupiedBeds},${hostel.availableBeds},${hostel.occupancyRate}%`
+      );
+    });
+    lines.push("");
+
+    // Add application metrics
+    lines.push("Application Metrics");
+    lines.push("Metric,Count");
+    lines.push(`Total Applications,${data.applicationMetrics.totalApplications}`);
+    lines.push(`Pending Applications,${data.applicationMetrics.pendingApplications}`);
+    lines.push(`Approved Applications,${data.applicationMetrics.approvedApplications}`);
+    lines.push(`Rejected Applications,${data.applicationMetrics.rejectedApplications}`);
+    lines.push("");
+
+    // Add maintenance metrics
+    lines.push("Maintenance Metrics");
+    lines.push("Metric,Count");
+    lines.push(`Total Tickets,${data.maintenanceMetrics.totalTickets}`);
+    lines.push(`Open Tickets,${data.maintenanceMetrics.openTickets}`);
+    lines.push(`In Progress Tickets,${data.maintenanceMetrics.inProgressTickets}`);
+    lines.push(`Resolved Tickets,${data.maintenanceMetrics.resolvedTickets}`);
+
+    return lines.join("\n");
+  }
+
+  /**
+   * Get chart data for specific chart type
+   * @param data - Dashboard data
+   * @param chartType - Type of chart ('occupancy', 'revenue', 'applications')
+   * @returns Chart data object
+   */
+  static getChartData(
+    data: DashboardMetrics,
+    chartType: "occupancy" | "revenue" | "applications"
+  ) {
+    switch (chartType) {
+      case 'occupancy':
+        return {
+          labels: data.hostelOccupancy.map(h => h.hostelName),
+          data: data.hostelOccupancy.map(h => h.occupancyRate)
+        };
+      case 'revenue':
+        // Try to find revenue chart from backend charts data
+        const revenueChart = data.charts.find(chart => chart.type === 'line' && chart.title.includes('Revenue'));
+        if (revenueChart?.data) {
+          return revenueChart.data;
+        }
+        // Fallback to simple data
+        return {
+          labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+          data: [0, 0, 0, 0, 0, 0]
+        };
+      case 'applications':
+        // Try to find applications chart from backend charts data
+        const applicationsChart = data.charts.find(chart => chart.type === 'bar' && chart.title.includes('Application'));
+        if (applicationsChart?.data) {
+          return applicationsChart.data;
+        }
+        // Fallback to simple data
+        return {
+          labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+          data: [0, 0, 0, 0, 0, 0]
+        };
+      default:
+        return { labels: [], data: [] };
+    }
+  }
+
+  /**
+   * Format currency values
+   * @param amount - Amount to format
+   * @returns Formatted currency string
+   */
+  static formatCurrency(amount: number): string {
+    return new Intl.NumberFormat("en-NG", {
+      style: "currency",
+      currency: "NGN",
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
+    }).format(amount);
+  }
+
+  /**
+   * Format percentage values
+   * @param value - Value to format
+   * @returns Formatted percentage string
+   */
+  static formatPercentage(value: number | undefined | null): string {
+    if (value === undefined || value === null || isNaN(value)) {
+      return '0.0%';
+    }
+    return `${value.toFixed(1)}%`;
+  }
+
+  /**
+   * Get status color for activities
+   * @param status - Activity status
+   * @returns CSS color class
+   */
+  static getStatusColor(status: "pending" | "completed" | "failed"): string {
+    switch (status) {
+      case "completed":
+        return "text-green-600 bg-green-100";
+      case "pending":
+        return "text-yellow-600 bg-yellow-100";
+      case "failed":
+        return "text-red-600 bg-red-100";
+      default:
+        return "text-gray-600 bg-gray-100";
+    }
+  }
+}
