@@ -1,0 +1,46 @@
+version: '3.8'
+
+services:
+  # Main Next.js application
+  unn-hostel-admin:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: unn-hostel-admin
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+    restart: unless-stopped
+    # Health check to ensure the application is running properly
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    # Optional: Add volumes if you need to persist data
+    # volumes:
+    #   - ./data:/app/data
+    networks:
+      - unn-hostel-network
+
+  # Optional: Add a reverse proxy (nginx) for production
+  # nginx:
+  #   image: nginx:alpine
+  #   container_name: unn-hostel-nginx
+  #   ports:
+  #     - "80:80"
+  #     - "443:443"
+  #   volumes:
+  #     - ./nginx.conf:/etc/nginx/nginx.conf
+  #   depends_on:
+  #     - unn-hostel-admin
+  #   restart: unless-stopped
+  #   networks:
+  #     - unn-hostel-network
+
+networks:
+  unn-hostel-network:
+    driver: bridge

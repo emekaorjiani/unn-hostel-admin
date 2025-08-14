@@ -54,7 +54,7 @@ export default function NotificationsPage() {
   const fetchNotificationsData = async () => {
     try {
       setError(null)
-      const token = safeLocalStorage.getItem('auth_token') || safeLocalStorage.getItem('student_token')
+      const token = safeLocalStorage.getItem('auth_token') || safeLocalStorage.gdetItem('student_token')
       
       if (!token) {
         throw new Error('No authentication token found')
