@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { useRouter } from 'next/navigation'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -73,6 +74,7 @@ import {
 } from 'lucide-react'
 
 export default function StudentDashboardPage() {
+  const router = useRouter()
   const [isLoading, setIsLoading] = useState(false)
   const [studentData, setStudentData] = useState<any>(null)
 
@@ -334,7 +336,12 @@ export default function StudentDashboardPage() {
             </div>
             
             <div className="flex items-center space-x-4">
-              <Button variant="outline" size="sm">
+              <Button 
+                variant="outline" 
+                size="sm"
+                onClick={() => router.push('/student/settings')}
+                className='cursor-pointer'
+              >
                 <Settings className="h-4 w-4 mr-2" />
                 Settings
               </Button>
@@ -358,7 +365,7 @@ export default function StudentDashboardPage() {
             <div className="flex items-center justify-between">
               <div>
                 <h2 className="text-3xl font-bold mb-2">
-                  Welcome back, {student.firstName}!
+                  Welcome back, {student.firstName}
                 </h2>
                 <p className="text-green-100 text-lg mb-4">
                   Here's what's happening with your hostel accommodation
@@ -381,7 +388,7 @@ export default function StudentDashboardPage() {
               <div className="hidden lg:block">
                 <div className="h-24 w-24 bg-white/20 rounded-full flex items-center justify-center">
                   <span className="text-2xl font-bold">
-                    {getInitials(`${student.firstName} ${student.lastName}`)}
+                    {getInitials(student.firstName, student.lastName)}
                   </span>
                 </div>
               </div>

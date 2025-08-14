@@ -146,294 +146,8 @@ export interface DashboardResponse {
 }
 
 /**
- * Generate dummy dashboard data for development/testing
- */
-function generateDummyDashboardData(): DashboardMetrics {
-  const currentDate = new Date();
-  const lastMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1);
-  
-  return {
-    generalMetrics: {
-      totalStudents: 2847,
-      totalApplications: 2156,
-      availableBeds: 423,
-      totalRevenue: 156800000,
-      changePercentage: 12.5
-    },
-    occupancy: {
-      totalHostels: 8,
-      averageOccupancyRate: 85.2,
-      totalBeds: 3200,
-      occupiedBeds: 2725
-    },
-    hostelOccupancy: [
-      {
-        hostelId: "1",
-        hostelName: "Zik Hall",
-        totalBeds: 450,
-        occupiedBeds: 398,
-        availableBeds: 52,
-        occupancyRate: 88.4
-      },
-      {
-        hostelId: "2",
-        hostelName: "Mariere Hall",
-        totalBeds: 380,
-        occupiedBeds: 342,
-        availableBeds: 38,
-        occupancyRate: 90.0
-      },
-      {
-        hostelId: "3",
-        hostelName: "Mellanby Hall",
-        totalBeds: 420,
-        occupiedBeds: 356,
-        availableBeds: 64,
-        occupancyRate: 84.8
-      },
-      {
-        hostelId: "4",
-        hostelName: "Kuti Hall",
-        totalBeds: 400,
-        occupiedBeds: 378,
-        availableBeds: 22,
-        occupancyRate: 94.5
-      },
-      {
-        hostelId: "5",
-        hostelName: "Alvan Ikoku Hall",
-        totalBeds: 350,
-        occupiedBeds: 298,
-        availableBeds: 52,
-        occupancyRate: 85.1
-      },
-      {
-        hostelId: "6",
-        hostelName: "Eni Njoku Hall",
-        totalBeds: 320,
-        occupiedBeds: 275,
-        availableBeds: 45,
-        occupancyRate: 85.9
-      },
-      {
-        hostelId: "7",
-        hostelName: "Moremi Hall",
-        totalBeds: 280,
-        occupiedBeds: 238,
-        availableBeds: 42,
-        occupancyRate: 85.0
-      },
-      {
-        hostelId: "8",
-        hostelName: "Jaja Hall",
-        totalBeds: 200,
-        occupiedBeds: 180,
-        availableBeds: 20,
-        occupancyRate: 90.0
-      }
-    ],
-    revenue: {
-      totalRevenue: 156800000,
-      totalPayments: 142000000,
-      pendingPayments: 14800000,
-      successRate: 90.5
-    },
-    financialMetrics: {
-      totalRevenue: 156800000,
-      pendingPayments: 14800000,
-      successfulPayments: 142000000,
-      failedPayments: 8000000,
-      successRate: 90.5
-    },
-    applications: {
-      totalApplications: 2156,
-      approvedApplications: 1847,
-      pendingApplications: 309,
-      approvalRate: 85.7
-    },
-    applicationMetrics: {
-      totalApplications: 2156,
-      pendingApplications: 309,
-      approvedApplications: 1847,
-      rejectedApplications: 0
-    },
-    maintenance: {
-      totalTickets: 156,
-      openTickets: 23,
-      resolvedTickets: 133,
-      resolutionRate: 85.3,
-      averageResolutionTime: 2.4
-    },
-    maintenanceMetrics: {
-      totalTickets: 156,
-      openTickets: 23,
-      inProgressTickets: 18,
-      resolvedTickets: 115,
-      averageResolutionTime: 2.4
-    },
-    studentMetrics: {
-      totalStudents: 2847,
-      activeStudents: 2725,
-      newStudents: 156,
-      studentsByFaculty: [
-        { faculty: "Engineering", count: 856 },
-        { faculty: "Sciences", count: 723 },
-        { faculty: "Arts", count: 456 },
-        { faculty: "Social Sciences", count: 389 },
-        { faculty: "Medicine", count: 423 }
-      ],
-      studentsByLevel: [
-        { level: "100 Level", count: 723 },
-        { level: "200 Level", count: 689 },
-        { level: "300 Level", count: 567 },
-        { level: "400 Level", count: 456 },
-        { level: "500 Level", count: 412 }
-      ]
-    },
-    roleMetrics: {
-      role: "admin"
-    },
-    charts: [
-      {
-        title: "Monthly Revenue Trend",
-        type: "line",
-        data: {
-          labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
-          datasets: [
-            {
-              label: "Revenue (₦)",
-              data: [12500000, 13800000, 14200000, 15600000, 16800000, 17500000, 18200000, 18900000, 19500000, 20100000, 20800000, 21500000]
-            }
-          ]
-        }
-      },
-      {
-        title: "Applications by Status",
-        type: "doughnut",
-        data: [
-          { label: "Approved", value: 1847 },
-          { label: "Pending", value: 309 },
-          { label: "Under Review", value: 156 },
-          { label: "Waitlisted", value: 89 }
-        ]
-      },
-      {
-        title: "Hostel Occupancy Rates",
-        type: "bar",
-        data: [
-          { label: "Zik Hall", value: 88.4 },
-          { label: "Mariere Hall", value: 90.0 },
-          { label: "Mellanby Hall", value: 84.8 },
-          { label: "Kuti Hall", value: 94.5 },
-          { label: "Alvan Ikoku Hall", value: 85.1 },
-          { label: "Eni Njoku Hall", value: 85.9 },
-          { label: "Moremi Hall", value: 85.0 },
-          { label: "Jaja Hall", value: 90.0 }
-        ]
-      }
-    ],
-    recentActivities: [
-      {
-        id: "1",
-        type: "application",
-        title: "New Application Submitted",
-        description: "John Doe submitted hostel application for Zik Hall",
-        timestamp: new Date(Date.now() - 5 * 60 * 1000).toISOString(),
-        status: "completed"
-      },
-      {
-        id: "2",
-        type: "payment",
-        title: "Payment Received",
-        description: "Payment of ₦150,000 received from Jane Smith",
-        timestamp: new Date(Date.now() - 15 * 60 * 1000).toISOString(),
-        status: "completed"
-      },
-      {
-        id: "3",
-        type: "maintenance",
-        title: "Maintenance Ticket Resolved",
-        description: "Electrical issue in Room 205, Zik Hall resolved",
-        timestamp: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
-        status: "completed"
-      },
-      {
-        id: "4",
-        type: "application",
-        title: "Application Approved",
-        description: "Sarah Johnson's application for Mariere Hall approved",
-        timestamp: new Date(Date.now() - 4 * 60 * 60 * 1000).toISOString(),
-        status: "completed"
-      },
-      {
-        id: "5",
-        type: "maintenance",
-        title: "New Maintenance Ticket",
-        description: "Plumbing issue reported in Room 312, Mellanby Hall",
-        timestamp: new Date(Date.now() - 6 * 60 * 60 * 1000).toISOString(),
-        status: "pending"
-      }
-    ],
-    pendingItems: [
-      {
-        id: "1",
-        type: "application",
-        title: "15 Applications Pending Review",
-        description: "Applications submitted in the last 24 hours require review"
-      },
-      {
-        id: "2",
-        type: "payment",
-        title: "23 Pending Payments",
-        description: "Payments awaiting confirmation or processing"
-      },
-      {
-        id: "3",
-        type: "maintenance",
-        title: "8 Maintenance Tickets Open",
-        description: "Maintenance requests requiring attention"
-      },
-      {
-        id: "4",
-        type: "student",
-        title: "12 Student Registrations",
-        description: "New student registrations pending verification"
-      }
-    ],
-    quickActions: [
-      {
-        id: "1",
-        title: "Review Applications",
-        description: "Review pending hostel applications",
-        action: "review"
-      },
-      {
-        id: "2",
-        title: "Process Payments",
-        description: "Handle pending payment confirmations",
-        action: "payments"
-      },
-      {
-        id: "3",
-        title: "Maintenance Dashboard",
-        description: "View and manage maintenance tickets",
-        action: "maintenance"
-      },
-      {
-        id: "4",
-        title: "Generate Reports",
-        description: "Create and export dashboard reports",
-        action: "reports"
-      }
-    ],
-    lastUpdated: new Date().toISOString(),
-    role: "admin"
-  };
-}
-
-/**
  * Dashboard Service
- * Handles all dashboard-related data with dummy data for development
+ * Handles all dashboard-related API calls with proper authentication and error handling
  */
 export class DashboardService {
   /**
@@ -444,25 +158,80 @@ export class DashboardService {
   static async getDashboardData(
     filters: DashboardFilters = {}
   ): Promise<DashboardMetrics> {
-    // Simulate API delay for realistic feel
-    await new Promise(resolve => setTimeout(resolve, 500));
-    
-    // Generate dummy data
-    const dummyData = generateDummyDashboardData();
-    
-    // Apply filters if needed (for future use when backend is ready)
-    if (filters.period) {
-      console.log("Filter applied:", filters.period);
+    // Build query parameters
+    const params = new URLSearchParams();
+
+    if (filters.period) params.append("period", filters.period);
+    if (filters.startDate) params.append("startDate", filters.startDate);
+    if (filters.endDate) params.append("endDate", filters.endDate);
+    if (filters.hostel) params.append("hostel", filters.hostel);
+    if (filters.faculty) params.append("faculty", filters.faculty);
+
+    // Helper function to make API call
+    const makeApiCall = async (token: string) => {
+      console.log("Making API call to:", `/reports/dashboard?${params.toString()}`);
+      
+      const response = await apiClient.get<DashboardResponse>(
+        `/reports/dashboard?${params.toString()}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      console.log("API response received:", response.data);
+
+      // Check if response has the expected structure
+      // The backend might return the data directly or in a nested structure
+      if (response.data.success === false) {
+        throw new Error("Failed to fetch dashboard data");
+      }
+
+      // Return the data directly if it's already in the correct format
+      // or extract from response.data.data if it's nested
+      const dashboardData = response.data.data || response.data;
+      return dashboardData as DashboardMetrics;
+    };
+
+    try {
+      // Get auth token from localStorage
+      const token = localStorage.getItem("auth_token") || localStorage.getItem("student_token");
+      
+      // if (!token) {
+      //   // If no token found, redirect to appropriate login page
+      //   const isStudentPage = window.location.pathname.includes('/student');
+      //   const loginUrl = isStudentPage ? "/student/auth/login" : "/auth/login";
+      //   window.location.href = loginUrl;
+      //   throw new Error("No authentication token found. Please login to access live dashboard data.");
+      // }
+      
+      console.log("Making API call with token:", token ? "Token found" : "No token");
+
+      // Make API call with authentication
+      return await makeApiCall(token);
+    } catch (error: unknown) {
+      console.error("Dashboard service error:", error);
+
+      // Handle authentication errors
+      if (error && typeof error === 'object' && 'response' in error && error.response && typeof error.response === 'object' && 'status' in error.response && error.response.status === 401) {
+        // Clear tokens and redirect to appropriate login page
+        localStorage.removeItem("auth_token");
+        localStorage.removeItem("student_token");
+        
+        const isStudentPage = window.location.pathname.includes('/student');
+        const loginUrl = isStudentPage ? "/student/auth/login" : "/auth/login";
+        window.location.href = loginUrl;
+        throw new Error("Authentication failed. Please login again to access live dashboard data.");
+      }
+
+      // Handle other errors
+      if (error && typeof error === 'object' && 'response' in error && error.response && typeof error.response === 'object' && 'data' in error.response && error.response.data && typeof error.response.data === 'object' && 'message' in error.response.data) {
+        throw new Error(String(error.response.data.message));
+      }
+
+      throw new Error("Failed to fetch dashboard data. Please try again.");
     }
-    if (filters.hostel) {
-      console.log("Hostel filter applied:", filters.hostel);
-    }
-    if (filters.faculty) {
-      console.log("Faculty filter applied:", filters.faculty);
-    }
-    
-    console.log("Returning dummy dashboard data");
-    return dummyData;
   }
 
   /**

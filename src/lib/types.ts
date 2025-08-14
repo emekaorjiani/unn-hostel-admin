@@ -131,14 +131,14 @@ export interface Payment extends BaseEntity {
   gateway: string;
   reference: string;
   description: string;
-  metadata: Record<string, any>;
+  metadata: Record<string, unknown>;
 }
 
 export interface PaymentGateway {
   id: string;
   name: string;
   isActive: boolean;
-  config: Record<string, any>;
+  config: Record<string, unknown>;
 }
 
 // Room Selection types
@@ -212,7 +212,7 @@ export interface Notification extends BaseEntity {
   recipientType: "student" | "admin" | "all";
   isRead: boolean;
   readAt?: string;
-  metadata: Record<string, any>;
+  metadata: Record<string, unknown>;
 }
 
 export interface NotificationTemplate extends BaseEntity {
@@ -244,7 +244,7 @@ export interface ActivityLog extends BaseEntity {
   entityId: string;
   userId: string;
   userType: "student" | "admin";
-  details: Record<string, any>;
+  details: Record<string, unknown>;
   ipAddress: string;
   userAgent: string;
 }
@@ -276,7 +276,7 @@ export interface FormField {
   required: boolean;
   placeholder?: string;
   options?: { value: string; label: string }[];
-  validation?: any;
+  validation?: Record<string, unknown>;
 }
 
 // Filter and pagination types
@@ -293,7 +293,7 @@ export interface FilterParams {
   dateFrom?: string;
   dateTo?: string;
   category?: string;
-  [key: string]: any;
+  [key: string]: unknown;
 }
 
 export interface QueryParams extends PaginationParams, FilterParams {}

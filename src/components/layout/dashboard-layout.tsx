@@ -13,38 +13,38 @@ interface DashboardLayoutProps {
 
 export default function DashboardLayout({ children }: DashboardLayoutProps) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
-  const [isLoading, setIsLoading] = useState(true)
+  const [isLoading, setIsLoading] = useState(false) // Set to false since auth is disabled
   const router = useRouter()
 
   // Check authentication on mount
-  useEffect(() => {
-    const checkAuth = async () => {
-      try {
-        // Check for both admin and student authentication
-        const isAdminAuthenticated = authService.isAuthenticated()
-        const isStudentAuthenticated = authService.isStudentAuthenticated()
+  // useEffect(() => {
+  //   const checkAuth = async () => {
+  //     try {
+  //       // Check for both admin and student authentication
+  //       const isAdminAuthenticated = authService.isAuthenticated()
+  //       const isStudentAuthenticated = authService.isStudentAuthenticated()
         
-        if (!isAdminAuthenticated && !isStudentAuthenticated) {
-          router.push('/auth/login')
-          return
-        }
+  //       if (!isAdminAuthenticated && !isStudentAuthenticated) {
+  //         router.push('/auth/login')
+  //         return
+  //       }
 
-        // Verify token is still valid by getting profile
-        if (isAdminAuthenticated) {
-          await authService.getProfile()
-        } else if (isStudentAuthenticated) {
-          await authService.getStudentProfile()
-        }
+  //       // Verify token is still valid by getting profile
+  //       if (isAdminAuthenticated) {
+  //         await authService.getProfile()
+  //       } else if (isStudentAuthenticated) {
+  //         await authService.getStudentProfile()
+  //       }
         
-        setIsLoading(false)
-      } catch (error) {
-        console.error('Authentication check failed:', error)
-        router.push('/auth/login')
-      }
-    }
+  //       setIsLoading(false)
+  //     } catch (error) {
+  //       console.error('Authentication check failed:', error)
+  //       router.push('/auth/login')
+  //     }
+  //   }
 
-    checkAuth()
-  }, [router])
+  //   checkAuth()
+  // }, [router])
 
   // Toggle sidebar
   const toggleSidebar = () => {
@@ -64,7 +64,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
   }
 
   return (
-    <ClientProvider>
+    // <ClientProvider>
       <div className="min-h-screen bg-gray-50">
         {/* Sidebar */}
         <Sidebar isOpen={isSidebarOpen} onToggle={toggleSidebar} />
@@ -80,6 +80,6 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
           </main>
         </div>
       </div>
-    </ClientProvider>
+    // </ClientProvider>
   )
 }

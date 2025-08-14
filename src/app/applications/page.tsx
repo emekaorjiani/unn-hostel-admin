@@ -21,8 +21,6 @@ import {
   RefreshCw
 } from 'lucide-react'
 import DashboardLayout from '../../components/layout/dashboard-layout'
-import { apiClient } from '../../lib/api'
-import { safeLocalStorage } from '../../lib/utils'
 
 interface Application {
   id: string
@@ -90,6 +88,96 @@ interface ApplicationStats {
   }>
 }
 
+// Generate dummy applications data
+function generateDummyApplications(): Application[] {
+  const applications: Application[] = []
+  const statuses: Application['status'][] = ['submitted', 'under_review', 'approved', 'rejected', 'waitlisted', 'draft']
+  const types: Application['applicationType'][] = ['new', 'renewal', 'transfer', 'swap']
+  const hostels = ['Zik Hall', 'Mariere Hall', 'Mellanby Hall', 'Kuti Hall', 'Alvan Ikoku Hall', 'Eni Njoku Hall']
+  const faculties = ['Engineering', 'Sciences', 'Arts', 'Social Sciences', 'Medicine']
+  
+  for (let i = 1; i <= 50; i++) {
+    const status = statuses[Math.floor(Math.random() * statuses.length)]
+    const type = types[Math.floor(Math.random() * types.length)]
+    const hostel = hostels[Math.floor(Math.random() * hostels.length)]
+    const faculty = faculties[Math.floor(Math.random() * faculties.length)]
+    
+    applications.push({
+      id: `app_${i}`,
+      studentId: `student_${i}`,
+      applicationWindowId: `window_${Math.floor(Math.random() * 3) + 1}`,
+      academicYear: '2024/2025',
+      semester: Math.random() > 0.5 ? 'First' : 'Second',
+      applicationType: type,
+      status,
+      hostelPreferences: [
+        {
+          hostelId: `hostel_${Math.floor(Math.random() * 6) + 1}`,
+          priority: Math.floor(Math.random() * 3) + 1
+        }
+      ],
+      roommatePreferences: {
+        preferences: {
+          tribe: 'Any',
+          studyTime: 'Night',
+          noiseLevel: 'Low'
+        }
+      },
+      specialRequests: Math.random() > 0.7 ? 'Quiet room preferred' : undefined,
+      medicalConditions: Math.random() > 0.8 ? 'Asthma' : undefined,
+      dietaryRestrictions: Math.random() > 0.9 ? 'Vegetarian' : undefined,
+      isPWD: Math.random() > 0.95,
+      pwdDetails: Math.random() > 0.95 ? 'Wheelchair accessible room needed' : undefined,
+      isInternationalStudent: Math.random() > 0.9,
+      isDistanceStudent: Math.random() > 0.8,
+      isScholar: Math.random() > 0.85,
+      scholarshipDetails: Math.random() > 0.85 ? 'Merit scholarship recipient' : undefined,
+      totalFees: '150000',
+      amountPaid: status === 'approved' ? '150000' : '0',
+      paymentStatus: status === 'approved' ? 'paid' : 'pending',
+      paymentDeadline: '2024-12-31',
+      submittedAt: status !== 'draft' ? new Date(Date.now() - Math.random() * 30 * 24 * 60 * 60 * 1000).toISOString() : undefined,
+      reviewedAt: ['approved', 'rejected', 'waitlisted'].includes(status) ? new Date(Date.now() - Math.random() * 7 * 24 * 60 * 60 * 1000).toISOString() : undefined,
+      reviewedBy: ['approved', 'rejected', 'waitlisted'].includes(status) ? 'admin_1' : undefined,
+      reviewNotes: ['approved', 'rejected', 'waitlisted'].includes(status) ? 'Application reviewed and processed' : undefined,
+      waitlistPosition: status === 'waitlisted' ? Math.floor(Math.random() * 20) + 1 : undefined,
+      waitlistedAt: status === 'waitlisted' ? new Date(Date.now() - Math.random() * 3 * 24 * 60 * 60 * 1000).toISOString() : undefined,
+      documents: {
+        idCard: Math.random() > 0.3 ? 'document_1.pdf' : undefined,
+        scholarshipLetter: Math.random() > 0.7 ? 'scholarship_1.pdf' : undefined,
+        medicalCertificate: Math.random() > 0.8 ? 'medical_1.pdf' : undefined
+      },
+      metadata: {},
+      createdAt: new Date(Date.now() - Math.random() * 60 * 24 * 60 * 60 * 1000).toISOString(),
+      updatedAt: new Date(Date.now() - Math.random() * 7 * 24 * 60 * 60 * 1000).toISOString(),
+      allocations: []
+    })
+  }
+  
+  return applications
+}
+
+// Generate dummy students data
+function generateDummyStudents(): Record<string, { firstName: string; lastName: string; matricNumber: string }> {
+  const students: Record<string, { firstName: string; lastName: string; matricNumber: string }> = {}
+  const firstNames = ['John', 'Jane', 'Michael', 'Sarah', 'David', 'Emily', 'James', 'Emma', 'Robert', 'Olivia', 'William', 'Sophia', 'Richard', 'Isabella', 'Joseph', 'Mia', 'Thomas', 'Charlotte', 'Christopher', 'Amelia']
+  const lastNames = ['Smith', 'Johnson', 'Williams', 'Brown', 'Jones', 'Garcia', 'Miller', 'Davis', 'Rodriguez', 'Martinez', 'Hernandez', 'Lopez', 'Gonzalez', 'Wilson', 'Anderson', 'Thomas', 'Taylor', 'Moore', 'Jackson', 'Martin']
+  
+  for (let i = 1; i <= 50; i++) {
+    const firstName = firstNames[Math.floor(Math.random() * firstNames.length)]
+    const lastName = lastNames[Math.floor(Math.random() * lastNames.length)]
+    const matricNumber = `2020/${Math.floor(Math.random() * 9000) + 1000}/${Math.floor(Math.random() * 900) + 100}`
+    
+    students[`student_${i}`] = {
+      firstName,
+      lastName,
+      matricNumber
+    }
+  }
+  
+  return students
+}
+
 export default function ApplicationsPage() {
   const router = useRouter()
   const [applications, setApplications] = useState<Application[]>([])
@@ -104,68 +192,60 @@ export default function ApplicationsPage() {
   const [itemsPerPage, setItemsPerPage] = useState(10)
   const [totalItems, setTotalItems] = useState(0)
 
-  // Fetch applications data from real backend
+  // Fetch applications data from dummy data
   const fetchApplications = async () => {
     try {
       setError(null)
-      const token = safeLocalStorage.getItem('auth_token') || safeLocalStorage.getItem('student_token')
       
-      if (!token) {
-        throw new Error('No authentication token found')
-      }
-
-      // Fetch applications data from real backend with pagination
-      const applicationsRes = await apiClient.get('/applications', {
-        params: {
-          page: currentPage,
-          limit: itemsPerPage,
-          status: statusFilter !== 'all' ? statusFilter : undefined,
-          academicYear: academicYearFilter !== 'all' ? academicYearFilter : undefined,
-          search: searchQuery || undefined
-        }
-      })
-
-      // Handle different response structures
-      const applicationsData = applicationsRes.data?.applications || applicationsRes.data?.data || applicationsRes.data || []
-      const totalCount = applicationsRes.data?.total || applicationsRes.data?.totalCount || applicationsData.length
+      // Simulate API delay
+      await new Promise(resolve => setTimeout(resolve, 800))
       
-      setApplications(applicationsData)
-
-      // Fetch student details for each application
-      const studentIds = [...new Set(applicationsData.map((app: Application) => app.studentId))]
-      const studentsData: Record<string, { firstName: string; lastName: string; matricNumber: string }> = {}
+      // Generate dummy data
+      const applicationsData = generateDummyApplications()
+      const studentsData = generateDummyStudents()
       
-      for (const studentId of studentIds) {
-        try {
-          const studentRes = await apiClient.get(`/students/${studentId}`)
-          const student = studentRes.data as { firstName?: string; lastName?: string; matricNumber?: string }
-          studentsData[studentId] = {
-            firstName: student.firstName || '',
-            lastName: student.lastName || '',
-            matricNumber: student.matricNumber || ''
-          }
-        } catch (err) {
-          console.error(`Failed to fetch student ${studentId}:`, err)
-          studentsData[studentId] = {
-            firstName: 'Unknown',
-            lastName: 'Student',
-            matricNumber: 'N/A'
-          }
-        }
+      // Apply filters
+      let filteredApplications = applicationsData
+      
+      if (statusFilter !== 'all') {
+        filteredApplications = filteredApplications.filter(app => app.status === statusFilter)
       }
       
+      if (academicYearFilter !== 'all') {
+        filteredApplications = filteredApplications.filter(app => app.academicYear === academicYearFilter)
+      }
+      
+      if (searchQuery) {
+        const query = searchQuery.toLowerCase()
+        filteredApplications = filteredApplications.filter(app => {
+          const student = studentsData[app.studentId]
+          return (
+            student?.firstName.toLowerCase().includes(query) ||
+            student?.lastName.toLowerCase().includes(query) ||
+            student?.matricNumber.toLowerCase().includes(query) ||
+            app.id.toLowerCase().includes(query)
+          )
+        })
+      }
+      
+      // Apply pagination
+      const startIndex = (currentPage - 1) * itemsPerPage
+      const endIndex = startIndex + itemsPerPage
+      const paginatedApplications = filteredApplications.slice(startIndex, endIndex)
+      
+      setApplications(paginatedApplications)
       setStudents(studentsData)
-      setTotalItems(totalCount)
+      setTotalItems(filteredApplications.length)
 
-      // Calculate stats manually since the stats API might not work
+      // Calculate stats
       const calculatedStats: ApplicationStats = {
-        totalApplications: totalCount,
-        approvedApplications: applicationsData.filter((app: Application) => app.status === 'approved').length,
-        rejectedApplications: applicationsData.filter((app: Application) => app.status === 'rejected').length,
-        pendingApplications: applicationsData.filter((app: Application) => app.status === 'submitted').length,
-        waitlistedApplications: applicationsData.filter((app: Application) => app.status === 'waitlisted').length,
+        totalApplications: filteredApplications.length,
+        approvedApplications: filteredApplications.filter(app => app.status === 'approved').length,
+        rejectedApplications: filteredApplications.filter(app => app.status === 'rejected').length,
+        pendingApplications: filteredApplications.filter(app => app.status === 'submitted').length,
+        waitlistedApplications: filteredApplications.filter(app => app.status === 'waitlisted').length,
         applicationsByStatus: Object.entries(
-          applicationsData.reduce<Record<string, number>>((acc, app) => {
+          filteredApplications.reduce<Record<string, number>>((acc, app) => {
             acc[app.status] = (acc[app.status] || 0) + 1
             return acc
           }, {})
@@ -188,7 +268,7 @@ export default function ApplicationsPage() {
     fetchApplications()
   }, [currentPage, itemsPerPage, statusFilter, academicYearFilter, searchQuery])
 
-  // Use applications directly since filtering is now done server-side
+  // Use applications directly since filtering is now done client-side
   const filteredApplications = applications
 
   // Get status color
@@ -457,10 +537,10 @@ export default function ApplicationsPage() {
                         </td>
                         <td className="py-4 px-4">
                           <div className="font-medium text-gray-900">
-                                            {(application.hostelPreferences?.length || 0) > 0 ?
-                  `${application.hostelPreferences.length} preferences` :
-                  'No preferences'
-                }
+                            {(application.hostelPreferences?.length || 0) > 0 ?
+                              `${application.hostelPreferences.length} preferences` :
+                              'No preferences'
+                            }
                           </div>
                           <div className="text-xs text-gray-600">
                             {(application.hostelPreferences?.length || 0) > 0 && 

@@ -60,7 +60,7 @@ A comprehensive, enterprise-grade hostel management system designed specifically
 
 ## 📁 Project Structure
 
-```
+```yar
 unn-hostel-admin/
 ├── src/
 │   ├── app/                    # Next.js App Router pages

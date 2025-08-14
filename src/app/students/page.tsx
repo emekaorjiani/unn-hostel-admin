@@ -22,8 +22,6 @@ import {
   Calendar
 } from 'lucide-react'
 import DashboardLayout from '../../components/layout/dashboard-layout'
-import { apiClient } from '../../lib/api'
-import { safeLocalStorage } from '../../lib/utils'
 
 interface Student {
   id: string
@@ -86,33 +84,154 @@ export default function StudentsPage() {
   const [facultyFilter, setFacultyFilter] = useState<string>('all')
   const [levelFilter, setLevelFilter] = useState<string>('all')
 
-  // Fetch students data from real backend
+  // Generate dummy students data
+  const generateDummyStudents = (): Student[] => {
+    const faculties = [
+      'Faculty of Engineering',
+      'Faculty of Sciences',
+      'Faculty of Arts',
+      'Faculty of Social Sciences',
+      'Faculty of Education',
+      'Faculty of Agriculture',
+      'Faculty of Law',
+      'Faculty of Medicine',
+      'Faculty of Business Administration',
+      'Faculty of Environmental Studies'
+    ]
+
+    const departments = [
+      'Computer Engineering', 'Mechanical Engineering', 'Electrical Engineering',
+      'Physics', 'Chemistry', 'Mathematics', 'Biology',
+      'English', 'History', 'Philosophy',
+      'Economics', 'Political Science', 'Sociology',
+      'Educational Psychology', 'Curriculum Studies',
+      'Crop Science', 'Animal Science', 'Soil Science',
+      'Civil Law', 'Commercial Law', 'Criminal Law',
+      'Anatomy', 'Physiology', 'Biochemistry',
+      'Accounting', 'Marketing', 'Management',
+      'Architecture', 'Urban Planning', 'Landscape Architecture'
+    ]
+
+    const levels = ['100', '200', '300', '400', '500']
+    const statuses: Array<'active' | 'inactive' | 'suspended' | 'pending_verification'> = ['active', 'active', 'active', 'active', 'inactive', 'suspended', 'pending_verification']
+    const genders: Array<'male' | 'female'> = ['male', 'female']
+    const states = ['Lagos', 'Kano', 'Kaduna', 'Katsina', 'Oyo', 'Rivers', 'Bauchi', 'Jigawa', 'Enugu', 'Zamfara']
+
+    const dummyStudents: Student[] = []
+
+    for (let i = 1; i <= 2847; i++) {
+      const faculty = faculties[Math.floor(Math.random() * faculties.length)]
+      const department = departments[Math.floor(Math.random() * departments.length)]
+      const level = levels[Math.floor(Math.random() * levels.length)]
+      const status = statuses[Math.floor(Math.random() * statuses.length)]
+      const gender = genders[Math.floor(Math.random() * genders.length)]
+      const state = states[Math.floor(Math.random() * states.length)]
+      
+      const hasHostel = Math.random() > 0.3 // 70% have hostel allocation
+      const hostelNames = ['Zik Hall', 'Mariere Hall', 'Alvan Ikoku Hall', 'Eni Njoku Hall', 'Mellanby Hall', 'Kuti Hall']
+      
+      dummyStudents.push({
+        id: `STU${String(i).padStart(6, '0')}`,
+        firstName: `Student${i}`,
+        lastName: `Name${i}`,
+        email: `student${i}@unn.edu.ng`,
+        matricNumber: `2021/${String(i).padStart(6, '0')}`,
+        phoneNumber: `+234${Math.floor(Math.random() * 900000000) + 100000000}`,
+        dateOfBirth: new Date(2000 + Math.floor(Math.random() * 10), Math.floor(Math.random() * 12), Math.floor(Math.random() * 28) + 1).toISOString().split('T')[0],
+        gender,
+        faculty,
+        department,
+        level,
+        address: `${Math.floor(Math.random() * 999) + 1} Street, ${state}`,
+        stateOfOrigin: state,
+        localGovernment: `LG${Math.floor(Math.random() * 20) + 1}`,
+        emergencyContact: `Emergency${i}`,
+        emergencyPhone: `+234${Math.floor(Math.random() * 900000000) + 100000000}`,
+        status,
+        isVerified: Math.random() > 0.1, // 90% verified
+        isInternationalStudent: Math.random() > 0.95, // 5% international
+        isPWD: Math.random() > 0.98, // 2% PWD
+        hostelId: hasHostel ? `HOSTEL${Math.floor(Math.random() * 6) + 1}` : undefined,
+        hostelName: hasHostel ? hostelNames[Math.floor(Math.random() * hostelNames.length)] : undefined,
+        roomNumber: hasHostel ? `R${Math.floor(Math.random() * 200) + 1}` : undefined,
+        bedNumber: hasHostel ? `B${Math.floor(Math.random() * 4) + 1}` : undefined,
+        createdAt: new Date(2021, Math.floor(Math.random() * 12), Math.floor(Math.random() * 28) + 1).toISOString(),
+        updatedAt: new Date().toISOString()
+      })
+    }
+
+    return dummyStudents
+  }
+
+  // Generate dummy statistics
+  const generateDummyStats = (studentsData: Student[]): StudentStats => {
+    const activeStudents = studentsData.filter(s => s.status === 'active').length
+    const pendingVerification = studentsData.filter(s => s.status === 'pending_verification').length
+    const verifiedStudents = studentsData.filter(s => s.isVerified).length
+    const internationalStudents = studentsData.filter(s => s.isInternationalStudent).length
+    const pwdStudents = studentsData.filter(s => s.isPWD).length
+
+    // Group by faculty
+    const facultyCounts = studentsData.reduce((acc, student) => {
+      acc[student.faculty] = (acc[student.faculty] || 0) + 1
+      return acc
+    }, {} as Record<string, number>)
+
+    const studentsByFaculty = Object.entries(facultyCounts).map(([faculty, count]) => ({
+      faculty,
+      count
+    })).sort((a, b) => b.count - a.count)
+
+    // Group by level
+    const levelCounts = studentsData.reduce((acc, student) => {
+      acc[student.level] = (acc[student.level] || 0) + 1
+      return acc
+    }, {} as Record<string, number>)
+
+    const studentsByLevel = Object.entries(levelCounts).map(([level, count]) => ({
+      level,
+      count
+    })).sort((a, b) => a.level.localeCompare(b.level))
+
+    // Group by status
+    const statusCounts = studentsData.reduce((acc, student) => {
+      acc[student.status] = (acc[student.status] || 0) + 1
+      return acc
+    }, {} as Record<string, number>)
+
+    const studentsByStatus = Object.entries(statusCounts).map(([status, count]) => ({
+      status,
+      count
+    }))
+
+    return {
+      totalStudents: studentsData.length,
+      activeStudents,
+      pendingVerification,
+      verifiedStudents,
+      internationalStudents,
+      pwdStudents,
+      studentsByFaculty,
+      studentsByLevel,
+      studentsByStatus
+    }
+  }
+
+  // Fetch students data (now using dummy data)
   const fetchStudents = async () => {
     try {
       setError(null)
-      const token = safeLocalStorage.getItem('auth_token') || safeLocalStorage.getItem('student_token')
+      setLoading(true)
       
-      if (!token) {
-        throw new Error('No authentication token found')
-      }
-
-      // Fetch students data from real backend
-      const studentsRes = await apiClient.get('/students', {
-        headers: { Authorization: `Bearer ${token}` }
-      })
-
-      // Fetch student statistics from real backend
-      const statsRes = await apiClient.get('/students/stats/overview', {
-        headers: { Authorization: `Bearer ${token}` }
-      })
-
-      // Handle different response structures
-      const studentsData = Array.isArray(studentsRes.data) 
-        ? studentsRes.data 
-        : studentsRes.data?.students || studentsRes.data?.data || []
+      // Simulate API delay
+      await new Promise(resolve => setTimeout(resolve, 800))
+      
+      // Generate dummy data
+      const studentsData = generateDummyStudents()
+      const statsData = generateDummyStats(studentsData)
       
       setStudents(studentsData)
-      setStats(statsRes.data || null)
+      setStats(statsData)
     } catch (err: unknown) {
       const errorMessage = err instanceof Error ? err.message : 'Failed to fetch students'
       setError(errorMessage)
@@ -387,7 +506,7 @@ export default function StudentsPage() {
                     </tr>
                   </thead>
                   <tbody>
-                    {filteredStudents.map((student) => (
+                    {filteredStudents.slice(0, 50).map((student) => (
                       <tr key={student.id} className="border-b border-gray-100 hover:bg-gray-50">
                         <td className="py-4 px-4">
                           <div>
@@ -464,6 +583,11 @@ export default function StudentsPage() {
                     ))}
                   </tbody>
                 </table>
+                {filteredStudents.length > 50 && (
+                  <div className="text-center py-4 text-gray-600">
+                    Showing first 50 students. Use filters to narrow down results.
+                  </div>
+                )}
               </div>
             )}
           </CardContent>

@@ -23,8 +23,6 @@ import {
   Mail
 } from 'lucide-react'
 import DashboardLayout from '../../../../components/layout/dashboard-layout'
-import { apiClient } from '../../../../lib/api'
-import { safeLocalStorage } from '../../../../lib/utils'
 
 interface Application {
   id: string
@@ -81,6 +79,56 @@ interface Hostel {
   pricePerSemester: number
 }
 
+// Generate dummy data for the application
+function generateDummyApplicationData(applicationId: string) {
+  const application: Application = {
+    id: applicationId,
+    studentId: 'student_1',
+    studentName: 'John Doe',
+    matricNumber: '2020/1234/567',
+    email: 'john.doe@student.unn.edu.ng',
+    phoneNumber: '+2348012345678',
+    hostelId: 'hostel_1',
+    hostelName: 'Zik Hall',
+    academicYear: '2024/2025',
+    semester: 'First',
+    status: 'submitted',
+    applicationType: 'new',
+    preferences: ['Single room', 'Quiet floor', 'Near library'],
+    additionalNotes: 'Prefer a room with good ventilation and natural light.',
+    submittedAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
+    createdAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(),
+    updatedAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString()
+  }
+
+  const student: Student = {
+    id: 'student_1',
+    firstName: 'John',
+    lastName: 'Doe',
+    matricNumber: '2020/1234/567',
+    email: 'john.doe@student.unn.edu.ng',
+    phoneNumber: '+2348012345678',
+    faculty: 'Engineering',
+    department: 'Computer Engineering',
+    level: '400 Level',
+    gender: 'male',
+    status: 'active',
+    isVerified: true
+  }
+
+  const hostel: Hostel = {
+    id: 'hostel_1',
+    name: 'Zik Hall',
+    description: 'Modern hostel with excellent facilities',
+    gender: 'male',
+    capacity: 450,
+    availableBeds: 52,
+    pricePerSemester: 150000
+  }
+
+  return { application, student, hostel }
+}
+
 export default function ReviewApplicationPage() {
   const router = useRouter()
   const params = useParams()
@@ -106,53 +154,24 @@ export default function ReviewApplicationPage() {
   const fetchApplicationData = async () => {
     try {
       setError(null)
-      const token = safeLocalStorage.getItem('auth_token') || safeLocalStorage.getItem('student_token')
       
-      if (!token) {
-        throw new Error('No authentication token found')
-      }
-
-      // Fetch application details
-      const applicationRes = await apiClient.get(`/applications/${applicationId}`, {
-        headers: { Authorization: `Bearer ${token}` }
-      })
-
-      const applicationData = applicationRes.data
-      setApplication(applicationData)
+      // Simulate API delay
+      await new Promise(resolve => setTimeout(resolve, 600))
+      
+      // Generate dummy data
+      const { application: appData, student: studentData, hostel: hostelData } = generateDummyApplicationData(applicationId)
+      
+      setApplication(appData)
+      setStudent(studentData)
+      setHostel(hostelData)
 
       // Set initial review form data
       setReviewForm(prev => ({
         ...prev,
-        status: applicationData.status === 'submitted' ? 'under_review' : applicationData.status,
-        reviewNotes: applicationData.reviewNotes || '',
-        notificationMessage: getDefaultNotificationMessage(applicationData.status)
+        status: appData.status === 'submitted' ? 'under_review' : appData.status,
+        reviewNotes: appData.reviewNotes || '',
+        notificationMessage: getDefaultNotificationMessage(appData.status)
       }))
-
-      // Fetch student details if available
-      if (applicationData.studentId) {
-        try {
-          const studentRes = await apiClient.get(`/students/${applicationData.studentId}`, {
-            headers: { Authorization: `Bearer ${token}` }
-          })
-          const studentData = studentRes.data
-          setStudent(studentData)
-        } catch (err) {
-          console.warn('Could not fetch student details:', err)
-        }
-      }
-
-      // Fetch hostel details if available
-      if (applicationData.hostelId) {
-        try {
-          const hostelRes = await apiClient.get(`/hostels/${applicationData.hostelId}`, {
-            headers: { Authorization: `Bearer ${token}` }
-          })
-          const hostelData = hostelRes.data
-          setHostel(hostelData)
-        } catch (err) {
-          console.warn('Could not fetch hostel details:', err)
-        }
-      }
     } catch (err: unknown) {
       const errorMessage = err instanceof Error ? err.message : 'Failed to fetch application data'
       setError(errorMessage)
@@ -194,10 +213,11 @@ export default function ReviewApplicationPage() {
 
     // Update notification message when status changes
     if (field === 'status' && typeof value === 'string') {
+      const statusValue = value as 'approved' | 'rejected' | 'waitlisted' | 'under_review'
       setReviewForm(prev => ({
         ...prev,
-        [field]: value,
-        notificationMessage: getDefaultNotificationMessage(value)
+        [field]: statusValue,
+        notificationMessage: getDefaultNotificationMessage(statusValue)
       }))
     }
   }
@@ -238,27 +258,15 @@ export default function ReviewApplicationPage() {
       setError(null)
       setSuccess(null)
 
-      const token = safeLocalStorage.getItem('auth_token') || safeLocalStorage.getItem('student_token')
-      
-      if (!token) {
-        throw new Error('No authentication token found')
-      }
+      // Simulate API delay
+      await new Promise(resolve => setTimeout(resolve, 1000))
 
       // Validate required fields
       if (!reviewForm.status || !reviewForm.reviewNotes) {
         throw new Error('Please fill in all required fields')
       }
 
-      // Review application
-      const response = await apiClient.post(`/applications/${applicationId}/review`, {
-        status: reviewForm.status,
-        reviewNotes: reviewForm.reviewNotes,
-        sendNotification: reviewForm.sendNotification,
-        notificationMessage: reviewForm.notificationMessage
-      }, {
-        headers: { Authorization: `Bearer ${token}` }
-      })
-
+      // Simulate successful submission
       setSuccess('Application reviewed successfully!')
       
       // Redirect to application view after a short delay
@@ -483,7 +491,7 @@ export default function ReviewApplicationPage() {
                     </div>
                     <div>
                       <label className="block text-sm font-medium text-gray-700">Available Beds</label>
-                                              <p className="text-sm text-gray-900 mt-1">{hostel.availableBeds || 'N/A'} beds</p>
+                      <p className="text-sm text-gray-900 mt-1">{hostel.availableBeds || 'N/A'} beds</p>
                     </div>
                     <div>
                       <label className="block text-sm font-medium text-gray-700">Price per Semester</label>
