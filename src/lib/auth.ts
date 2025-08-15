@@ -1,4 +1,4 @@
-import { apiClient } from "./api";
+import { apiClient, fetchCsrfToken } from "./api";
 
 // Authentication types based on backend OpenAPI schema
 export interface LoginCredentials {
@@ -70,6 +70,9 @@ export const authService = {
   // Login admin user
   async login(credentials: LoginCredentials): Promise<LoginResponse> {
     try {
+      // Fetch CSRF token before login
+      await fetchCsrfToken();
+      
       const response = await apiClient.post<BackendAuthResponse>(
         "/auth/login",
         credentials
@@ -119,6 +122,9 @@ export const authService = {
     credentials: MatricLoginCredentials
   ): Promise<LoginResponse> {
     try {
+      // Fetch CSRF token before login
+      await fetchCsrfToken();
+      
       const response = await apiClient.post<BackendAuthResponse>(
         "/auth/login/matric",
         credentials

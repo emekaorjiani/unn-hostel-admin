@@ -44,6 +44,10 @@ fi
 print_status "Removing existing images..."
 docker rmi unn-hostel-admin_unn-hostel-admin 2>/dev/null || true
 
+# Build the application locally first
+print_status "Building the application locally..."
+npm run build
+
 # Build the Docker image
 print_status "Building Docker image..."
 docker-compose build --no-cache

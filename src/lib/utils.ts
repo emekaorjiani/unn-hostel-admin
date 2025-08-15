@@ -223,7 +223,13 @@ export function getSeverityColor(severity: string): string {
 }
 
 // Generate initials from name
-export function getInitials(firstName: string, lastName: string): string {
-  return `${firstName.charAt(0)}${lastName.charAt(0)}`.toUpperCase();
+export function getInitials(name: string): string {
+  const names = name.trim().split(' ');
+  if (names.length >= 2) {
+    return `${names[0].charAt(0)}${names[1].charAt(0)}`.toUpperCase();
+  } else if (names.length === 1) {
+    return names[0].charAt(0).toUpperCase();
+  }
+  return '';
 }
 

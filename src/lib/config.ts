@@ -6,7 +6,7 @@
 export const config = {
   // Backend API Configuration
   backend: {
-    baseUrl: process.env.BACKEND_API_URL || 'http://localhost:3033/api/v1',
+    baseUrl: process.env.NEXT_PUBLIC_BACKEND_API_URL || process.env.BACKEND_API_URL || 'http://localhost:8000/api',
     timeout: parseInt(process.env.API_TIMEOUT || '30000'),
     retryAttempts: parseInt(process.env.API_RETRY_ATTEMPTS || '3'),
   },
@@ -43,7 +43,7 @@ export const config = {
  */
 export function validateEnvironment(): void {
   const requiredVars = [
-    'BACKEND_API_URL',
+    'NEXT_PUBLIC_BACKEND_API_URL',
   ];
 
   const missingVars = requiredVars.filter(varName => !process.env[varName]);
@@ -56,21 +56,25 @@ export function validateEnvironment(): void {
 
 /**
  * Get environment-specific configuration
+ * Uses environment variables for backend URL across all environments
  */
 export function getEnvironmentConfig() {
+  // Use environment variable for backend URL across all environments
+  const backendUrl = process.env.NEXT_PUBLIC_BACKEND_API_URL || process.env.BACKEND_API_URL || 'http://localhost:8000/api';
+  
   return {
     development: {
-      backendUrl: 'http://localhost:3033/api/v1',
+      backendUrl,
       debugMode: true,
       logLevel: 'debug',
     },
     production: {
-      backendUrl: process.env.BACKEND_API_URL || 'https://api.unnhostelportal.com/api/v1',
+      backendUrl,
       debugMode: false,
       logLevel: 'error',
     },
     test: {
-      backendUrl: 'http://localhost:3033/api/v1',
+      backendUrl,
       debugMode: true,
       logLevel: 'debug',
     },

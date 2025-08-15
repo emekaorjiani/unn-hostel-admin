@@ -26,6 +26,7 @@ import DashboardLayout from '../../../../components/layout/dashboard-layout'
 import { apiClient } from '../../../../lib/api'
 import { safeLocalStorage } from '../../../../lib/utils'
 
+// Type definitions for application data structures
 interface Application {
   id: string
   studentId: string
@@ -49,6 +50,7 @@ interface Application {
   updatedAt: string
 }
 
+// Type definition for the review form data
 interface ReviewForm {
   status: 'approved' | 'rejected' | 'waitlisted' | 'under_review'
   reviewNotes: string
@@ -56,6 +58,7 @@ interface ReviewForm {
   notificationMessage: string
 }
 
+// Type definition for student information
 interface Student {
   id: string
   firstName: string
@@ -71,6 +74,7 @@ interface Student {
   isVerified: boolean
 }
 
+// Type definition for hostel information
 interface Hostel {
   id: string
   name: string
@@ -86,6 +90,7 @@ export default function ReviewApplicationPage() {
   const params = useParams()
   const applicationId = params.id as string
   
+  // State management for application data and UI
   const [application, setApplication] = useState<Application | null>(null)
   const [student, setStudent] = useState<Student | null>(null)
   const [hostel, setHostel] = useState<Hostel | null>(null)
@@ -94,7 +99,7 @@ export default function ReviewApplicationPage() {
   const [error, setError] = useState<string | null>(null)
   const [success, setSuccess] = useState<string | null>(null)
   
-  // Review form data
+  // Review form state with default values
   const [reviewForm, setReviewForm] = useState<ReviewForm>({
     status: 'under_review',
     reviewNotes: '',
@@ -102,7 +107,10 @@ export default function ReviewApplicationPage() {
     notificationMessage: ''
   })
 
-  // Fetch application data
+  /**
+   * Fetches application data and related information (student, hostel)
+   * Handles authentication and error states
+   */
   const fetchApplicationData = async () => {
     try {
       setError(null)
@@ -120,7 +128,7 @@ export default function ReviewApplicationPage() {
       const applicationData = applicationRes.data
       setApplication(applicationData)
 
-      // Set initial review form data
+      // Initialize review form with current application status
       setReviewForm(prev => ({
         ...prev,
         status: applicationData.status === 'submitted' ? 'under_review' : applicationData.status,
@@ -162,8 +170,12 @@ export default function ReviewApplicationPage() {
     }
   }
 
-  // Get default notification message based on status
-  const getDefaultNotificationMessage = (status: string) => {
+  /**
+   * Generates default notification messages based on application status
+   * @param status - The application status
+   * @returns Default notification message for the status
+   */
+  const getDefaultNotificationMessage = (status: string): string => {
     switch (status) {
       case 'approved':
         return 'Congratulations! Your hostel application has been approved. Please proceed with payment within 7 days to secure your accommodation.'
@@ -178,32 +190,41 @@ export default function ReviewApplicationPage() {
     }
   }
 
-  // Initial data fetch
+  // Fetch application data on component mount
   useEffect(() => {
     if (applicationId) {
       fetchApplicationData()
     }
   }, [applicationId])
 
-  // Handle form input changes
+  /**
+   * Handles form input changes and updates the review form state
+   * Automatically updates notification message when status changes
+   * @param field - The field to update
+   * @param value - The new value for the field
+   */
   const handleInputChange = (field: keyof ReviewForm, value: string | boolean) => {
-    setReviewForm(prev => ({
-      ...prev,
-      [field]: value
-    }))
-
-    // Update notification message when status changes
-    if (field === 'status' && typeof value === 'string') {
-      setReviewForm(prev => ({
+    setReviewForm(prev => {
+      const updatedForm = {
         ...prev,
-        [field]: value,
-        notificationMessage: getDefaultNotificationMessage(value)
-      }))
-    }
+        [field]: value
+      }
+
+      // Update notification message when status changes
+      if (field === 'status' && typeof value === 'string') {
+        updatedForm.notificationMessage = getDefaultNotificationMessage(value)
+      }
+
+      return updatedForm
+    })
   }
 
-  // Get status color
-  const getStatusColor = (status: string) => {
+  /**
+   * Returns the appropriate CSS classes for status badge colors
+   * @param status - The status to get color for
+   * @returns CSS classes for the status badge
+   */
+  const getStatusColor = (status: string): string => {
     switch (status) {
       case 'approved': return 'bg-green-100 text-green-800'
       case 'rejected': return 'bg-red-100 text-red-800'
@@ -217,7 +238,11 @@ export default function ReviewApplicationPage() {
     }
   }
 
-  // Get status icon
+  /**
+   * Returns the appropriate icon component for each status
+   * @param status - The status to get icon for
+   * @returns JSX element with the status icon
+   */
   const getStatusIcon = (status: string) => {
     switch (status) {
       case 'approved': return <CheckCircle className="h-4 w-4" />
@@ -229,7 +254,11 @@ export default function ReviewApplicationPage() {
     }
   }
 
-  // Submit review
+  /**
+   * Handles form submission for reviewing the application
+   * Validates required fields and submits the review
+   * @param e - Form submission event
+   */
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     
@@ -245,11 +274,11 @@ export default function ReviewApplicationPage() {
       }
 
       // Validate required fields
-      if (!reviewForm.status || !reviewForm.reviewNotes) {
+      if (!reviewForm.status || !reviewForm.reviewNotes.trim()) {
         throw new Error('Please fill in all required fields')
       }
 
-      // Review application
+      // Submit review to API
       const response = await apiClient.post(`/applications/${applicationId}/review`, {
         status: reviewForm.status,
         reviewNotes: reviewForm.reviewNotes,
@@ -274,7 +303,7 @@ export default function ReviewApplicationPage() {
     }
   }
 
-  // Loading state
+  // Loading state component
   if (loading) {
     return (
       <DashboardLayout>
@@ -288,7 +317,7 @@ export default function ReviewApplicationPage() {
     )
   }
 
-  // Error state
+  // Error state component
   if (error) {
     return (
       <DashboardLayout>
@@ -313,14 +342,14 @@ export default function ReviewApplicationPage() {
     )
   }
 
-  // Not found state
+  // Not found state component
   if (!application) {
     return (
       <DashboardLayout>
         <div className="text-center py-8">
           <FileText className="h-12 w-12 text-gray-400 mx-auto mb-4" />
           <h3 className="text-lg font-medium text-gray-900 mb-2">Application Not Found</h3>
-          <p className="text-gray-600">The application you're looking for doesn't exist.</p>
+          <p className="text-gray-600">The application you&apos;re looking for doesn&apos;t exist.</p>
           <Button 
             onClick={() => router.push('/applications')} 
             className="mt-4"
@@ -335,7 +364,7 @@ export default function ReviewApplicationPage() {
   return (
     <DashboardLayout>
       <div className="max-w-6xl mx-auto">
-        {/* Header */}
+        {/* Page Header */}
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center space-x-3">
             <Button
@@ -381,9 +410,9 @@ export default function ReviewApplicationPage() {
         )}
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Application Information */}
+          {/* Left Column - Application Information */}
           <div className="lg:col-span-2 space-y-6">
-            {/* Application Summary */}
+            {/* Application Summary Card */}
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center justify-between">
@@ -424,7 +453,7 @@ export default function ReviewApplicationPage() {
               </CardContent>
             </Card>
 
-            {/* Student Information */}
+            {/* Student Information Card */}
             {student && (
               <Card>
                 <CardHeader>
@@ -466,7 +495,7 @@ export default function ReviewApplicationPage() {
               </Card>
             )}
 
-            {/* Hostel Information */}
+            {/* Hostel Information Card */}
             {hostel && (
               <Card>
                 <CardHeader>
@@ -483,7 +512,7 @@ export default function ReviewApplicationPage() {
                     </div>
                     <div>
                       <label className="block text-sm font-medium text-gray-700">Available Beds</label>
-                                              <p className="text-sm text-gray-900 mt-1">{hostel.availableBeds || 'N/A'} beds</p>
+                      <p className="text-sm text-gray-900 mt-1">{hostel.availableBeds || 'N/A'} beds</p>
                     </div>
                     <div>
                       <label className="block text-sm font-medium text-gray-700">Price per Semester</label>
@@ -498,7 +527,7 @@ export default function ReviewApplicationPage() {
               </Card>
             )}
 
-            {/* Application Details */}
+            {/* Application Details Card */}
             <Card>
               <CardHeader>
                 <CardTitle>Application Details</CardTitle>
@@ -527,8 +556,9 @@ export default function ReviewApplicationPage() {
             </Card>
           </div>
 
-          {/* Review Form */}
+          {/* Right Column - Review Form */}
           <div className="space-y-6">
+            {/* Review Decision Form */}
             <Card>
               <CardHeader>
                 <CardTitle>Review Decision</CardTitle>
@@ -538,6 +568,7 @@ export default function ReviewApplicationPage() {
               </CardHeader>
               <CardContent>
                 <form onSubmit={handleSubmit} className="space-y-4">
+                  {/* Decision Dropdown */}
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
                       Decision *
@@ -555,6 +586,7 @@ export default function ReviewApplicationPage() {
                     </select>
                   </div>
 
+                  {/* Review Notes Textarea */}
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
                       Review Notes *
@@ -569,6 +601,7 @@ export default function ReviewApplicationPage() {
                     />
                   </div>
 
+                  {/* Notification Toggle */}
                   <div className="flex items-center space-x-3">
                     <input
                       type="checkbox"
@@ -579,6 +612,7 @@ export default function ReviewApplicationPage() {
                     <label className="text-sm text-gray-700">Send notification to student</label>
                   </div>
 
+                  {/* Notification Message Textarea */}
                   {reviewForm.sendNotification && (
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -594,6 +628,7 @@ export default function ReviewApplicationPage() {
                     </div>
                   )}
 
+                  {/* Form Action Buttons */}
                   <div className="flex space-x-3 pt-4">
                     <Button
                       type="button"
@@ -606,7 +641,7 @@ export default function ReviewApplicationPage() {
                     </Button>
                     <Button
                       type="submit"
-                      disabled={submitting || !reviewForm.status || !reviewForm.reviewNotes}
+                      disabled={submitting || !reviewForm.status || !reviewForm.reviewNotes.trim()}
                       className="flex-1 flex items-center space-x-2"
                     >
                       {submitting ? (
@@ -626,7 +661,7 @@ export default function ReviewApplicationPage() {
               </CardContent>
             </Card>
 
-            {/* Quick Actions */}
+            {/* Quick Actions Card */}
             <Card>
               <CardHeader>
                 <CardTitle>Quick Actions</CardTitle>
