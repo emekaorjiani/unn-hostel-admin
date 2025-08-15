@@ -71,6 +71,8 @@ import {
   Minus,
   Plus as PlusIcon,
   LogOut,
+  Flag,
+  Map,
 } from 'lucide-react'
 
 export default function StudentDashboardPage() {
@@ -85,18 +87,31 @@ export default function StudentDashboardPage() {
     firstName: 'John',
     lastName: 'Doe',
     email: 'john.doe@unn.edu.ng',
-    phone: '+234 801 234 5678',
-    department: 'Computer Science',
+    phoneNumber: '+234 801 234 5678',
+    faculty: 'Engineering',
+    department: 'Computer Engineering',
     level: '300',
-    gender: 'male',
+    gender: 'Male',
     dateOfBirth: '2000-01-15',
-    address: 'Room A101, Zik Hall, UNN Campus',
-    emergencyContact: {
-      name: 'Jane Doe',
-      relationship: 'Mother',
-      phone: '+234 802 345 6789',
-      email: 'jane.doe@email.com'
-    },
+    address: '123 Main Street, Nsukka, Enugu State',
+    stateOfOrigin: 'Enugu',
+    localGovernment: 'Nsukka',
+    tribe: 'Igbo',
+    religion: 'Christianity',
+    emergencyContact: 'Jane Doe',
+    emergencyPhone: '+234 802 345 6789',
+    isPWD: false,
+    pwdDetails: '',
+    isInternationalStudent: false,
+    nationality: 'Nigerian',
+    passportNumber: '',
+    ninNumber: '12345678901',
+    status: 'active',
+    isEmailVerified: true,
+    isPhoneVerified: false,
+    lastLoginAt: '2024-01-20T10:30:00Z',
+    createdAt: '2023-09-01T00:00:00Z',
+    updatedAt: '2024-01-20T10:30:00Z',
     academicInfo: {
       cgpa: 4.2,
       totalCredits: 72,
@@ -370,20 +385,20 @@ export default function StudentDashboardPage() {
                 <p className="text-green-100 text-lg mb-4">
                   Here's what's happening with your hostel accommodation
                 </p>
-                <div className="flex items-center space-x-6 text-sm">
-                  <div className="flex items-center space-x-2">
-                    <Building2 className="h-4 w-4" />
-                    <span>{student.hostelInfo.hostelName} - Room {student.hostelInfo.roomNumber}</span>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <GraduationCap className="h-4 w-4" />
-                    <span>{student.department} - Level {student.level}</span>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <User className="h-4 w-4" />
-                    <span>Matric: {student.matricNumber}</span>
-                  </div>
-                </div>
+                                 <div className="flex items-center space-x-6 text-sm">
+                   <div className="flex items-center space-x-2">
+                     <Building2 className="h-4 w-4" />
+                     <span>{student.hostelInfo.hostelName} - Room {student.hostelInfo.roomNumber}</span>
+                   </div>
+                   <div className="flex items-center space-x-2">
+                     <GraduationCap className="h-4 w-4" />
+                     <span>{student.faculty} - {student.department} - Level {student.level}</span>
+                   </div>
+                   <div className="flex items-center space-x-2">
+                     <User className="h-4 w-4" />
+                     <span>Matric: {student.matricNumber}</span>
+                   </div>
+                 </div>
               </div>
               <div className="hidden lg:block">
                 <div className="h-24 w-24 bg-white/20 rounded-full flex items-center justify-center">
@@ -578,42 +593,75 @@ export default function StudentDashboardPage() {
             </Card>
           </div>
 
-          {/* Hostel Information */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center">
-                <Home className="h-5 w-5 mr-2" />
-                Hostel Information
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                <div className="text-center p-4 bg-blue-50 rounded-lg">
-                  <Building2 className="h-8 w-8 text-blue-600 mx-auto mb-2" />
-                  <p className="text-lg font-semibold text-gray-900">{student.hostelInfo.hostelName}</p>
-                  <p className="text-sm text-gray-600">Current Hostel</p>
-                </div>
-                
-                <div className="text-center p-4 bg-green-50 rounded-lg">
-                  <Home className="h-8 w-8 text-green-600 mx-auto mb-2" />
-                  <p className="text-lg font-semibold text-gray-900">Room {student.hostelInfo.roomNumber}</p>
-                  <p className="text-sm text-gray-600">{student.hostelInfo.roomType} Room</p>
-                </div>
-                
-                <div className="text-center p-4 bg-purple-50 rounded-lg">
-                  <Calendar className="h-8 w-8 text-purple-600 mx-auto mb-2" />
-                  <p className="text-lg font-semibold text-gray-900">{formatDate(student.hostelInfo.checkInDate)}</p>
-                  <p className="text-sm text-gray-600">Check-in Date</p>
-                </div>
-                
-                <div className="text-center p-4 bg-orange-50 rounded-lg">
-                  <CreditCard className="h-8 w-8 text-orange-600 mx-auto mb-2" />
-                  <p className="text-lg font-semibold text-gray-900">{formatCurrency(student.hostelInfo.monthlyRent)}</p>
-                  <p className="text-sm text-gray-600">Monthly Rent</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+                     {/* Student Information */}
+           <Card>
+             <CardHeader>
+               <CardTitle className="flex items-center">
+                 <User className="h-5 w-5 mr-2" />
+                 Student Information
+               </CardTitle>
+             </CardHeader>
+             <CardContent>
+               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                 <div className="text-center p-4 bg-orange-50 rounded-lg">
+                   <GraduationCap className="h-8 w-8 text-orange-600 mx-auto mb-2" />
+                   <p className="text-lg font-semibold text-gray-900">{student.faculty}</p>
+                   <p className="text-sm text-gray-600">Faculty</p>
+                 </div>
+                 
+                 <div className="text-center p-4 bg-yellow-50 rounded-lg">
+                   <BookOpen className="h-8 w-8 text-yellow-600 mx-auto mb-2" />
+                   <p className="text-lg font-semibold text-gray-900">{student.department}</p>
+                   <p className="text-sm text-gray-600">Department</p>
+                 </div>
+                 
+                 <div className="text-center p-4 bg-blue-50 rounded-lg">
+                   <MapPin className="h-8 w-8 text-blue-600 mx-auto mb-2" />
+                   <p className="text-lg font-semibold text-gray-900">{student.stateOfOrigin}</p>
+                   <p className="text-sm text-gray-600">State of Origin</p>
+                 </div>
+                 
+                 <div className="text-center p-4 bg-purple-50 rounded-lg">
+                   <Map className="h-8 w-8 text-purple-600 mx-auto mb-2" />
+                   <p className="text-lg font-semibold text-gray-900">{student.nationality}</p>
+                   <p className="text-sm text-gray-600">Nationality</p>
+                 </div>
+               </div>
+             </CardContent>
+           </Card>
+
+           {/* Hostel Information */}
+           <Card>
+             <CardHeader>
+               <CardTitle className="flex items-center">
+                 <Home className="h-5 w-5 mr-2" />
+                 Hostel Information
+               </CardTitle>
+             </CardHeader>
+             <CardContent>
+               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                 <div className="text-center p-4 bg-green-50 rounded-lg">
+                   <p className="text-lg font-semibold text-gray-900">{student.hostelInfo.hostelName}</p>
+                   <p className="text-sm text-gray-600">Current Hostel</p>
+                 </div>
+                 
+                 <div className="text-center p-4 bg-green-50 rounded-lg">
+                   <p className="text-lg font-semibold text-gray-900">Room {student.hostelInfo.roomNumber}</p>
+                   <p className="text-sm text-gray-600">{student.hostelInfo.roomType} Room</p>
+                 </div>
+                 
+                 <div className="text-center p-4 bg-green-50 rounded-lg">
+                   <p className="text-lg font-semibold text-gray-900">{formatDate(student.hostelInfo.checkInDate)}</p>
+                   <p className="text-sm text-gray-600">Check-in Date</p>
+                 </div>
+                 
+                 <div className="text-center p-4 bg-green-50 rounded-lg">
+                   <p className="text-lg font-semibold text-gray-900">{formatCurrency(student.hostelInfo.monthlyRent)}</p>
+                   <p className="text-sm text-gray-600">Monthly Rent</p>
+                 </div>
+               </div>
+             </CardContent>
+           </Card>
         </div>
       </div>
     </div>

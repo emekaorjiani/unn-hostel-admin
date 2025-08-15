@@ -492,9 +492,9 @@ export default function NewApplicationPage() {
                       </div>
                     </div>
 
-                    <div className="bg-blue-50 rounded-lg p-4">
-                      <h4 className="font-medium text-blue-900 mb-2">Important Notes</h4>
-                      <ul className="text-sm text-blue-800 space-y-1">
+                    <div className="bg-green-50 rounded-lg p-4">
+                      <h4 className="font-medium text-green-900 mb-2">Important Notes</h4>
+                      <ul className="text-sm text-green-800 space-y-1">
                         <li>• Application review takes 3-5 business days</li>
                         <li>• Payment is required within 48 hours of approval</li>
                         <li>• Room allocation is based on availability</li>

@@ -24,7 +24,13 @@ import {
   EyeOff,
   CheckCircle,
   AlertCircle,
-  Info
+  Info,
+  BookOpen,
+  Flag,
+  Heart,
+  Wheelchair,
+  Passport,
+  CreditCard
 } from 'lucide-react'
 
 interface StudentProfile {
@@ -33,23 +39,31 @@ interface StudentProfile {
   firstName: string
   lastName: string
   email: string
-  phone: string
+  phoneNumber: string
+  faculty: string
   department: string
   level: string
-  gender: 'male' | 'female'
+  gender: 'Male' | 'Female'
   dateOfBirth: string
   address: string
-  emergencyContact: {
-    name: string
-    relationship: string
-    phone: string
-    email: string
-  }
-  hostelInfo: {
-    hostelName: string
-    roomNumber: string
-    block: string
-  }
+  stateOfOrigin: string
+  localGovernment: string
+  tribe: string
+  religion: string
+  emergencyContact: string
+  emergencyPhone: string
+  isPWD: boolean
+  pwdDetails?: string
+  isInternationalStudent: boolean
+  nationality: string
+  passportNumber?: string
+  ninNumber?: string
+  status: 'active' | 'inactive' | 'suspended' | 'pending_verification'
+  isEmailVerified: boolean
+  isPhoneVerified: boolean
+  lastLoginAt?: string
+  createdAt?: string
+  updatedAt?: string
 }
 
 interface NotificationSettings {
@@ -78,30 +92,38 @@ export default function StudentSettingsPage() {
   const [showPassword, setShowPassword] = useState(false)
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null)
 
-  // Mock student data
+  // Mock student data based on API schema
   const [student, setStudent] = useState<StudentProfile>({
     id: 'student-001',
     matricNumber: '2021/123456',
     firstName: 'John',
     lastName: 'Doe',
     email: 'john.doe@unn.edu.ng',
-    phone: '+234 801 234 5678',
-    department: 'Computer Science',
+    phoneNumber: '+234 801 234 5678',
+    faculty: 'Engineering',
+    department: 'Computer Engineering',
     level: '300',
-    gender: 'male',
+    gender: 'Male',
     dateOfBirth: '2000-01-15',
-    address: 'Room A101, Zik Hall, UNN Campus',
-    emergencyContact: {
-      name: 'Jane Doe',
-      relationship: 'Mother',
-      phone: '+234 802 345 6789',
-      email: 'jane.doe@email.com'
-    },
-    hostelInfo: {
-      hostelName: 'Zik Hall',
-      roomNumber: 'A101',
-      block: 'Block A'
-    }
+    address: '123 Main Street, Nsukka, Enugu State',
+    stateOfOrigin: 'Enugu',
+    localGovernment: 'Nsukka',
+    tribe: 'Igbo',
+    religion: 'Christianity',
+    emergencyContact: 'Jane Doe',
+    emergencyPhone: '+234 802 345 6789',
+    isPWD: false,
+    pwdDetails: '',
+    isInternationalStudent: false,
+    nationality: 'Nigerian',
+    passportNumber: '',
+    ninNumber: '12345678901',
+    status: 'active',
+    isEmailVerified: true,
+    isPhoneVerified: false,
+    lastLoginAt: '2024-01-20T10:30:00Z',
+    createdAt: '2023-09-01T00:00:00Z',
+    updatedAt: '2024-01-20T10:30:00Z'
   })
 
   const [notifications, setNotifications] = useState<NotificationSettings>({
@@ -245,6 +267,7 @@ export default function StudentSettingsPage() {
         {/* Profile Settings */}
         {activeTab === 'profile' && (
           <div className="space-y-6">
+            {/* Personal Information */}
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center">
@@ -280,10 +303,10 @@ export default function StudentSettingsPage() {
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Phone</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Phone Number</label>
                     <Input
-                      value={student.phone}
-                      onChange={(e) => setStudent(prev => ({ ...prev, phone: e.target.value }))}
+                      value={student.phoneNumber}
+                      onChange={(e) => setStudent(prev => ({ ...prev, phoneNumber: e.target.value }))}
                     />
                   </div>
                   <div>
@@ -298,11 +321,11 @@ export default function StudentSettingsPage() {
                     <label className="block text-sm font-medium text-gray-700 mb-2">Gender</label>
                     <select
                       value={student.gender}
-                      onChange={(e) => setStudent(prev => ({ ...prev, gender: e.target.value as 'male' | 'female' }))}
+                      onChange={(e) => setStudent(prev => ({ ...prev, gender: e.target.value as 'Male' | 'Female' }))}
                       className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
                     >
-                      <option value="male">Male</option>
-                      <option value="female">Female</option>
+                      <option value="Male">Male</option>
+                      <option value="Female">Female</option>
                     </select>
                   </div>
                 </div>
@@ -312,6 +335,38 @@ export default function StudentSettingsPage() {
                   <Input
                     value={student.address}
                     onChange={(e) => setStudent(prev => ({ ...prev, address: e.target.value }))}
+                  />
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">State of Origin</label>
+                    <Input
+                      value={student.stateOfOrigin}
+                      onChange={(e) => setStudent(prev => ({ ...prev, stateOfOrigin: e.target.value }))}
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Local Government</label>
+                    <Input
+                      value={student.localGovernment}
+                      onChange={(e) => setStudent(prev => ({ ...prev, localGovernment: e.target.value }))}
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Tribe</label>
+                    <Input
+                      value={student.tribe}
+                      onChange={(e) => setStudent(prev => ({ ...prev, tribe: e.target.value }))}
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Religion</label>
+                  <Input
+                    value={student.religion}
+                    onChange={(e) => setStudent(prev => ({ ...prev, religion: e.target.value }))}
                   />
                 </div>
 
@@ -335,9 +390,59 @@ export default function StudentSettingsPage() {
               </CardContent>
             </Card>
 
+            {/* Academic Information */}
             <Card>
               <CardHeader>
-                <CardTitle>Emergency Contact</CardTitle>
+                <CardTitle className="flex items-center">
+                  <GraduationCap className="h-5 w-5 mr-2" />
+                  Academic Information
+                </CardTitle>
+                <CardDescription>
+                  Your academic details and enrollment information
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Matric Number</label>
+                    <Input
+                      value={student.matricNumber}
+                      disabled
+                      className="bg-gray-50"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Faculty</label>
+                    <Input
+                      value={student.faculty}
+                      onChange={(e) => setStudent(prev => ({ ...prev, faculty: e.target.value }))}
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Department</label>
+                    <Input
+                      value={student.department}
+                      onChange={(e) => setStudent(prev => ({ ...prev, department: e.target.value }))}
+                    />
+                  </div>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Level</label>
+                  <Input
+                    value={student.level}
+                    onChange={(e) => setStudent(prev => ({ ...prev, level: e.target.value }))}
+                  />
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Emergency Contact */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center">
+                  <Phone className="h-5 w-5 mr-2" />
+                  Emergency Contact
+                </CardTitle>
                 <CardDescription>
                   Update your emergency contact information
                 </CardDescription>
@@ -347,44 +452,99 @@ export default function StudentSettingsPage() {
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">Contact Name</label>
                     <Input
-                      value={student.emergencyContact.name}
-                      onChange={(e) => setStudent(prev => ({
-                        ...prev,
-                        emergencyContact: { ...prev.emergencyContact, name: e.target.value }
-                      }))}
+                      value={student.emergencyContact}
+                      onChange={(e) => setStudent(prev => ({ ...prev, emergencyContact: e.target.value }))}
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Relationship</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Contact Phone</label>
                     <Input
-                      value={student.emergencyContact.relationship}
-                      onChange={(e) => setStudent(prev => ({
-                        ...prev,
-                        emergencyContact: { ...prev.emergencyContact, relationship: e.target.value }
-                      }))}
+                      value={student.emergencyPhone}
+                      onChange={(e) => setStudent(prev => ({ ...prev, emergencyPhone: e.target.value }))}
                     />
                   </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Additional Information */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center">
+                  <Info className="h-5 w-5 mr-2" />
+                  Additional Information
+                </CardTitle>
+                <CardDescription>
+                  Special requirements and additional details
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h4 className="font-medium text-gray-900">Person with Disability (PWD)</h4>
+                      <p className="text-sm text-gray-600">Do you have any special requirements?</p>
+                    </div>
+                    <input
+                      type="checkbox"
+                      checked={student.isPWD}
+                      onChange={(e) => setStudent(prev => ({ ...prev, isPWD: e.target.checked }))}
+                      className="h-4 w-4 text-green-600 focus:ring-green-500 border-gray-300 rounded"
+                    />
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h4 className="font-medium text-gray-900">International Student</h4>
+                      <p className="text-sm text-gray-600">Are you an international student?</p>
+                    </div>
+                    <input
+                      type="checkbox"
+                      checked={student.isInternationalStudent}
+                      onChange={(e) => setStudent(prev => ({ ...prev, isInternationalStudent: e.target.checked }))}
+                      className="h-4 w-4 text-green-600 focus:ring-green-500 border-gray-300 rounded"
+                    />
+                  </div>
+                </div>
+
+                {student.isPWD && (
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Phone</label>
-                    <Input
-                      value={student.emergencyContact.phone}
-                      onChange={(e) => setStudent(prev => ({
-                        ...prev,
-                        emergencyContact: { ...prev.emergencyContact, phone: e.target.value }
-                      }))}
+                    <label className="block text-sm font-medium text-gray-700 mb-2">PWD Details</label>
+                    <textarea
+                      value={student.pwdDetails || ''}
+                      onChange={(e) => setStudent(prev => ({ ...prev, pwdDetails: e.target.value }))}
+                      rows={3}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                      placeholder="Please describe any special requirements or accommodations needed..."
                     />
                   </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Email</label>
-                    <Input
-                      type="email"
-                      value={student.emergencyContact.email}
-                      onChange={(e) => setStudent(prev => ({
-                        ...prev,
-                        emergencyContact: { ...prev.emergencyContact, email: e.target.value }
-                      }))}
-                    />
+                )}
+
+                {student.isInternationalStudent && (
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">Nationality</label>
+                      <Input
+                        value={student.nationality}
+                        onChange={(e) => setStudent(prev => ({ ...prev, nationality: e.target.value }))}
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">Passport Number</label>
+                      <Input
+                        value={student.passportNumber || ''}
+                        onChange={(e) => setStudent(prev => ({ ...prev, passportNumber: e.target.value }))}
+                      />
+                    </div>
                   </div>
+                )}
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">NIN Number</label>
+                  <Input
+                    value={student.ninNumber || ''}
+                    onChange={(e) => setStudent(prev => ({ ...prev, ninNumber: e.target.value }))}
+                    placeholder="National Identification Number"
+                  />
                 </div>
               </CardContent>
             </Card>
@@ -701,6 +861,11 @@ export default function StudentSettingsPage() {
                     </div>
                     <div className="flex items-center space-x-2">
                       <Building2 className="h-4 w-4 text-gray-400" />
+                      <span className="text-sm text-gray-600">Faculty:</span>
+                      <span className="font-medium">{student.faculty}</span>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <BookOpen className="h-4 w-4 text-gray-400" />
                       <span className="text-sm text-gray-600">Department:</span>
                       <span className="font-medium">{student.department}</span>
                     </div>
@@ -712,19 +877,26 @@ export default function StudentSettingsPage() {
                   </div>
                   <div className="space-y-3">
                     <div className="flex items-center space-x-2">
-                      <Building2 className="h-4 w-4 text-gray-400" />
-                      <span className="text-sm text-gray-600">Hostel:</span>
-                      <span className="font-medium">{student.hostelInfo.hostelName}</span>
+                      <Flag className="h-4 w-4 text-gray-400" />
+                      <span className="text-sm text-gray-600">Nationality:</span>
+                      <span className="font-medium">{student.nationality}</span>
                     </div>
                     <div className="flex items-center space-x-2">
                       <MapPin className="h-4 w-4 text-gray-400" />
-                      <span className="text-sm text-gray-600">Room:</span>
-                      <span className="font-medium">{student.hostelInfo.roomNumber}</span>
+                      <span className="text-sm text-gray-600">State:</span>
+                      <span className="font-medium">{student.stateOfOrigin}</span>
                     </div>
                     <div className="flex items-center space-x-2">
                       <CheckCircle className="h-4 w-4 text-green-400" />
                       <span className="text-sm text-gray-600">Status:</span>
-                      <Badge className="bg-green-100 text-green-800">Active</Badge>
+                      <Badge className="bg-green-100 text-green-800 capitalize">{student.status}</Badge>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <CreditCard className="h-4 w-4 text-gray-400" />
+                      <span className="text-sm text-gray-600">Email Verified:</span>
+                      <Badge className={student.isEmailVerified ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"}>
+                        {student.isEmailVerified ? 'Yes' : 'No'}
+                      </Badge>
                     </div>
                   </div>
                 </div>

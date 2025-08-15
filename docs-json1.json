@@ -17,15 +17,16 @@
         },
         "/api/v1/health": {
             "get": {
-                "operationId": "AppController_getHealth",
+                "operationId": "HealthController_check",
                 "parameters": [],
                 "responses": {
                     "200": {
-                        "description": ""
+                        "description": "Application is healthy"
                     }
                 },
+                "summary": "Health check endpoint",
                 "tags": [
-                    "App"
+                    "Health"
                 ]
             }
         },
@@ -1880,6 +1881,28 @@
             }
         },
         "/api/v1/room-selection/selections": {
+            "get": {
+                "description": "Retrieve all room selections for the authenticated student",
+                "operationId": "RoomSelectionController_getUserRoomSelections",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": "Room selections retrieved successfully"
+                    },
+                    "403": {
+                        "description": "Access denied - only students can access their selections"
+                    }
+                },
+                "security": [
+                    {
+                        "JWT-auth": []
+                    }
+                ],
+                "summary": "Get all room selections for current user",
+                "tags": [
+                    "Room Selection"
+                ]
+            },
             "post": {
                 "description": "Create a new room selection for a student",
                 "operationId": "RoomSelectionController_createRoomSelection",
@@ -2231,6 +2254,490 @@
                 "summary": "Get session queue status",
                 "tags": [
                     "Room Selection"
+                ]
+            }
+        },
+        "/api/v1/allocation/run": {
+            "post": {
+                "operationId": "AllocationController_runAllocation",
+                "parameters": [],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/RunAllocationDto"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Allocation completed successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean"
+                                        },
+                                        "allocatedCount": {
+                                            "type": "number"
+                                        },
+                                        "waitlistedCount": {
+                                            "type": "number"
+                                        },
+                                        "failedCount": {
+                                            "type": "number"
+                                        },
+                                        "details": {
+                                            "type": "object",
+                                            "properties": {
+                                                "allocated": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "string"
+                                                    }
+                                                },
+                                                "waitlisted": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "string"
+                                                    }
+                                                },
+                                                "failed": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "string"
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "JWT-auth": []
+                    }
+                ],
+                "summary": "Run automatic allocation with specified rules",
+                "tags": [
+                    "Allocation"
+                ]
+            }
+        },
+        "/api/v1/allocation/run/first-come-first-serve": {
+            "post": {
+                "operationId": "AllocationController_runFirstComeFirstServe",
+                "parameters": [
+                    {
+                        "name": "academicYear",
+                        "required": true,
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "semester",
+                        "required": true,
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "maxAllocations",
+                        "required": true,
+                        "in": "query",
+                        "schema": {
+                            "type": "number"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "First come first serve allocation completed"
+                    }
+                },
+                "security": [
+                    {
+                        "JWT-auth": []
+                    }
+                ],
+                "summary": "Run first come first serve allocation",
+                "tags": [
+                    "Allocation"
+                ]
+            }
+        },
+        "/api/v1/allocation/run/merit-based": {
+            "post": {
+                "operationId": "AllocationController_runMeritBased",
+                "parameters": [
+                    {
+                        "name": "academicYear",
+                        "required": true,
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "semester",
+                        "required": true,
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "maxAllocations",
+                        "required": true,
+                        "in": "query",
+                        "schema": {
+                            "type": "number"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Merit-based allocation completed"
+                    }
+                },
+                "security": [
+                    {
+                        "JWT-auth": []
+                    }
+                ],
+                "summary": "Run merit-based allocation",
+                "tags": [
+                    "Allocation"
+                ]
+            }
+        },
+        "/api/v1/allocation/run/priority-based": {
+            "post": {
+                "operationId": "AllocationController_runPriorityBased",
+                "parameters": [
+                    {
+                        "name": "academicYear",
+                        "required": true,
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "semester",
+                        "required": true,
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "maxAllocations",
+                        "required": true,
+                        "in": "query",
+                        "schema": {
+                            "type": "number"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Priority-based allocation completed"
+                    }
+                },
+                "security": [
+                    {
+                        "JWT-auth": []
+                    }
+                ],
+                "summary": "Run priority-based allocation",
+                "tags": [
+                    "Allocation"
+                ]
+            }
+        },
+        "/api/v1/allocation/run/lottery": {
+            "post": {
+                "operationId": "AllocationController_runLottery",
+                "parameters": [
+                    {
+                        "name": "academicYear",
+                        "required": true,
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "semester",
+                        "required": true,
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "maxAllocations",
+                        "required": true,
+                        "in": "query",
+                        "schema": {
+                            "type": "number"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Lottery-based allocation completed"
+                    }
+                },
+                "security": [
+                    {
+                        "JWT-auth": []
+                    }
+                ],
+                "summary": "Run lottery-based allocation",
+                "tags": [
+                    "Allocation"
+                ]
+            }
+        },
+        "/api/v1/allocation/run/preference-based": {
+            "post": {
+                "operationId": "AllocationController_runPreferenceBased",
+                "parameters": [
+                    {
+                        "name": "academicYear",
+                        "required": true,
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "semester",
+                        "required": true,
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "maxAllocations",
+                        "required": true,
+                        "in": "query",
+                        "schema": {
+                            "type": "number"
+                        }
+                    },
+                    {
+                        "name": "preferenceWeight",
+                        "required": true,
+                        "in": "query",
+                        "schema": {
+                            "type": "number"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Preference-based allocation completed"
+                    }
+                },
+                "security": [
+                    {
+                        "JWT-auth": []
+                    }
+                ],
+                "summary": "Run preference-based allocation",
+                "tags": [
+                    "Allocation"
+                ]
+            }
+        },
+        "/api/v1/allocation/process-waitlist": {
+            "post": {
+                "operationId": "AllocationController_processWaitlist",
+                "parameters": [
+                    {
+                        "name": "academicYear",
+                        "required": true,
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "semester",
+                        "required": true,
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Waitlist processing completed"
+                    }
+                },
+                "security": [
+                    {
+                        "JWT-auth": []
+                    }
+                ],
+                "summary": "Process waitlist applications",
+                "tags": [
+                    "Allocation"
+                ]
+            }
+        },
+        "/api/v1/allocation/stats": {
+            "get": {
+                "operationId": "AllocationController_getAllocationStats",
+                "parameters": [
+                    {
+                        "name": "academicYear",
+                        "required": true,
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "semester",
+                        "required": true,
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Allocation statistics retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/AllocationStatsResponse"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "JWT-auth": []
+                    }
+                ],
+                "summary": "Get allocation statistics",
+                "tags": [
+                    "Allocation"
+                ]
+            }
+        },
+        "/api/v1/allocation/rules": {
+            "get": {
+                "operationId": "AllocationController_getAvailableRules",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": "Available allocation rules",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "rules": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "value": {
+                                                        "type": "string"
+                                                    },
+                                                    "label": {
+                                                        "type": "string"
+                                                    },
+                                                    "description": {
+                                                        "type": "string"
+                                                    }
+                                                }
+                                            }
+                                        },
+                                        "priorityGroups": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "value": {
+                                                        "type": "string"
+                                                    },
+                                                    "label": {
+                                                        "type": "string"
+                                                    },
+                                                    "description": {
+                                                        "type": "string"
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "JWT-auth": []
+                    }
+                ],
+                "summary": "Get available allocation rules",
+                "tags": [
+                    "Allocation"
+                ]
+            }
+        },
+        "/api/v1/allocation/presets": {
+            "get": {
+                "operationId": "AllocationController_getAllocationPresets",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": "Allocation presets retrieved successfully"
+                    }
+                },
+                "security": [
+                    {
+                        "JWT-auth": []
+                    }
+                ],
+                "summary": "Get quick allocation presets",
+                "tags": [
+                    "Allocation"
                 ]
             }
         },
@@ -2790,13 +3297,20 @@
                 "operationId": "ReportsController_getDashboardOverview",
                 "parameters": [
                     {
+                        "name": "period",
+                        "required": false,
+                        "in": "query",
+                        "description": "Time period for metrics",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
                         "name": "startDate",
                         "required": false,
                         "in": "query",
-                        "description": "Start date for filtering (ISO 8601 format)",
+                        "description": "Start date for filtering",
                         "schema": {
-                            "format": "date-time",
-                            "example": "2024-01-01T00:00:00Z",
                             "type": "string"
                         }
                     },
@@ -2804,10 +3318,8 @@
                         "name": "endDate",
                         "required": false,
                         "in": "query",
-                        "description": "End date for filtering (ISO 8601 format)",
+                        "description": "End date for filtering",
                         "schema": {
-                            "format": "date-time",
-                            "example": "2024-12-31T23:59:59Z",
                             "type": "string"
                         }
                     },
@@ -2815,9 +3327,17 @@
                         "name": "hostelId",
                         "required": false,
                         "in": "query",
-                        "description": "Hostel ID to filter by",
+                        "description": "Hostel ID filter",
                         "schema": {
-                            "example": "123e4567-e89b-12d3-a456-426614174000",
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "faculty",
+                        "required": false,
+                        "in": "query",
+                        "description": "Faculty filter",
+                        "schema": {
                             "type": "string"
                         }
                     },
@@ -2825,36 +3345,15 @@
                         "name": "academicYear",
                         "required": false,
                         "in": "query",
-                        "description": "Academic year to filter by",
+                        "description": "Academic year filter",
                         "schema": {
-                            "example": "2024/2025",
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "name": "semester",
-                        "required": false,
-                        "in": "query",
-                        "description": "Semester to filter by",
-                        "schema": {
-                            "example": "first",
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "name": "status",
-                        "required": false,
-                        "in": "query",
-                        "description": "Status to filter by",
-                        "schema": {
-                            "example": "approved",
                             "type": "string"
                         }
                     }
                 ],
                 "responses": {
                     "200": {
-                        "description": "Dashboard data retrieved successfully",
+                        "description": "Dashboard overview retrieved successfully",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -2869,7 +3368,27 @@
                         "JWT-auth": []
                     }
                 ],
-                "summary": "Get dashboard overview",
+                "summary": "Get comprehensive dashboard overview",
+                "tags": [
+                    "Reports"
+                ]
+            }
+        },
+        "/api/v1/reports/test-data": {
+            "get": {
+                "operationId": "ReportsController_testDatabaseData",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "security": [
+                    {
+                        "JWT-auth": []
+                    }
+                ],
+                "summary": "Test endpoint to check database data",
                 "tags": [
                     "Reports"
                 ]
@@ -3892,6 +4411,26 @@
                 ]
             }
         },
+        "/api/v1/hostels/stats/overview-aggregated": {
+            "get": {
+                "operationId": "HostelsController_getHostelOverviewStats",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": "Overview statistics retrieved successfully"
+                    }
+                },
+                "security": [
+                    {
+                        "JWT-auth": []
+                    }
+                ],
+                "summary": "Get aggregated hostel overview statistics",
+                "tags": [
+                    "Hostels"
+                ]
+            }
+        },
         "/api/v1/hostels/beds/available": {
             "get": {
                 "operationId": "HostelsController_getAvailableBeds",
@@ -4904,6 +5443,594 @@
                 "summary": "Get maintenance statistics",
                 "tags": [
                     "Security"
+                ]
+            }
+        },
+        "/api/v1/students": {
+            "post": {
+                "operationId": "StudentsController_createStudent",
+                "parameters": [],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CreateStudentDto"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Student created successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/StudentResponseDto"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid input data"
+                    },
+                    "409": {
+                        "description": "Student already exists"
+                    }
+                },
+                "security": [
+                    {
+                        "JWT-auth": []
+                    }
+                ],
+                "summary": "Create a new student",
+                "tags": [
+                    "Students Management"
+                ]
+            },
+            "get": {
+                "operationId": "StudentsController_getAllStudents",
+                "parameters": [
+                    {
+                        "name": "faculty",
+                        "required": false,
+                        "in": "query",
+                        "description": "Filter by faculty",
+                        "schema": {
+                            "example": "Engineering",
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "department",
+                        "required": false,
+                        "in": "query",
+                        "description": "Filter by department",
+                        "schema": {
+                            "example": "Computer Engineering",
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "level",
+                        "required": false,
+                        "in": "query",
+                        "description": "Filter by level",
+                        "schema": {
+                            "example": "300",
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "status",
+                        "required": false,
+                        "in": "query",
+                        "description": "Filter by status",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "active",
+                                "inactive",
+                                "suspended",
+                                "pending_verification"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "search",
+                        "required": false,
+                        "in": "query",
+                        "description": "Search by name or matric number",
+                        "schema": {
+                            "example": "John",
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "required": false,
+                        "in": "query",
+                        "description": "Page number",
+                        "schema": {
+                            "example": 1,
+                            "type": "number"
+                        }
+                    },
+                    {
+                        "name": "limit",
+                        "required": false,
+                        "in": "query",
+                        "description": "Items per page",
+                        "schema": {
+                            "example": 10,
+                            "type": "number"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Students retrieved successfully"
+                    }
+                },
+                "security": [
+                    {
+                        "JWT-auth": []
+                    }
+                ],
+                "summary": "Get all students with filtering and pagination",
+                "tags": [
+                    "Students Management"
+                ]
+            }
+        },
+        "/api/v1/students/{id}": {
+            "get": {
+                "operationId": "StudentsController_getStudentById",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Student retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/StudentResponseDto"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Student not found"
+                    }
+                },
+                "security": [
+                    {
+                        "JWT-auth": []
+                    }
+                ],
+                "summary": "Get student by ID",
+                "tags": [
+                    "Students Management"
+                ]
+            },
+            "put": {
+                "operationId": "StudentsController_updateStudent",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateStudentDto"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Student updated successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/StudentResponseDto"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Student not found"
+                    },
+                    "409": {
+                        "description": "Email already exists"
+                    }
+                },
+                "security": [
+                    {
+                        "JWT-auth": []
+                    }
+                ],
+                "summary": "Update student information",
+                "tags": [
+                    "Students Management"
+                ]
+            },
+            "delete": {
+                "operationId": "StudentsController_deleteStudent",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Student deleted successfully"
+                    },
+                    "404": {
+                        "description": "Student not found"
+                    }
+                },
+                "security": [
+                    {
+                        "JWT-auth": []
+                    }
+                ],
+                "summary": "Delete student (soft delete)",
+                "tags": [
+                    "Students Management"
+                ]
+            }
+        },
+        "/api/v1/students/matric/{matricNumber}": {
+            "get": {
+                "operationId": "StudentsController_getStudentByMatricNumber",
+                "parameters": [
+                    {
+                        "name": "matricNumber",
+                        "required": true,
+                        "in": "path",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Student retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/StudentResponseDto"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Student not found"
+                    }
+                },
+                "security": [
+                    {
+                        "JWT-auth": []
+                    }
+                ],
+                "summary": "Get student by matric number",
+                "tags": [
+                    "Students Management"
+                ]
+            }
+        },
+        "/api/v1/students/bulk": {
+            "post": {
+                "operationId": "StudentsController_bulkStudentOperation",
+                "parameters": [],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/BulkStudentOperationDto"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Bulk operation completed"
+                    }
+                },
+                "security": [
+                    {
+                        "JWT-auth": []
+                    }
+                ],
+                "summary": "Perform bulk operations on students",
+                "tags": [
+                    "Students Management"
+                ]
+            }
+        },
+        "/api/v1/students/stats/overview": {
+            "get": {
+                "operationId": "StudentsController_getStudentStats",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": "Student statistics retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/StudentStatsDto"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "JWT-auth": []
+                    }
+                ],
+                "summary": "Get student statistics overview",
+                "tags": [
+                    "Students Management"
+                ]
+            }
+        },
+        "/api/v1/students/faculties/list": {
+            "get": {
+                "operationId": "StudentsController_getFaculties",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": "Faculties list retrieved successfully"
+                    }
+                },
+                "security": [
+                    {
+                        "JWT-auth": []
+                    }
+                ],
+                "summary": "Get list of all faculties",
+                "tags": [
+                    "Students Management"
+                ]
+            }
+        },
+        "/api/v1/students/departments/list": {
+            "get": {
+                "operationId": "StudentsController_getDepartments",
+                "parameters": [
+                    {
+                        "name": "faculty",
+                        "required": false,
+                        "in": "query",
+                        "description": "Filter departments by faculty",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Departments list retrieved successfully"
+                    }
+                },
+                "security": [
+                    {
+                        "JWT-auth": []
+                    }
+                ],
+                "summary": "Get list of departments",
+                "tags": [
+                    "Students Management"
+                ]
+            }
+        },
+        "/api/v1/students/levels/list": {
+            "get": {
+                "operationId": "StudentsController_getLevels",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": "Levels list retrieved successfully"
+                    }
+                },
+                "security": [
+                    {
+                        "JWT-auth": []
+                    }
+                ],
+                "summary": "Get list of all levels",
+                "tags": [
+                    "Students Management"
+                ]
+            }
+        },
+        "/api/v1/students/export/csv": {
+            "get": {
+                "operationId": "StudentsController_exportStudents",
+                "parameters": [
+                    {
+                        "name": "faculty",
+                        "required": false,
+                        "in": "query",
+                        "description": "Filter by faculty",
+                        "schema": {
+                            "example": "Engineering",
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "department",
+                        "required": false,
+                        "in": "query",
+                        "description": "Filter by department",
+                        "schema": {
+                            "example": "Computer Engineering",
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "level",
+                        "required": false,
+                        "in": "query",
+                        "description": "Filter by level",
+                        "schema": {
+                            "example": "300",
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "status",
+                        "required": false,
+                        "in": "query",
+                        "description": "Filter by status",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "active",
+                                "inactive",
+                                "suspended",
+                                "pending_verification"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "search",
+                        "required": false,
+                        "in": "query",
+                        "description": "Search by name or matric number",
+                        "schema": {
+                            "example": "John",
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "required": false,
+                        "in": "query",
+                        "description": "Page number",
+                        "schema": {
+                            "example": 1,
+                            "type": "number"
+                        }
+                    },
+                    {
+                        "name": "limit",
+                        "required": false,
+                        "in": "query",
+                        "description": "Items per page",
+                        "schema": {
+                            "example": 10,
+                            "type": "number"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Students data exported successfully"
+                    }
+                },
+                "security": [
+                    {
+                        "JWT-auth": []
+                    }
+                ],
+                "summary": "Export students data to CSV",
+                "tags": [
+                    "Students Management"
+                ]
+            }
+        },
+        "/api/v1/students/import/csv": {
+            "post": {
+                "operationId": "StudentsController_importStudents",
+                "parameters": [],
+                "responses": {
+                    "201": {
+                        "description": "Students data imported successfully"
+                    }
+                },
+                "security": [
+                    {
+                        "JWT-auth": []
+                    }
+                ],
+                "summary": "Import students data from CSV",
+                "tags": [
+                    "Students Management"
+                ]
+            }
+        },
+        "/api/v1/students/dashboard/overview": {
+            "get": {
+                "operationId": "StudentsController_getStudentDashboard",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": "Student dashboard data retrieved successfully"
+                    }
+                },
+                "security": [
+                    {
+                        "JWT-auth": []
+                    }
+                ],
+                "summary": "Get student dashboard overview",
+                "tags": [
+                    "Students Management"
+                ]
+            }
+        },
+        "/api/v1/students/search/quick": {
+            "get": {
+                "operationId": "StudentsController_quickSearch",
+                "parameters": [
+                    {
+                        "name": "q",
+                        "required": true,
+                        "in": "query",
+                        "description": "Search query",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Search results retrieved successfully"
+                    }
+                },
+                "security": [
+                    {
+                        "JWT-auth": []
+                    }
+                ],
+                "summary": "Quick search students by name or matric number",
+                "tags": [
+                    "Students Management"
                 ]
             }
         }
@@ -6009,6 +7136,14 @@
                     }
                 }
             },
+            "RunAllocationDto": {
+                "type": "object",
+                "properties": {}
+            },
+            "AllocationStatsResponse": {
+                "type": "object",
+                "properties": {}
+            },
             "OccupancyReportDto": {
                 "type": "object",
                 "properties": {
@@ -6885,6 +8020,575 @@
                 "required": [
                     "reference",
                     "amount"
+                ]
+            },
+            "CreateStudentDto": {
+                "type": "object",
+                "properties": {
+                    "firstName": {
+                        "type": "string",
+                        "description": "Student first name",
+                        "example": "John"
+                    },
+                    "lastName": {
+                        "type": "string",
+                        "description": "Student last name",
+                        "example": "Doe"
+                    },
+                    "email": {
+                        "type": "string",
+                        "description": "Student email address",
+                        "example": "john.doe@unn.edu.ng"
+                    },
+                    "matricNumber": {
+                        "type": "string",
+                        "description": "Student matric number",
+                        "example": "2021/123456"
+                    },
+                    "phoneNumber": {
+                        "type": "string",
+                        "description": "Student phone number",
+                        "example": "+2348012345678"
+                    },
+                    "faculty": {
+                        "type": "string",
+                        "description": "Student faculty",
+                        "example": "Engineering"
+                    },
+                    "department": {
+                        "type": "string",
+                        "description": "Student department",
+                        "example": "Computer Engineering"
+                    },
+                    "level": {
+                        "type": "string",
+                        "description": "Student level",
+                        "example": "300"
+                    },
+                    "gender": {
+                        "type": "string",
+                        "description": "Student gender",
+                        "example": "Male"
+                    },
+                    "dateOfBirth": {
+                        "type": "string",
+                        "description": "Student date of birth",
+                        "example": "2000-01-01"
+                    },
+                    "address": {
+                        "type": "string",
+                        "description": "Student address",
+                        "example": "123 Main Street, Nsukka"
+                    },
+                    "stateOfOrigin": {
+                        "type": "string",
+                        "description": "Student state of origin",
+                        "example": "Enugu"
+                    },
+                    "localGovernment": {
+                        "type": "string",
+                        "description": "Student local government",
+                        "example": "Nsukka"
+                    },
+                    "tribe": {
+                        "type": "string",
+                        "description": "Student tribe",
+                        "example": "Igbo"
+                    },
+                    "religion": {
+                        "type": "string",
+                        "description": "Student religion",
+                        "example": "Christianity"
+                    },
+                    "emergencyContact": {
+                        "type": "string",
+                        "description": "Emergency contact name",
+                        "example": "Jane Doe"
+                    },
+                    "emergencyPhone": {
+                        "type": "string",
+                        "description": "Emergency contact phone",
+                        "example": "+2348012345679"
+                    },
+                    "isPWD": {
+                        "type": "boolean",
+                        "description": "Whether student is a person with disability",
+                        "example": false
+                    },
+                    "pwdDetails": {
+                        "type": "string",
+                        "description": "PWD details if applicable",
+                        "example": "Uses wheelchair"
+                    },
+                    "isInternationalStudent": {
+                        "type": "boolean",
+                        "description": "Whether student is international",
+                        "example": false
+                    },
+                    "nationality": {
+                        "type": "string",
+                        "description": "Student nationality",
+                        "example": "Nigerian"
+                    },
+                    "passportNumber": {
+                        "type": "string",
+                        "description": "Student passport number",
+                        "example": "A12345678"
+                    },
+                    "ninNumber": {
+                        "type": "string",
+                        "description": "Student NIN number",
+                        "example": "12345678901"
+                    },
+                    "password": {
+                        "type": "string",
+                        "description": "Initial password for student",
+                        "example": "password123"
+                    }
+                },
+                "required": [
+                    "firstName",
+                    "lastName",
+                    "email",
+                    "matricNumber",
+                    "phoneNumber",
+                    "faculty",
+                    "department",
+                    "level",
+                    "gender",
+                    "dateOfBirth",
+                    "address",
+                    "stateOfOrigin",
+                    "localGovernment",
+                    "tribe",
+                    "religion",
+                    "emergencyContact",
+                    "emergencyPhone",
+                    "isPWD",
+                    "isInternationalStudent",
+                    "nationality",
+                    "password"
+                ]
+            },
+            "StudentResponseDto": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "description": "Student ID",
+                        "example": "uuid"
+                    },
+                    "firstName": {
+                        "type": "string",
+                        "description": "Student first name",
+                        "example": "John"
+                    },
+                    "lastName": {
+                        "type": "string",
+                        "description": "Student last name",
+                        "example": "Doe"
+                    },
+                    "email": {
+                        "type": "string",
+                        "description": "Student email",
+                        "example": "john.doe@unn.edu.ng"
+                    },
+                    "matricNumber": {
+                        "type": "string",
+                        "description": "Student matric number",
+                        "example": "2021/123456"
+                    },
+                    "phoneNumber": {
+                        "type": "string",
+                        "description": "Student phone number",
+                        "example": "+2348012345678"
+                    },
+                    "faculty": {
+                        "type": "string",
+                        "description": "Student faculty",
+                        "example": "Engineering"
+                    },
+                    "department": {
+                        "type": "string",
+                        "description": "Student department",
+                        "example": "Computer Engineering"
+                    },
+                    "level": {
+                        "type": "string",
+                        "description": "Student level",
+                        "example": "300"
+                    },
+                    "gender": {
+                        "type": "string",
+                        "description": "Student gender",
+                        "example": "Male"
+                    },
+                    "dateOfBirth": {
+                        "type": "string",
+                        "description": "Student date of birth",
+                        "example": "2000-01-01"
+                    },
+                    "address": {
+                        "type": "string",
+                        "description": "Student address",
+                        "example": "123 Main Street, Nsukka"
+                    },
+                    "stateOfOrigin": {
+                        "type": "string",
+                        "description": "Student state of origin",
+                        "example": "Enugu"
+                    },
+                    "localGovernment": {
+                        "type": "string",
+                        "description": "Student local government",
+                        "example": "Nsukka"
+                    },
+                    "tribe": {
+                        "type": "string",
+                        "description": "Student tribe",
+                        "example": "Igbo"
+                    },
+                    "religion": {
+                        "type": "string",
+                        "description": "Student religion",
+                        "example": "Christianity"
+                    },
+                    "emergencyContact": {
+                        "type": "string",
+                        "description": "Emergency contact name",
+                        "example": "Jane Doe"
+                    },
+                    "emergencyPhone": {
+                        "type": "string",
+                        "description": "Emergency contact phone",
+                        "example": "+2348012345679"
+                    },
+                    "isPWD": {
+                        "type": "boolean",
+                        "description": "Whether student is PWD",
+                        "example": false
+                    },
+                    "pwdDetails": {
+                        "type": "string",
+                        "description": "PWD details",
+                        "example": "Uses wheelchair"
+                    },
+                    "isInternationalStudent": {
+                        "type": "boolean",
+                        "description": "Whether student is international",
+                        "example": false
+                    },
+                    "nationality": {
+                        "type": "string",
+                        "description": "Student nationality",
+                        "example": "Nigerian"
+                    },
+                    "passportNumber": {
+                        "type": "string",
+                        "description": "Student passport number",
+                        "example": "A12345678"
+                    },
+                    "ninNumber": {
+                        "type": "string",
+                        "description": "Student NIN number",
+                        "example": "12345678901"
+                    },
+                    "status": {
+                        "type": "string",
+                        "description": "Student status",
+                        "enum": [
+                            "active",
+                            "inactive",
+                            "suspended",
+                            "pending_verification"
+                        ]
+                    },
+                    "isEmailVerified": {
+                        "type": "boolean",
+                        "description": "Whether email is verified",
+                        "example": false
+                    },
+                    "isPhoneVerified": {
+                        "type": "boolean",
+                        "description": "Whether phone is verified",
+                        "example": false
+                    },
+                    "lastLoginAt": {
+                        "format": "date-time",
+                        "type": "string",
+                        "description": "Last login date",
+                        "example": "2024-01-01T00:00:00Z"
+                    },
+                    "createdAt": {
+                        "format": "date-time",
+                        "type": "string",
+                        "description": "Creation date",
+                        "example": "2024-01-01T00:00:00Z"
+                    },
+                    "updatedAt": {
+                        "format": "date-time",
+                        "type": "string",
+                        "description": "Last update date",
+                        "example": "2024-01-01T00:00:00Z"
+                    }
+                },
+                "required": [
+                    "id",
+                    "firstName",
+                    "lastName",
+                    "email",
+                    "matricNumber",
+                    "phoneNumber",
+                    "faculty",
+                    "department",
+                    "level",
+                    "gender",
+                    "dateOfBirth",
+                    "address",
+                    "stateOfOrigin",
+                    "localGovernment",
+                    "tribe",
+                    "religion",
+                    "emergencyContact",
+                    "emergencyPhone",
+                    "isPWD",
+                    "pwdDetails",
+                    "isInternationalStudent",
+                    "nationality",
+                    "passportNumber",
+                    "ninNumber",
+                    "status",
+                    "isEmailVerified",
+                    "isPhoneVerified",
+                    "lastLoginAt",
+                    "createdAt",
+                    "updatedAt"
+                ]
+            },
+            "UpdateStudentDto": {
+                "type": "object",
+                "properties": {
+                    "firstName": {
+                        "type": "string",
+                        "description": "Student first name",
+                        "example": "John"
+                    },
+                    "lastName": {
+                        "type": "string",
+                        "description": "Student last name",
+                        "example": "Doe"
+                    },
+                    "email": {
+                        "type": "string",
+                        "description": "Student email address",
+                        "example": "john.doe@unn.edu.ng"
+                    },
+                    "phoneNumber": {
+                        "type": "string",
+                        "description": "Student phone number",
+                        "example": "+2348012345678"
+                    },
+                    "faculty": {
+                        "type": "string",
+                        "description": "Student faculty",
+                        "example": "Engineering"
+                    },
+                    "department": {
+                        "type": "string",
+                        "description": "Student department",
+                        "example": "Computer Engineering"
+                    },
+                    "level": {
+                        "type": "string",
+                        "description": "Student level",
+                        "example": "300"
+                    },
+                    "gender": {
+                        "type": "string",
+                        "description": "Student gender",
+                        "example": "Male"
+                    },
+                    "dateOfBirth": {
+                        "type": "string",
+                        "description": "Student date of birth",
+                        "example": "2000-01-01"
+                    },
+                    "address": {
+                        "type": "string",
+                        "description": "Student address",
+                        "example": "123 Main Street, Nsukka"
+                    },
+                    "stateOfOrigin": {
+                        "type": "string",
+                        "description": "Student state of origin",
+                        "example": "Enugu"
+                    },
+                    "localGovernment": {
+                        "type": "string",
+                        "description": "Student local government",
+                        "example": "Nsukka"
+                    },
+                    "tribe": {
+                        "type": "string",
+                        "description": "Student tribe",
+                        "example": "Igbo"
+                    },
+                    "religion": {
+                        "type": "string",
+                        "description": "Student religion",
+                        "example": "Christianity"
+                    },
+                    "emergencyContact": {
+                        "type": "string",
+                        "description": "Emergency contact name",
+                        "example": "Jane Doe"
+                    },
+                    "emergencyPhone": {
+                        "type": "string",
+                        "description": "Emergency contact phone",
+                        "example": "+2348012345679"
+                    },
+                    "isPWD": {
+                        "type": "boolean",
+                        "description": "Whether student is a person with disability",
+                        "example": false
+                    },
+                    "pwdDetails": {
+                        "type": "string",
+                        "description": "PWD details if applicable",
+                        "example": "Uses wheelchair"
+                    },
+                    "isInternationalStudent": {
+                        "type": "boolean",
+                        "description": "Whether student is international",
+                        "example": false
+                    },
+                    "nationality": {
+                        "type": "string",
+                        "description": "Student nationality",
+                        "example": "Nigerian"
+                    },
+                    "passportNumber": {
+                        "type": "string",
+                        "description": "Student passport number",
+                        "example": "A12345678"
+                    },
+                    "ninNumber": {
+                        "type": "string",
+                        "description": "Student NIN number",
+                        "example": "12345678901"
+                    },
+                    "status": {
+                        "type": "string",
+                        "description": "Student status",
+                        "enum": [
+                            "active",
+                            "inactive",
+                            "suspended",
+                            "pending_verification"
+                        ]
+                    }
+                }
+            },
+            "BulkStudentOperationDto": {
+                "type": "object",
+                "properties": {
+                    "studentIds": {
+                        "description": "Array of student IDs",
+                        "example": [
+                            "uuid1",
+                            "uuid2",
+                            "uuid3"
+                        ],
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "operation": {
+                        "type": "string",
+                        "description": "Operation to perform",
+                        "example": "activate"
+                    }
+                },
+                "required": [
+                    "studentIds",
+                    "operation"
+                ]
+            },
+            "StudentStatsDto": {
+                "type": "object",
+                "properties": {
+                    "totalStudents": {
+                        "type": "number",
+                        "description": "Total number of students",
+                        "example": 1000
+                    },
+                    "activeStudents": {
+                        "type": "number",
+                        "description": "Number of active students",
+                        "example": 950
+                    },
+                    "pendingVerification": {
+                        "type": "number",
+                        "description": "Number of pending verification students",
+                        "example": 50
+                    },
+                    "verifiedStudents": {
+                        "type": "number",
+                        "description": "Number of verified students",
+                        "example": 900
+                    },
+                    "studentsByFaculty": {
+                        "type": "object",
+                        "description": "Students by faculty",
+                        "example": {
+                            "Engineering": 200,
+                            "Sciences": 150,
+                            "Arts": 100
+                        }
+                    },
+                    "studentsByLevel": {
+                        "type": "object",
+                        "description": "Students by level",
+                        "example": {
+                            "100": 250,
+                            "200": 200,
+                            "300": 180,
+                            "400": 150,
+                            "500": 120,
+                            "600": 100
+                        }
+                    },
+                    "studentsByStatus": {
+                        "type": "object",
+                        "description": "Students by status",
+                        "example": {
+                            "active": 950,
+                            "pending_verification": 50
+                        }
+                    },
+                    "internationalStudents": {
+                        "type": "number",
+                        "description": "International students count",
+                        "example": 25
+                    },
+                    "pwdStudents": {
+                        "type": "number",
+                        "description": "PWD students count",
+                        "example": 10
+                    }
+                },
+                "required": [
+                    "totalStudents",
+                    "activeStudents",
+                    "pendingVerification",
+                    "verifiedStudents",
+                    "studentsByFaculty",
+                    "studentsByLevel",
+                    "studentsByStatus",
+                    "internationalStudents",
+                    "pwdStudents"
                 ]
             }
         }
