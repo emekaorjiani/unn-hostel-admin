@@ -124,7 +124,7 @@ export const studentService = {
       // Use the correct endpoint structure with student ID
       const response = await apiClient.get<{ success: boolean; data: StudentApplication[] }>(`applications/student/${studentId}`);
       console.log('API Applications response:', response.data);
-      return response.data.data;
+      return Array.isArray(response.data.data) ? response.data.data : [];
     } catch (error) {
       console.warn('Applications endpoint not available, returning empty array');
       return [];
@@ -141,7 +141,7 @@ export const studentService = {
       // Use the correct endpoint structure with student ID
       const response = await apiClient.get<{ success: boolean; data: StudentPayment[] }>(`payments/student/${studentId}`);
       console.log('API Payments response:', response.data);
-      return response.data.data;
+      return Array.isArray(response.data.data) ? response.data.data : [];
     } catch (error) {
       console.warn('Payments endpoint not available, returning empty array');
       return [];
@@ -152,7 +152,7 @@ export const studentService = {
   async getMaintenanceTickets(): Promise<MaintenanceTicket[]> {
     try {
       const response = await apiClient.get<{ success: boolean; data: MaintenanceTicket[] }>('/maintenance/tickets');
-      return response.data.data;
+      return Array.isArray(response.data.data) ? response.data.data : [];
     } catch (error) {
       console.warn('Maintenance tickets endpoint not available, returning empty array');
       return [];
@@ -163,7 +163,7 @@ export const studentService = {
   async getNotifications(): Promise<Notification[]> {
     try {
       const response = await apiClient.get<{ success: boolean; data: Notification[] }>('/notifications');
-      return response.data.data;
+      return Array.isArray(response.data.data) ? response.data.data : [];
     } catch (error) {
       console.warn('Notifications endpoint not available, returning empty array');
       return [];
@@ -185,21 +185,27 @@ export const studentService = {
         this.getNotifications(),
       ]);
 
+      // Ensure all data is properly handled as arrays and add null checks
+      const safeApplications = Array.isArray(applications) ? applications : [];
+      const safePayments = Array.isArray(payments) ? payments : [];
+      const safeMaintenanceTickets = Array.isArray(maintenanceTickets) ? maintenanceTickets : [];
+      const safeNotifications = Array.isArray(notifications) ? notifications : [];
+
       // Calculate quick statistics for dashboard display
       const quickStats = {
-        totalApplications: applications.length,
-        approvedApplications: applications.filter(app => app.status === 'approved').length,
-        pendingPayments: payments.filter(pay => pay.status === 'pending').length,
-        activeTickets: maintenanceTickets.filter(ticket => ticket.status === 'pending' || ticket.status === 'in_progress').length,
-        unreadNotifications: notifications.filter(notif => !notif.read).length,
+        totalApplications: safeApplications.length,
+        approvedApplications: safeApplications.filter(app => app.status === 'approved').length,
+        pendingPayments: safePayments.filter(pay => pay.status === 'pending').length,
+        activeTickets: safeMaintenanceTickets.filter(ticket => ticket.status === 'pending' || ticket.status === 'in_progress').length,
+        unreadNotifications: safeNotifications.filter(notif => !notif.read).length,
       };
 
       return {
         profile,
-        applications,
-        payments,
-        maintenanceTickets,
-        notifications,
+        applications: safeApplications,
+        payments: safePayments,
+        maintenanceTickets: safeMaintenanceTickets,
+        notifications: safeNotifications,
         quickStats,
       };
     } catch (error) {

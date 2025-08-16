@@ -476,8 +476,8 @@ export default function EditApplicationPage() {
                       </div>
                     </div>
                     <div className="mt-2">
-                      <Badge className={selectedWindow.isPublished ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'}>
-                        {selectedWindow.isPublished ? 'Published' : 'Draft'}
+                      <Badge className={selectedWindow.is_active ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'}>
+                        {selectedWindow.is_active ? 'Active' : 'Inactive'}
                       </Badge>
                     </div>
                   </div>

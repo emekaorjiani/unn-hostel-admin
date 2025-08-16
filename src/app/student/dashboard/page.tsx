@@ -2,10 +2,10 @@
 
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { getStatusColor, formatCurrency, formatDate, getInitials } from '@/lib/utils'
+import { formatCurrency, formatDate, getInitials } from '@/lib/utils'
 import { studentService, StudentDashboardData } from '@/lib/studentService'
 import QuickActions  from '@/components/ui/quick-actions'
 import {
@@ -15,69 +15,24 @@ import {
   CreditCard,
   Calendar,
   Bell,
-  Clock,
   CheckCircle,
-  XCircle,
+  Wrench,
   AlertTriangle,
-  Home,
   GraduationCap,
   BookOpen,
-  Users,
-  BarChart3,
-  Settings,
-  Download,
-  RefreshCw,
-  Eye,
-  Plus,
-  ArrowRight,
-  ArrowUpRight,
-  ArrowDownRight,
-  MoreHorizontal,
-  ChevronRight,
-  Star,
-  Award,
-  Target,
+  MapPin,
+  Map,
   TrendingUp,
   TrendingDown,
-  MapPin,
-  Phone,
-  Mail,
-  Globe,
-  Shield,
-  Zap,
-  Heart,
-  Bookmark,
-  Share2,
-  ExternalLink,
-  Clock3,
-  CalendarDays,
-  Receipt,
-  Wallet,
-  PiggyBank,
-  CreditCard as CreditCardIcon,
-  Banknote,
-  QrCode,
-  Smartphone,
-  Wifi,
-  Wrench,
-  ShieldCheck,
-  Users2,
-  MessageSquare,
-  HelpCircle,
-  Info,
-  CheckSquare,
-  Square,
-  Circle,
   Minus,
-  Plus as PlusIcon,
-  LogOut,
-  Flag,
-  Map,
+  ArrowUpRight,
+  ArrowDownRight,
+  RefreshCw
 } from 'lucide-react'
 import StudentHeader from '@/components/layout/student-header'
 
 export default function StudentDashboardPage() {
-  const router = useRouter()
+
   const [isLoading, setIsLoading] = useState(true)
   const [dashboardData, setDashboardData] = useState<StudentDashboardData | null>(null)
   const [error, setError] = useState<string | null>(null)
@@ -287,12 +242,12 @@ export default function StudentDashboardPage() {
           <div className="bg-gradient-to-r from-green-600 to-emerald-700 rounded-2xl p-8 text-white">
             <div className="flex items-center justify-between">
               <div>
-                <h2 className="text-3xl font-bold mb-2">
-                  Welcome back, {student?.first_name}
-                </h2>
-                <p className="text-green-100 text-lg mb-4">
-                  Here's what's happening with your hostel accommodation
-                </p>
+                  <h2 className="text-3xl font-bold mb-2">
+                    Welcome back, {student?.first_name}
+                  </h2>
+                  <p className="text-green-100 text-lg mb-4">
+                    Here's what's happening with your hostel accommodation
+                  </p>
                                                     <div className="flex items-center space-x-6 text-sm">
                      <div className="flex items-center space-x-2">
                        <Building2 className="h-4 w-4" />
