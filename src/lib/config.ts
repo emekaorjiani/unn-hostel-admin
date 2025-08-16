@@ -6,7 +6,7 @@
 export const config = {
   // Backend API Configuration
   backend: {
-    baseUrl: process.env.NEXT_PUBLIC_BACKEND_API_URL || 'https://api.unnaccomodation.com/api/v1',
+    baseUrl: process.env.NEXT_PUBLIC_BACKEND_API_URL || 'https://api.unnaccomodation.com',
     timeout: parseInt(process.env.API_TIMEOUT || '30000'),
     retryAttempts: parseInt(process.env.API_RETRY_ATTEMPTS || '3'),
   },
@@ -60,17 +60,17 @@ export function validateEnvironment(): void {
 export function getEnvironmentConfig() {
   return {
     development: {
-      backendUrl: 'https://api.unnaccomodation.com/api/v1',
+      backendUrl: 'https://api.unnaccomodation.com',
       debugMode: true,
       logLevel: 'debug',
     },
     production: {
-      backendUrl: process.env.BACKEND_API_URL || 'https://api.unnaccomodation.com/api/v1',
+      backendUrl: process.env.BACKEND_API_URL || 'https://api.unnaccomodation.com',
       debugMode: false,
       logLevel: 'error',
     },
     test: {
-      backendUrl: 'https://api.unnaccomodation.com/api/v1',
+      backendUrl: 'https://api.unnaccomodation.com',
       debugMode: true,
       logLevel: 'debug',
     },

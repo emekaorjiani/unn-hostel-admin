@@ -8,28 +8,12 @@ import { Input } from '../../../../components/ui/input'
 import { Badge } from '../../../../components/ui/badge'
 import { 
   Building2, 
-  User, 
-  Calendar,
-  MapPin,
-  Phone,
-  Mail,
-  GraduationCap,
   CheckCircle,
   AlertCircle,
   ArrowLeft
 } from 'lucide-react'
-
-interface Hostel {
-  id: string
-  name: string
-  type: 'male' | 'female'
-  capacity: number
-  available: number
-  price: number
-  amenities: string[]
-  description: string
-  image: string
-}
+import { studentService, Hostel } from '@/lib/studentService'
+import StudentHeader from '@/components/layout/student-header'
 
 interface ApplicationForm {
   hostelId: string
@@ -64,82 +48,22 @@ export default function NewApplicationPage() {
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
-  // Generate dummy hostels data
+  // Fetch available hostels from API
   useEffect(() => {
-    const generateDummyHostels = (): Hostel[] => [
-      {
-        id: '1',
-        name: 'Zik Hall',
-        type: 'male',
-        capacity: 800,
-        available: 45,
-        price: 25000,
-        amenities: ['WiFi', 'Security', 'Study Rooms', 'Cafeteria', 'Sports', 'Laundry'],
-        description: 'Named after Dr. Nnamdi Azikiwe, the first President of Nigeria. A prestigious male hostel with modern amenities.',
-        image: '/images/zik-hall.jpg'
-      },
-      {
-        id: '2',
-        name: 'Mariere Hall',
-        type: 'male',
-        capacity: 750,
-        available: 32,
-        price: 23000,
-        amenities: ['WiFi', 'Security', 'Study Rooms', 'Cafeteria', 'Sports'],
-        description: 'A modern male hostel with excellent facilities and a vibrant community atmosphere.',
-        image: '/images/mariere-hall.jpg'
-      },
-      {
-        id: '3',
-        name: 'Alvan Ikoku Hall',
-        type: 'female',
-        capacity: 600,
-        available: 28,
-        price: 25000,
-        amenities: ['WiFi', 'Security', 'Study Rooms', 'Cafeteria', 'Sports', 'Laundry'],
-        description: 'Dedicated to female students with enhanced security and comfortable living spaces.',
-        image: '/images/alvan-ikoku.jpg'
-      },
-      {
-        id: '4',
-        name: 'Eni Njoku Hall',
-        type: 'male',
-        capacity: 700,
-        available: 38,
-        price: 22000,
-        amenities: ['WiFi', 'Security', 'Study Rooms', 'Cafeteria'],
-        description: 'A well-maintained male hostel with excellent academic support facilities.',
-        image: '/images/eni-njoku.jpg'
-      },
-      {
-        id: '5',
-        name: 'Mellanby Hall',
-        type: 'female',
-        capacity: 550,
-        available: 25,
-        price: 24000,
-        amenities: ['WiFi', 'Security', 'Study Rooms', 'Cafeteria', 'Sports'],
-        description: 'A comfortable female hostel with modern amenities and a supportive environment.',
-        image: '/images/mellanby.jpg'
-      },
-      {
-        id: '6',
-        name: 'Kuti Hall',
-        type: 'male',
-        capacity: 650,
-        available: 35,
-        price: 21000,
-        amenities: ['WiFi', 'Security', 'Study Rooms', 'Cafeteria'],
-        description: 'A modern male hostel with excellent facilities and a vibrant community atmosphere.',
-        image: '/images/kuti-hall.jpg'
+    const fetchHostels = async () => {
+      try {
+        setLoading(true)
+        const hostelsData = await studentService.getAvailableHostels()
+        setHostels(hostelsData)
+      } catch (err) {
+        console.error('Failed to fetch hostels:', err)
+        setError('Failed to load available hostels. Please try again.')
+      } finally {
+        setLoading(false)
       }
-    ]
+    }
 
-    // Simulate API delay
-    setTimeout(() => {
-      setHostels(generateDummyHostels())
-      setLoading(false)
-    }, 800)
+    fetchHostels()
   }, [])
 
   const handleHostelSelect = (hostel: Hostel) => {
@@ -159,14 +83,9 @@ export default function NewApplicationPage() {
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
+    e.preventDefault() // Prevent default form submission
     
-    if (!formData.agreement) {
-      setError('Please agree to the terms and conditions')
-      return
-    }
-
-    if (!formData.hostelId) {
+    if (!selectedHostel) {
       setError('Please select a hostel')
       return
     }
@@ -175,13 +94,29 @@ export default function NewApplicationPage() {
     setError(null)
 
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1500))
+      // Create application using real API
+      const applicationData = {
+        hostel_id: selectedHostel.id,
+        room_type: 'Standard Room', // Default room type, can be enhanced later
+        preferred_room_number: '',
+        special_requirements: ''
+      }
+
+      const response = await studentService.createApplication(applicationData)
       
-      // Success - redirect to dashboard or show success message
+      // Success - show success message and redirect
+      console.log('Application submitted successfully:', response)
+      
+      // Show success message
+      setError(null)
+      
+      // Redirect to dashboard after successful submission
       router.push('/student/dashboard?application=success')
+
     } catch (err) {
-      setError('Failed to submit application. Please try again.')
+      const errorMessage = err instanceof Error ? err.message : 'Failed to submit application. Please try again.'
+      setError(errorMessage)
+      console.error('Application submission error:', err)
     } finally {
       setSubmitting(false)
     }
@@ -207,27 +142,14 @@ export default function NewApplicationPage() {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
-      <div className="bg-white shadow-sm border-b">
-        <div className="max-w-7xl mx-auto px-4 py-4">
-          <div className="flex items-center space-x-4">
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => router.back()}
-              className="text-gray-600 hover:text-gray-900"
-            >
-              <ArrowLeft className="h-4 w-4 mr-2" />
-              Back
-            </Button>
-            <div>
-              <h1 className="text-2xl font-bold text-gray-900">New Hostel Application</h1>
-              <p className="text-gray-600">Apply for hostel accommodation</p>
-            </div>
-          </div>
-        </div>
-      </div>
+      <StudentHeader 
+        title="New Hostel Application"
+        subtitle="Apply for hostel accommodation"
+        showBackButton={true}
+        onBackClick={() => router.back()}
+      />
 
-      <div className="max-w-7xl mx-auto px-4 py-8">
+      <div className="pt-20 max-w-7xl mx-auto px-4 py-8">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Hostel Selection */}
           <div className="lg:col-span-2">
@@ -243,47 +165,53 @@ export default function NewApplicationPage() {
               </CardHeader>
               <CardContent>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {hostels.map((hostel) => (
-                    <div
-                      key={hostel.id}
-                      className={`border-2 rounded-lg p-4 cursor-pointer transition-all ${
-                        selectedHostel?.id === hostel.id
-                          ? 'border-green-500 bg-green-50'
-                          : 'border-gray-200 hover:border-gray-300'
-                      }`}
-                      onClick={() => handleHostelSelect(hostel)}
-                    >
-                      <div className="flex items-start justify-between mb-3">
-                        <div>
-                          <h3 className="font-semibold text-gray-900">{hostel.name}</h3>
-                          <Badge variant={hostel.type === 'male' ? 'default' : 'secondary'} className="mt-1">
-                            {hostel.type === 'male' ? 'Male' : 'Female'}
-                          </Badge>
-                        </div>
-                        <div className="text-right">
-                          <div className="text-lg font-bold text-green-600">₦{hostel.price.toLocaleString()}</div>
-                          <div className={`text-sm font-medium ${getAvailabilityColor(hostel.available)}`}>
-                            {hostel.available} available
+                  {Array.isArray(hostels) && hostels.length > 0 ? (
+                    hostels.map((hostel) => (
+                      <div
+                        key={hostel.id}
+                        className={`border-2 rounded-lg p-4 cursor-pointer transition-all ${
+                          selectedHostel?.id === hostel.id
+                            ? 'border-green-500 bg-green-50'
+                            : 'border-gray-200 hover:border-gray-300'
+                        }`}
+                        onClick={() => handleHostelSelect(hostel)}
+                      >
+                        <div className="flex items-start justify-between mb-3">
+                          <div>
+                            <h3 className="font-semibold text-gray-900">{hostel.name}</h3>
+                            <Badge variant={hostel.type === 'male' ? 'default' : 'secondary'} className="mt-1">
+                              {hostel.type === 'male' ? 'Male' : 'Female'}
+                            </Badge>
+                          </div>
+                          <div className="text-right">
+                            <div className="text-lg font-bold text-green-600">₦{hostel.price.toLocaleString()}</div>
+                            <div className={`text-sm font-medium ${getAvailabilityColor(hostel.available)}`}>
+                              {hostel.available} available
+                            </div>
                           </div>
                         </div>
+                        
+                        <p className="text-sm text-gray-600 mb-3">{hostel.description}</p>
+                        
+                        <div className="flex flex-wrap gap-1">
+                          {Array.isArray(hostel?.amenities) && hostel.amenities.slice(0, 3).map((amenity, index) => (
+                            <Badge key={index} variant="outline" className="text-xs">
+                              {amenity}
+                            </Badge>
+                          ))}
+                          {Array.isArray(hostel?.amenities) && hostel.amenities.length > 3 && (
+                            <Badge variant="outline" className="text-xs">
+                              +{hostel.amenities.length - 3} more
+                            </Badge>
+                          )}
+                        </div>
                       </div>
-                      
-                      <p className="text-sm text-gray-600 mb-3">{hostel.description}</p>
-                      
-                      <div className="flex flex-wrap gap-1">
-                        {hostel.amenities.slice(0, 3).map((amenity, index) => (
-                          <Badge key={index} variant="outline" className="text-xs">
-                            {amenity}
-                          </Badge>
-                        ))}
-                        {hostel.amenities.length > 3 && (
-                          <Badge variant="outline" className="text-xs">
-                            +{hostel.amenities.length - 3} more
-                          </Badge>
-                        )}
-                      </div>
+                    ))
+                  ) : (
+                    <div className="col-span-2 text-center py-8">
+                      <p className="text-gray-500">No hostels available at the moment.</p>
                     </div>
-                  ))}
+                  )}
                 </div>
               </CardContent>
             </Card>

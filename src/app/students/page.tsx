@@ -223,9 +223,6 @@ export default function StudentsPage() {
       setError(null)
       setLoading(true)
       
-      // Simulate API delay
-      await new Promise(resolve => setTimeout(resolve, 800))
-      
       // Generate dummy data
       const studentsData = generateDummyStudents()
       const statsData = generateDummyStats(studentsData)

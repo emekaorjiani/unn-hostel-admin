@@ -72,9 +72,9 @@ export default function NewApplicationPage() {
       setApplicationWindows(windowsResponse.data)
       
     } catch (err: unknown) {
-      const errorMessage = err instanceof Error ? err.message : 'Failed to fetch available data'
+      const errorMessage = err instanceof Error ? err.message : 'Failed to fetch available hostels'
       setError(errorMessage)
-      console.error('Data fetch error:', err)
+      console.error('Hostels fetch error:', err)
     } finally {
       setLoading(false)
     }
@@ -122,9 +122,9 @@ export default function NewApplicationPage() {
       }, 2000)
 
     } catch (err: unknown) {
-      const errorMessage = err instanceof Error ? err.message : 'Failed to create application'
+      const errorMessage = err instanceof Error ? err.message : 'Failed to submit application'
       setError(errorMessage)
-      console.error('Application creation error:', err)
+      console.error('Application submission error:', err)
     } finally {
       setSubmitting(false)
     }

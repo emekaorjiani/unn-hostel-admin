@@ -32,6 +32,7 @@ import {
   Passport,
   CreditCard
 } from 'lucide-react'
+import { studentService } from '@/lib/studentService'
 
 interface StudentProfile {
   id: string
@@ -153,19 +154,36 @@ export default function StudentSettingsPage() {
 
   const handleProfileUpdate = async () => {
     setSaving(true)
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1000))
+    try {
+      // Update profile using real API
+      await studentService.updateSettings({
+        profile: student
+      })
     setMessage({ type: 'success', text: 'Profile updated successfully!' })
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'Failed to update profile'
+      setMessage({ type: 'error', text: errorMessage })
+    } finally {
     setSaving(false)
     setTimeout(() => setMessage(null), 3000)
+    }
   }
 
   const handleNotificationUpdate = async () => {
     setSaving(true)
-    await new Promise(resolve => setTimeout(resolve, 800))
+    try {
+      // Update notification preferences using real API
+      await studentService.updateSettings({
+        notifications: notifications
+      })
     setMessage({ type: 'success', text: 'Notification preferences updated!' })
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'Failed to update notification preferences'
+      setMessage({ type: 'error', text: errorMessage })
+    } finally {
     setSaving(false)
     setTimeout(() => setMessage(null), 3000)
+    }
   }
 
   const handleSecurityUpdate = async () => {
@@ -176,11 +194,23 @@ export default function StudentSettingsPage() {
     }
     
     setSaving(true)
-    await new Promise(resolve => setTimeout(resolve, 1200))
+    try {
+      // Update security settings using real API
+      await studentService.updateSettings({
+        security: {
+          currentPassword: security.currentPassword,
+          newPassword: security.newPassword
+        }
+      })
     setMessage({ type: 'success', text: 'Security settings updated successfully!' })
     setSecurity(prev => ({ ...prev, currentPassword: '', newPassword: '', confirmPassword: '' }))
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'Failed to update security settings'
+      setMessage({ type: 'error', text: errorMessage })
+    } finally {
     setSaving(false)
     setTimeout(() => setMessage(null), 3000)
+    }
   }
 
   const tabs = [
