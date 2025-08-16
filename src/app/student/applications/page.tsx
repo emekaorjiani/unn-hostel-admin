@@ -99,7 +99,7 @@ export default function StudentApplicationsPage() {
       <div className="pt-16 max-w-7xl mx-auto px-4 py-8">
         {/* Quick Actions - Fixed at top */}
         <div className="mb-6">
-          <QuickActions showAllActions={false} />
+          <QuickActions />
         </div>
         
         <div className="space-y-6">

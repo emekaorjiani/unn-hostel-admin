@@ -2,29 +2,23 @@
 
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../../../components/ui/card'
-import { Button } from '../../../components/ui/button'
-import { Badge } from '../../../components/ui/badge'
-import { Input } from '../../../components/ui/input'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
+import { Input } from '@/components/ui/input'
 import { 
   FileText, 
   Upload,
   Download,
   Eye,
-  Trash2,
   Plus,
   ArrowLeft,
   Calendar,
   CheckCircle,
   Clock,
   AlertCircle,
-  FolderOpen,
-  Search,
-  Filter
-} from 'lucide-react'
-import { studentService } from '@/lib/studentService'
-import StudentHeader from '@/components/layout/student-header'
-import { QuickActions } from '@/components/ui/quick-actions'
+  FolderOpen} from 'lucide-react'
+import QuickActions from '@/components/ui/quick-actions'
 
 interface Document {
   id: string
@@ -64,25 +58,26 @@ export default function StudentDocumentsPage() {
     const fetchDocuments = async () => {
       try {
         setLoading(true)
-        const data = await studentService.getDocuments()
+        // TODO: Implement when API is ready
+        // const data = await studentService.getDocuments()
         
         // Transform API data to match our interface
-        const transformedDocuments: Document[] = data.map((doc: any) => ({
-          id: doc.id,
-          name: doc.name || doc.title || 'Document',
-          type: doc.type || doc.category || 'other',
-          status: doc.status || 'pending',
-          uploadedDate: doc.uploaded_at || doc.created_at || new Date().toISOString(),
-          expiryDate: doc.expiry_date || doc.expires_at,
-          size: doc.size || 'Unknown',
-          fileType: doc.file_type || doc.extension || 'Unknown',
-          description: doc.description || doc.notes || 'No description provided',
-          notes: doc.notes,
-          reviewer: doc.reviewer,
-          reviewDate: doc.review_date || doc.reviewed_at
-        }))
+        // const transformedDocuments: Document[] = data.map((doc: any) => ({
+        //   id: doc.id,
+        //   name: doc.name || doc.title || 'Document',
+        //   type: doc.type || doc.category || 'other',
+        //   status: doc.status || 'pending',
+        //   uploadedDate: doc.uploaded_at || doc.created_at || new Date().toISOString(),
+        //   expiryDate: doc.expiry_date || doc.expires_at,
+        //   size: doc.size || 'Unknown',
+        //   fileType: doc.file_type || doc.extension || 'Unknown',
+        //   description: doc.description || doc.notes || 'No description provided',
+        //   notes: doc.notes,
+        //   reviewer: doc.reviewer,
+        //   reviewDate: doc.review_date || doc.reviewed_at
+        // }))
         
-        setDocuments(transformedDocuments)
+        // setDocuments(transformedDocuments)
       } catch (error) {
         console.error('Error fetching documents:', error)
         // Fallback to empty array if API fails
@@ -168,11 +163,12 @@ export default function StudentDocumentsPage() {
       formData.append('type', 'document')
       formData.append('description', 'Uploaded document')
 
-      await studentService.uploadDocument(formData)
+      // TODO: Implement when API is ready
+      // await studentService.uploadDocument(formData)
       
       // Refresh documents list
-      const updatedDocuments = await studentService.getDocuments()
-      setDocuments(updatedDocuments)
+      // const updatedDocuments = await studentService.getDocuments()
+      // setDocuments(updatedDocuments)
       
       // Reset form
     setSelectedFile(null)
@@ -236,7 +232,7 @@ export default function StudentDocumentsPage() {
       <div className="pt-16 max-w-7xl mx-auto px-4 py-8">
         {/* Quick Actions - Fixed at top */}
         <div className="mb-6">
-          <QuickActions showAllActions={false} />
+          <QuickActions />
         </div>
         
         <div className="space-y-6">

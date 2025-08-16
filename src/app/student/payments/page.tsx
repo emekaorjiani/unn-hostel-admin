@@ -25,7 +25,7 @@ import {
 import { studentService, StudentPayment } from '@/lib/studentService'
 import StudentHeader from '@/components/layout/student-header'
 import { Input } from '@/components/ui/input'
-import { QuickActions } from '@/components/ui/quick-actions'
+import QuickActions from '@/components/ui/quick-actions'
 
 interface PaymentSummary {
   totalPaid: number

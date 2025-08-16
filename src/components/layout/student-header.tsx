@@ -126,7 +126,7 @@ export default function StudentHeader({
                 >
                   <div className="h-6 w-6 bg-green-600 rounded-full flex items-center justify-center">
                     <span className="text-white text-xs font-medium">
-                      {studentProfile?.user?.first_name?.charAt(0) || 'S'}
+                      {(studentProfile as any)?.user?.first_name?.charAt(0) || (studentProfile as any)?.first_name?.charAt(0) || 'S'}
                     </span>
                   </div>
                   <span className="hidden md:inline">Profile</span>
@@ -147,9 +147,9 @@ export default function StudentHeader({
                   <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50 border border-gray-200">
                     <div className="px-4 py-2 border-b border-gray-100">
                       <p className="text-sm font-medium text-gray-900">
-                        {studentProfile?.user?.first_name || 'Student'} {studentProfile?.user?.last_name || 'User'}
+                        {(studentProfile as any)?.user?.first_name || (studentProfile as any)?.first_name || 'Student'} {(studentProfile as any)?.user?.last_name || (studentProfile as any)?.last_name || 'User'}
                       </p>
-                      <p className="text-xs text-gray-500">{studentProfile?.user?.email || 'student@unn.edu.ng'}</p>
+                                              <p className="text-xs text-gray-500">{(studentProfile as any)?.user?.email || (studentProfile as any)?.email || 'student@unn.edu.ng'}</p>
                     </div>
                     <Button
                       variant="ghost"
