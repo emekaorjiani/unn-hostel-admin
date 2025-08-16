@@ -2,7 +2,6 @@ import { apiClient } from './api';
 
 // Student dashboard data types based on API documentation
 export interface StudentProfile {
-  user: {
   id: string;
   first_name: string;
   last_name: string;
@@ -102,130 +101,21 @@ export interface StudentDashboardData {
   };
 }
 
-// Mock data for development when API is not available
-const mockProfile: StudentProfile = {
-  user: {
-    id: 'mock-user-1',
-    first_name: 'John',
-    last_name: 'Doe',
-    email: 'john.doe@unn.edu.ng',
-    matric_number: '2021/123456',
-    phone_number: '+2348012345678',
-    faculty: 'Engineering',
-    department: 'Computer Engineering',
-    level: '300',
-    gender: 'male',
-    date_of_birth: '2000-01-01',
-    address: '123 Main Street, Nsukka',
-    state_of_origin: 'Enugu',
-    nationality: 'Nigerian',
-    status: 'active',
-    is_email_verified: true,
-    is_phone_verified: true,
-    created_at: '2021-09-01T00:00:00Z',
-    updated_at: '2024-01-01T00:00:00Z',
-  }
-};
-
-const mockApplications: StudentApplication[] = [
-  {
-    id: 'app-1',
-    hostel_name: 'Zik Hall',
-    room_type: 'Single Room',
-    status: 'approved',
-    application_date: '2024-01-15',
-    amount: 50000,
-    payment_status: 'paid',
-  },
-  {
-    id: 'app-2',
-    hostel_name: 'Mariere Hall',
-    room_type: 'Shared Room',
-    status: 'pending',
-    application_date: '2024-01-20',
-    amount: 35000,
-    payment_status: 'pending',
-  }
-];
-
-const mockPayments: StudentPayment[] = [
-  {
-    id: 'pay-1',
-    type: 'rent',
-    amount: 50000,
-    status: 'completed',
-    date: '2024-01-15',
-    method: 'card',
-    reference: 'PAY-001',
-    gateway: 'paystack',
-  },
-  {
-    id: 'pay-2',
-    type: 'deposit',
-    amount: 25000,
-    status: 'pending',
-    date: '2024-01-20',
-    method: 'transfer',
-    reference: 'PAY-002',
-    gateway: 'flutterwave',
-  }
-];
-
-const mockMaintenanceTickets: MaintenanceTicket[] = [
-  {
-    id: 'ticket-1',
-    issue: 'Broken Window',
-    description: 'Window in room 101 is broken and needs replacement',
-    status: 'in_progress',
-    priority: 'medium',
-    category: 'Repairs',
-    created_at: '2024-01-10T00:00:00Z',
-  },
-  {
-    id: 'ticket-2',
-    issue: 'Electrical Problem',
-    description: 'Power outlet not working in room 205',
-    status: 'pending',
-    priority: 'high',
-    category: 'Electrical',
-    created_at: '2024-01-18T00:00:00Z',
-  }
-];
-
-const mockNotifications: Notification[] = [
-  {
-    id: 'notif-1',
-    title: 'Application Approved',
-    message: 'Your hostel application for Zik Hall has been approved',
-    type: 'success',
-    read: false,
-    created_at: '2024-01-15T00:00:00Z',
-  },
-  {
-    id: 'notif-2',
-    title: 'Payment Due',
-    message: 'Your rent payment is due in 5 days',
-    type: 'warning',
-    read: true,
-    created_at: '2024-01-20T00:00:00Z',
-  }
-];
-
-// Student service for API calls using correct endpoints from Postman docs
+/**
+ * Student service for API calls
+ * Provides methods to interact with student-related endpoints
+ */
 export const studentService = {
-  // Get student profile - using correct endpoint from API docs
+  /**
+   * Fetches the current student's profile information
+   * @returns Promise<StudentProfile> - Student profile data
+   */
   async getProfile(): Promise<StudentProfile> {
-    try {
-      const response = await apiClient.get<{ success: boolean; data: StudentProfile }>('v1/auth/profile');
-      console.log('API Profile response:', response.data);
+    const response = await apiClient.get<{ success: boolean; data: StudentProfile }>('/auth/profile');
     return response.data.data;
-    } catch (error) {
-      console.warn('Profile endpoint not available, using mock data:', error);
-      return mockProfile;
-    }
   },
 
-  // Get student applications - using correct endpoint from API docs
+  // Get student applications
   async getApplications(): Promise<StudentApplication[]> {
     try {
       // Get student profile to get the student ID
@@ -237,12 +127,12 @@ export const studentService = {
       console.log('API Applications response:', response.data);
       return response.data.data;
     } catch (error) {
-      console.warn('Applications endpoint not available, using mock data:', error);
-      return mockApplications;
+      console.warn('Applications endpoint not available, returning empty array');
+      return [];
     }
   },
 
-  // Get student payments - using correct endpoint from API docs
+  // Get student payments
   async getPayments(): Promise<StudentPayment[]> {
     try {
       // Get student profile to get the student ID
@@ -254,39 +144,40 @@ export const studentService = {
       console.log('API Payments response:', response.data);
       return response.data.data;
     } catch (error) {
-      console.warn('Payments endpoint not available, using mock data:', error);
-      return mockPayments;
+      console.warn('Payments endpoint not available, returning empty array');
+      return [];
     }
   },
 
-  // Get maintenance tickets - using correct endpoint from API docs
+  // Get maintenance tickets
   async getMaintenanceTickets(): Promise<MaintenanceTicket[]> {
     try {
-      const response = await apiClient.get<{ success: boolean; data: MaintenanceTicket[] }>('maintenance/tickets');
-      console.log('API Maintenance response:', response.data);
+      const response = await apiClient.get<{ success: boolean; data: MaintenanceTicket[] }>('/maintenance/tickets');
       return response.data.data;
     } catch (error) {
-      console.warn('Maintenance tickets endpoint not available, using mock data:', error);
-      return mockMaintenanceTickets;
+      console.warn('Maintenance tickets endpoint not available, returning empty array');
+      return [];
     }
   },
 
-  // Get notifications - using correct endpoint from API docs
+  // Get notifications
   async getNotifications(): Promise<Notification[]> {
     try {
-      const response = await apiClient.get<{ success: boolean; data: Notification[] }>('notifications');
-      console.log('API Notifications response:', response.data);
+      const response = await apiClient.get<{ success: boolean; data: Notification[] }>('/notifications');
       return response.data.data;
     } catch (error) {
-      console.warn('Notifications endpoint not available, using mock data:', error);
-      return mockNotifications;
+      console.warn('Notifications endpoint not available, returning empty array');
+      return [];
     }
   },
 
-  // Get dashboard data (combined)
+  /**
+   * Fetches all dashboard data in parallel and calculates quick statistics
+   * @returns Promise<StudentDashboardData> - Complete dashboard data with calculated stats
+   */
   async getDashboardData(): Promise<StudentDashboardData> {
     try {
-      // Fetch all data in parallel
+      // Fetch all data in parallel for better performance
       const [profile, applications, payments, maintenanceTickets, notifications] = await Promise.all([
         this.getProfile(),
         this.getApplications(),
@@ -295,7 +186,7 @@ export const studentService = {
         this.getNotifications(),
       ]);
 
-      // Calculate quick stats
+      // Calculate quick statistics for dashboard display
       const quickStats = {
         totalApplications: applications.length,
         approvedApplications: applications.filter(app => app.status === 'approved').length,
@@ -353,7 +244,7 @@ export const studentService = {
     }
   },
 
-  // Create new application - using correct endpoint from API docs
+  // Create new application
   async createApplication(applicationData: {
     hostel_id: string;
     room_type: string;
@@ -390,7 +281,7 @@ export const studentService = {
     }
   },
 
-  // Make payment - using correct endpoint from API docs
+  // Make payment
   async makePayment(paymentData: {
     type: 'rent' | 'deposit' | 'application_fee';
     amount: number;
@@ -427,40 +318,20 @@ export const studentService = {
     }
   },
 
-  // Create maintenance ticket - using correct endpoint from API docs
+  // Create maintenance ticket
   async createMaintenanceTicket(ticketData: {
     issue: string;
     description?: string;
     priority: 'low' | 'medium' | 'high' | 'urgent';
     category: string;
   }): Promise<MaintenanceTicket> {
-    try {
-      const response = await apiClient.post<{ success: boolean; data: MaintenanceTicket }>('maintenance/tickets', ticketData);
+    const response = await apiClient.post<{ success: boolean; data: MaintenanceTicket }>('/maintenance/tickets', ticketData);
     return response.data.data;
-    } catch (error) {
-      console.error('Failed to create maintenance ticket via API:', error);
-      // Return mock ticket
-      const newTicket: MaintenanceTicket = {
-        id: `ticket-${Date.now()}`,
-        issue: ticketData.issue,
-        description: ticketData.description,
-        status: 'pending',
-        priority: ticketData.priority,
-        category: ticketData.category,
-        created_at: new Date().toISOString(),
-      };
-      return newTicket;
-    }
   },
 
-  // Mark notification as read - using correct endpoint from API docs
+  // Mark notification as read
   async markNotificationAsRead(notificationId: string): Promise<void> {
-    try {
-      await apiClient.put(`notifications/${notificationId}/read`);
-    } catch (error) {
-      console.error('Failed to mark notification as read via API:', error);
-      // In mock mode, we could update local state if needed
-    }
+    await apiClient.put(`/notifications/${notificationId}/read`);
   },
 
   // Get available hostels for application - using correct endpoint from API docs
@@ -565,124 +436,9 @@ export const studentService = {
     }
   },
 
-  // Get payment gateways - using correct endpoint from API docs
+  // Get payment gateways
   async getPaymentGateways(): Promise<any[]> {
-    try {
-      const response = await apiClient.get<{ success: boolean; data: any[] }>('payment-gateway');
-      return response.data.data;
-    } catch (error) {
-      console.warn('Payment gateways endpoint not available:', error);
-      return [
-        { id: 'paystack', name: 'Paystack', is_active: true },
-        { id: 'flutterwave', name: 'Flutterwave', is_active: true },
-        { id: 'remita', name: 'Remita', is_active: true },
-      ];
-    }
-  },
-
-  // Additional methods from API docs
-  // Get student documents
-  async getDocuments(): Promise<any[]> {
-    try {
-      const response = await apiClient.get<{ success: boolean; data: any[] }>('student/documents');
-      return response.data.data;
-    } catch (error) {
-      console.warn('Documents endpoint not available, using mock data:', error);
-      return [
-        {
-          id: 'doc-1',
-          name: 'Student ID Card',
-          type: 'identification',
-          status: 'approved',
-          uploaded_at: '2024-01-01T00:00:00Z',
-          size: '2.5 MB',
-          file_type: 'PDF',
-        },
-        {
-          id: 'doc-2',
-          name: 'Academic Transcript',
-          type: 'academic',
-          status: 'pending',
-          uploaded_at: '2024-01-15T00:00:00Z',
-          size: '1.8 MB',
-          file_type: 'PDF',
-        }
-      ];
-    }
-  },
-
-  // Upload document
-  async uploadDocument(documentData: FormData): Promise<any> {
-    try {
-      const response = await apiClient.post<{ success: boolean; data: any }>('student/documents', documentData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      });
-      return response.data.data;
-    } catch (error) {
-      console.error('Failed to upload document via API:', error);
-      // Return mock upload result
-      return {
-        id: `doc-${Date.now()}`,
-        name: 'Uploaded Document',
-        status: 'pending',
-        uploaded_at: new Date().toISOString(),
-      };
-    }
-  },
-
-  // Get student settings
-  async getSettings(): Promise<any> {
-    try {
-      const response = await apiClient.get<{ success: boolean; data: any }>('student/settings');
-      return response.data.data;
-    } catch (error) {
-      console.warn('Settings endpoint not available, using mock data:', error);
-      return {
-        notifications: {
-          email: true,
-          sms: false,
-          push: true,
-        },
-        privacy: {
-          profile_visible: true,
-          contact_visible: false,
-        },
-      };
-    }
-  },
-
-  // Update student settings
-  async updateSettings(settingsData: any): Promise<any> {
-    try {
-      const response = await apiClient.put<{ success: boolean; data: any }>('student/settings', settingsData);
-      return response.data.data;
-    } catch (error) {
-      console.error('Failed to update settings via API:', error);
-      // Return mock updated settings
-      return {
-        ...settingsData,
-        updated_at: new Date().toISOString(),
-      };
-    }
-  },
-
-  // Get student statistics
-  async getStatistics(): Promise<any> {
-    try {
-      const response = await apiClient.get<{ success: boolean; data: any }>('student/statistics');
+    const response = await apiClient.get<{ success: boolean; data: any[] }>('/payment-gateways');
     return response.data.data;
-    } catch (error) {
-      console.warn('Statistics endpoint not available, using mock data:', error);
-      return {
-        total_applications: 5,
-        approved_applications: 3,
-        total_payments: 150000,
-        pending_payments: 25000,
-        active_tickets: 2,
-        resolved_tickets: 8,
-      };
-    }
   },
 };

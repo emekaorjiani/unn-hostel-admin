@@ -19,30 +19,16 @@ import {
   Check
 } from 'lucide-react'
 import DashboardLayout from '@/components/layout/dashboard-layout'
-import { studentService } from '@/lib/studentService'
+import { applicationService, hostelService, applicationWindowService } from '@/lib/services'
+import { CreateApplicationData, Hostel, ApplicationWindow } from '@/lib/types'
 import { safeLocalStorage } from '@/lib/utils'
 
 interface ApplicationForm {
-  hostel_id: string
-  room_type: string
-  preferred_room_number?: string
-  special_requirements?: string
-  academic_year?: string
-  semester?: string
-  application_type?: 'new' | 'renewal' | 'transfer' | 'swap'
-  preferences?: string[]
-  additional_notes?: string
-}
-
-interface Hostel {
-  id: string
-  name: string
-  description?: string
-  gender: 'male' | 'female' | 'mixed'
-  capacity?: number
-  available_rooms?: number
-  price_per_semester?: number
-  room_types?: string[]
+  applicationWindowId: string
+  hostelId: string
+  roomId: string
+  bedId: string
+  documents: File[]
 }
 
 export default function NewApplicationPage() {
@@ -54,29 +40,37 @@ export default function NewApplicationPage() {
   
   // Form data
   const [formData, setFormData] = useState<ApplicationForm>({
-    hostel_id: '',
-    room_type: '',
-    preferred_room_number: '',
-    special_requirements: '',
-    academic_year: '',
-    semester: '',
-    application_type: 'new',
-    preferences: [],
-    additional_notes: ''
+    applicationWindowId: '',
+    hostelId: '',
+    roomId: '',
+    bedId: '',
+    documents: []
   })
 
   // Available data
   const [hostels, setHostels] = useState<Hostel[]>([])
+  const [applicationWindows, setApplicationWindows] = useState<ApplicationWindow[]>([])
+  const [selectedWindow, setSelectedWindow] = useState<ApplicationWindow | null>(null)
   const [selectedHostel, setSelectedHostel] = useState<Hostel | null>(null)
 
   // Fetch available data
   const fetchAvailableData = async () => {
     try {
       setLoading(true)
+      const token = safeLocalStorage.getItem('auth_token') || safeLocalStorage.getItem('student_token')
       
-      // Fetch available hostels using studentService
-      const hostelsData = await studentService.getAvailableHostels()
-      setHostels(hostelsData)
+      if (!token) {
+        throw new Error('No authentication token found')
+      }
+
+      // Fetch hostels using service
+      const hostelsResponse = await hostelService.getAll()
+      setHostels(hostelsResponse.data)
+      
+      // Fetch application windows using service
+      const windowsResponse = await applicationWindowService.getAll()
+      setApplicationWindows(windowsResponse.data)
+      
     } catch (err: unknown) {
       const errorMessage = err instanceof Error ? err.message : 'Failed to fetch available hostels'
       setError(errorMessage)
@@ -91,64 +85,42 @@ export default function NewApplicationPage() {
     fetchAvailableData()
   }, [])
 
-  // Handle form input changes
-  const handleInputChange = (field: keyof ApplicationForm, value: string | string[]) => {
-    setFormData(prev => ({
-      ...prev,
-      [field]: value
-    }))
-  }
-
-  // Handle hostel selection
-  const handleHostelChange = (hostelId: string) => {
-    const selected = hostels.find(h => h.id === hostelId)
-    setSelectedHostel(selected || null)
-    setFormData(prev => ({
-      ...prev,
-      hostel_id: hostelId,
-      room_type: '' // Reset room type when hostel changes
-    }))
-  }
-
-  // Handle preference changes
-  const handlePreferenceChange = (preference: string, checked: boolean) => {
-    setFormData(prev => ({
-      ...prev,
-      preferences: checked 
-        ? [...prev.preferences, preference]
-        : prev.preferences.filter(p => p !== preference)
-    }))
-  }
-
-  // Submit application
+  // Handle form submission
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     
+    if (!formData.applicationWindowId || !formData.hostelId) {
+      setError('Please fill in all required fields')
+      return
+    }
+
     try {
       setSubmitting(true)
       setError(null)
-      setSuccess(null)
 
-      // Validate required fields
-      if (!formData.hostel_id || !formData.room_type) {
-        throw new Error('Please select a hostel and room type')
+      const token = safeLocalStorage.getItem('auth_token') || safeLocalStorage.getItem('student_token')
+      if (!token) {
+        throw new Error('No authentication token found')
       }
 
-      // Prepare data for API
-      const applicationData = {
-        hostel_id: formData.hostel_id,
-        room_type: formData.room_type,
-        preferred_room_number: formData.preferred_room_number || undefined,
-        special_requirements: formData.special_requirements || undefined
+      // Create application using service
+      const applicationData: CreateApplicationData = {
+        applicationWindowId: formData.applicationWindowId,
+        hostelId: formData.hostelId,
+        roomId: formData.roomId,
+        bedId: formData.bedId,
+        documents: formData.documents
       }
 
-      // Create application using studentService
-      const response = await studentService.createApplication(applicationData)
-
-      setSuccess('Application submitted successfully! You will be notified of the status.')
+      const newApplication = await applicationService.create(applicationData)
       
-      // Redirect immediately to applications list
-      router.push('/student/applications')
+      setSuccess('Application created successfully!')
+      
+      // Redirect to the new application after a short delay
+      setTimeout(() => {
+        router.push(`/applications/${newApplication.id}`)
+      }, 2000)
+
     } catch (err: unknown) {
       const errorMessage = err instanceof Error ? err.message : 'Failed to submit application'
       setError(errorMessage)
@@ -158,13 +130,50 @@ export default function NewApplicationPage() {
     }
   }
 
+  // Handle form field changes
+  const handleInputChange = (field: keyof ApplicationForm, value: any) => {
+    setFormData(prev => ({
+      ...prev,
+      [field]: value
+    }))
+
+    // Update selected window when application window changes
+    if (field === 'applicationWindowId') {
+      const window = applicationWindows.find(w => w.id === value)
+      setSelectedWindow(window || null)
+    }
+
+    // Update selected hostel when hostel changes
+    if (field === 'hostelId') {
+      const hostel = hostels.find(h => h.id === value)
+      setSelectedHostel(hostel || null)
+    }
+  }
+
+  // Handle file upload
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files || [])
+    setFormData(prev => ({
+      ...prev,
+      documents: [...prev.documents, ...files]
+    }))
+  }
+
+  // Remove file
+  const removeFile = (index: number) => {
+    setFormData(prev => ({
+      ...prev,
+      documents: prev.documents.filter((_, i) => i !== index)
+    }))
+  }
+
   // Loading state
   if (loading) {
     return (
       <DashboardLayout>
-        <div className="flex items-center justify-center h-64">
+        <div className="flex items-center justify-center min-h-screen">
           <div className="text-center">
-            <Clock className="h-8 w-8 animate-spin text-green-600 mx-auto mb-4" />
+            <Clock className="h-8 w-8 animate-spin mx-auto mb-4 text-green-600" />
             <p className="text-gray-600">Loading application form...</p>
           </div>
         </div>
@@ -174,46 +183,104 @@ export default function NewApplicationPage() {
 
   return (
     <DashboardLayout>
-      <div className="max-w-4xl mx-auto">
+      <div className="p-6 space-y-6">
         {/* Header */}
-        <div className="flex items-center justify-between mb-6">
-          <div className="flex items-center space-x-3">
-            <Button
-              variant="ghost"
-              onClick={() => router.back()}
-              className="flex items-center space-x-2"
-            >
-              <ArrowLeft className="h-4 w-4" />
-              <span>Back</span>
-            </Button>
-            <div>
-              <h1 className="text-2xl font-bold text-gray-900">New Hostel Application</h1>
-              <p className="text-gray-600">Submit your application for hostel accommodation</p>
-            </div>
+        <div className="flex items-center space-x-4">
+          <Button onClick={() => router.back()} variant="outline" size="sm">
+            <ArrowLeft className="h-4 w-4 mr-2" />
+            Back
+          </Button>
+          <div>
+            <h1 className="text-3xl font-bold text-gray-900">New Application</h1>
+            <p className="text-gray-600 mt-1">Create a new hostel application</p>
           </div>
         </div>
 
         {/* Error/Success Messages */}
         {error && (
-          <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
-            <div className="flex items-center">
-              <AlertCircle className="h-5 w-5 text-red-600 mr-3" />
-              <p className="text-red-800">{error}</p>
-            </div>
-          </div>
+          <Card className="border-red-200 bg-red-50">
+            <CardContent className="pt-6">
+              <div className="flex items-center space-x-2">
+                <AlertCircle className="h-5 w-5 text-red-600" />
+                <p className="text-red-800">{error}</p>
+              </div>
+            </CardContent>
+          </Card>
         )}
 
         {success && (
-          <div className="bg-green-50 border border-green-200 rounded-lg p-4 mb-6">
-            <div className="flex items-center">
-              <CheckCircle className="h-5 w-5 text-green-600 mr-3" />
-              <p className="text-green-800">{success}</p>
-            </div>
-          </div>
+          <Card className="border-green-200 bg-green-50">
+            <CardContent className="pt-6">
+              <div className="flex items-center space-x-2">
+                <CheckCircle className="h-5 w-5 text-green-600" />
+                <p className="text-green-800">{success}</p>
+              </div>
+            </CardContent>
+          </Card>
         )}
 
         {/* Application Form */}
         <form onSubmit={handleSubmit} className="space-y-6">
+          {/* Application Window Selection */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center space-x-2">
+                <Calendar className="h-5 w-5" />
+                <span>Application Window</span>
+              </CardTitle>
+              <CardDescription>
+                Select the application window for this application
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Application Window *
+                  </label>
+                  <select
+                    value={formData.applicationWindowId}
+                    onChange={(e) => handleInputChange('applicationWindowId', e.target.value)}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                    required
+                  >
+                    <option value="">Select an application window</option>
+                    {applicationWindows.map((window) => (
+                      <option key={window.id} value={window.id}>
+                        {window.name} ({new Date(window.startDate).toLocaleDateString()} - {new Date(window.endDate).toLocaleDateString()})
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                {selectedWindow && (
+                  <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                    <div className="flex items-center space-x-2 mb-2">
+                      <Calendar className="h-4 w-4 text-blue-600" />
+                      <h4 className="font-medium text-blue-900">{selectedWindow.name}</h4>
+                    </div>
+                    <p className="text-sm text-blue-700 mb-2">{selectedWindow.description}</p>
+                    <div className="grid grid-cols-2 gap-4 text-sm">
+                      <div>
+                        <span className="text-blue-600">Start Date:</span>
+                        <span className="ml-2 text-blue-900">{new Date(selectedWindow.startDate).toLocaleDateString()}</span>
+                      </div>
+                      <div>
+                        <span className="text-blue-600">End Date:</span>
+                        <span className="ml-2 text-blue-900">{new Date(selectedWindow.endDate).toLocaleDateString()}</span>
+                      </div>
+                    </div>
+                    <div className="mt-2">
+                      <Badge className={selectedWindow.isPublished ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'}>
+                        {selectedWindow.isPublished ? 'Published' : 'Draft'}
+                      </Badge>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </CardContent>
+          </Card>
+
           {/* Hostel Selection */}
           <Card>
             <CardHeader>
@@ -222,222 +289,165 @@ export default function NewApplicationPage() {
                 <span>Hostel Selection</span>
               </CardTitle>
               <CardDescription>
-                Choose your preferred hostel and room type
+                Choose the hostel, room, and bed for your application
               </CardDescription>
             </CardHeader>
             <CardContent>
-              {hostels.length === 0 ? (
-                <div className="text-center py-4">
-                  <p className="text-gray-500">No hostels available at the moment</p>
-                </div>
-              ) : (
-                <div className="space-y-4">
-                  {/* Hostel Selection */}
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Select Hostel *
-                    </label>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {hostels.map((hostel) => (
-                  <div
-                    key={hostel.id}
-                    className={`border rounded-lg p-4 cursor-pointer transition-colors ${
-                            formData.hostel_id === hostel.id
-                        ? 'border-green-500 bg-green-50'
-                        : 'border-gray-200 hover:border-gray-300'
-                    }`}
-                    onClick={() => handleHostelChange(hostel.id)}
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Hostel *
+                  </label>
+                  <select
+                    value={formData.hostelId}
+                    onChange={(e) => handleInputChange('hostelId', e.target.value)}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                    required
                   >
-                    <div className="flex items-center justify-between">
+                    <option value="">Select a hostel</option>
+                    {hostels.map((hostel) => (
+                      <option key={hostel.id} value={hostel.id}>
+                        {hostel.name} ({hostel.availableBeds} beds available)
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                {selectedHostel && (
+                  <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+                    <div className="flex items-center space-x-2 mb-2">
+                      <Building className="h-4 w-4 text-green-600" />
+                      <h4 className="font-medium text-green-900">{selectedHostel.name}</h4>
+                    </div>
+                    <p className="text-sm text-green-700 mb-2">{selectedHostel.description}</p>
+                    <div className="grid grid-cols-3 gap-4 text-sm">
                       <div>
-                        <h3 className="font-medium text-gray-900">{hostel.name}</h3>
-                              <p className="text-sm text-gray-600">{hostel.description || 'No description available'}</p>
+                        <span className="text-green-600">Capacity:</span>
+                        <span className="ml-2 text-green-900">{selectedHostel.capacity}</span>
                       </div>
-                      <div className="flex items-center space-x-2">
-                        <Badge variant="outline" className="capitalize">
-                          {hostel.gender}
-                        </Badge>
-                              {formData.hostel_id === hostel.id ? (
-                          <div className="w-5 h-5 bg-green-500 rounded-full flex items-center justify-center">
-                            <Check className="h-3 w-3 text-white" />
-                          </div>
-                        ) : (
-                          <div className="w-5 h-5 border-2 border-gray-300 rounded-full"></div>
-                        )}
+                      <div>
+                        <span className="text-green-600">Available:</span>
+                        <span className="ml-2 text-green-900">{selectedHostel.availableBeds}</span>
+                      </div>
+                      <div>
+                        <span className="text-green-600">Address:</span>
+                        <span className="ml-2 text-green-900">{selectedHostel.address}</span>
                       </div>
                     </div>
-                    <div className="mt-2 space-y-1">
-                            {hostel.available_rooms !== undefined && (
-                      <div className="flex justify-between text-sm">
-                                <span className="text-gray-600">Available Rooms:</span>
-                                <span className="font-medium">{hostel.available_rooms}</span>
-                      </div>
-                            )}
-                            {hostel.price_per_semester !== undefined && (
-                      <div className="flex justify-between text-sm">
-                        <span className="text-gray-600">Price per Semester:</span>
-                                <span className="font-medium">₦{(hostel.price_per_semester).toLocaleString()}</span>
-                              </div>
-                            )}
+                  </div>
+                )}
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Room Number
+                    </label>
+                    <Input
+                      type="text"
+                      value={formData.roomId}
+                      onChange={(e) => handleInputChange('roomId', e.target.value)}
+                      placeholder="e.g., A101"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Bed Number
+                    </label>
+                    <Input
+                      type="text"
+                      value={formData.bedId}
+                      onChange={(e) => handleInputChange('bedId', e.target.value)}
+                      placeholder="e.g., 1"
+                    />
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Document Upload */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center space-x-2">
+                <FileText className="h-5 w-5" />
+                <span>Documents</span>
+              </CardTitle>
+              <CardDescription>
+                Upload required documents for your application
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Upload Documents
+                  </label>
+                  <input
+                    type="file"
+                    multiple
+                    onChange={handleFileChange}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                    accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
+                  />
+                  <p className="text-sm text-gray-500 mt-1">
+                    Accepted formats: PDF, DOC, DOCX, JPG, JPEG, PNG
+                  </p>
+                </div>
+
+                {formData.documents.length > 0 && (
+                  <div>
+                    <h4 className="text-sm font-medium text-gray-700 mb-2">Uploaded Files:</h4>
+                    <div className="space-y-2">
+                      {formData.documents.map((file, index) => (
+                        <div key={index} className="flex items-center justify-between p-2 bg-gray-50 rounded">
+                          <div className="flex items-center space-x-2">
+                            <FileText className="h-4 w-4 text-gray-400" />
+                            <span className="text-sm text-gray-900">{file.name}</span>
+                            <span className="text-xs text-gray-500">
+                              ({(file.size / 1024 / 1024).toFixed(2)} MB)
+                            </span>
                           </div>
+                          <Button
+                            type="button"
+                            variant="outline"
+                            size="sm"
+                            onClick={() => removeFile(index)}
+                            className="text-red-600 hover:text-red-700"
+                          >
+                            Remove
+                          </Button>
                         </div>
                       ))}
                     </div>
                   </div>
-
-                  {/* Room Type Selection */}
-                  {selectedHostel && (
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
-                        Room Type *
-                      </label>
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        {['Single Room', 'Shared Room', 'Suite', 'Apartment'].map((roomType) => (
-                          <div
-                            key={roomType}
-                            className={`border rounded-lg p-3 cursor-pointer transition-colors ${
-                              formData.room_type === roomType
-                                ? 'border-green-500 bg-green-50'
-                                : 'border-gray-200 hover:border-gray-300'
-                            }`}
-                            onClick={() => handleInputChange('room_type', roomType)}
-                          >
-                            <div className="flex items-center justify-between">
-                              <span className="text-sm font-medium">{roomType}</span>
-                              {formData.room_type === roomType ? (
-                                <div className="w-4 h-4 bg-green-500 rounded-full flex items-center justify-center">
-                                  <Check className="h-2 w-2 text-white" />
-                                </div>
-                              ) : (
-                                <div className="w-4 h-4 border-2 border-gray-300 rounded-full"></div>
-                              )}
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Preferred Room Number */}
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Preferred Room Number (Optional)
-                    </label>
-                    <Input
-                      type="text"
-                      value={formData.preferred_room_number}
-                      onChange={(e) => handleInputChange('preferred_room_number', e.target.value)}
-                      placeholder="e.g., Room 101, Block A"
-                      className="w-full"
-                    />
-                  </div>
+                )}
               </div>
-              )}
-            </CardContent>
-          </Card>
-
-          {/* Special Requirements */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center space-x-2">
-                <FileText className="h-5 w-5" />
-                <span>Special Requirements</span>
-              </CardTitle>
-              <CardDescription>
-                Any special requirements or accommodations needed
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <textarea
-                value={formData.special_requirements}
-                onChange={(e) => handleInputChange('special_requirements', e.target.value)}
-                rows={4}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
-                placeholder="Enter any special requirements, medical needs, accessibility requirements, etc..."
-              />
-            </CardContent>
-          </Card>
-
-          {/* Preferences */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center space-x-2">
-                <FileText className="h-5 w-5" />
-                <span>Room Preferences</span>
-              </CardTitle>
-              <CardDescription>
-                Select your room preferences (optional)
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {[
-                  'Ground Floor',
-                  'Upper Floor',
-                  'Corner Room',
-                  'Quiet Area',
-                  'Near Entrance',
-                  'Near Bathroom',
-                  'Balcony',
-                  'Garden View'
-                ].map((preference) => (
-                  <label key={preference} className="flex items-center space-x-3">
-                    <input
-                      type="checkbox"
-                      checked={formData.preferences.includes(preference)}
-                      onChange={(e) => handlePreferenceChange(preference, e.target.checked)}
-                      className="h-4 w-4 text-green-600 focus:ring-green-500 border-gray-300 rounded"
-                    />
-                    <span className="text-sm text-gray-700">{preference}</span>
-                  </label>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Additional Notes */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Additional Notes</CardTitle>
-              <CardDescription>
-                Any additional information or special requests
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <textarea
-                value={formData.additional_notes}
-                onChange={(e) => handleInputChange('additional_notes', e.target.value)}
-                rows={4}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
-                placeholder="Enter any additional notes or special requests..."
-              />
             </CardContent>
           </Card>
 
           {/* Submit Button */}
-          <div className="flex justify-end space-x-4">
+          <div className="flex items-center justify-end space-x-3">
             <Button
               type="button"
-              variant="outline"
               onClick={() => router.back()}
+              variant="outline"
               disabled={submitting}
             >
               Cancel
             </Button>
             <Button
               type="submit"
-              disabled={submitting || !formData.hostel_id || !formData.room_type}
-              className="flex items-center space-x-2"
+              disabled={submitting || !formData.applicationWindowId || !formData.hostelId}
             >
               {submitting ? (
                 <>
-                  <Clock className="h-4 w-4 animate-spin" />
-                  <span>Submitting...</span>
+                  <Clock className="h-4 w-4 animate-spin mr-2" />
+                  Creating Application...
                 </>
               ) : (
                 <>
-                  <Save className="h-4 w-4" />
-                  <span>Submit Application</span>
+                  <Save className="h-4 w-4 mr-2" />
+                  Create Application
                 </>
               )}
             </Button>

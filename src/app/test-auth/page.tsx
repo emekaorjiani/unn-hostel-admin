@@ -56,7 +56,7 @@ export default function TestAuthPage() {
 
     try {
       setAuthStatus('Testing dashboard call...')
-      const response = await fetch('https://api.unnaccomodation.com/api/v1/reports/dashboard', {
+      const response = await fetch('https://api.unnaccomodation.com/api/admin/dashboard/overview', {
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
@@ -79,7 +79,7 @@ export default function TestAuthPage() {
   const testDirectFetch = async () => {
     try {
       setAuthStatus('Testing direct fetch...')
-      const response = await fetch('https://api.unnaccomodation.com/api/v1/auth/login', {
+      const response = await fetch('https://api.unnaccomodation.com/api/auth/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -121,7 +121,7 @@ export default function TestAuthPage() {
         password: 'password123'
       })
       
-      const response = await fetch('https://api.unnaccomodation.com/api/v1/auth/login', {
+      const response = await fetch('https://api.unnaccomodation.com/api/auth/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

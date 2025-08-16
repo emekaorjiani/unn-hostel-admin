@@ -21,7 +21,7 @@ import {
   Building
 } from 'lucide-react'
 import DashboardLayout from '../../components/layout/dashboard-layout'
-import { apiClient } from '../../lib/api'
+import { dashboardService } from '../../lib/dashboardService'
 import { safeLocalStorage } from '../../lib/utils'
 
 interface Payment {
@@ -79,32 +79,79 @@ export default function PaymentsPage() {
   const [gatewayFilter, setGatewayFilter] = useState<string>('all')
   const [dateFilter, setDateFilter] = useState<string>('all')
 
-  // Fetch payments data from real backend
+  // Fetch payments data from dashboard service
   const fetchPayments = async () => {
     try {
       setError(null)
-      const token = safeLocalStorage.getItem('auth_token') || safeLocalStorage.getItem('student_token')
-      
-      if (!token) {
-        throw new Error('No authentication token found')
-      }
+      setLoading(true)
 
-      // Fetch payment statistics from real backend
-      const statsRes = await apiClient.get('/payments/stats', {
-        headers: { Authorization: `Bearer ${token}` }
+      // Fetch payments using dashboard service
+      const response = await dashboardService.getPayments({
+        page: 1,
+        limit: 50
       })
 
-      // Handle different response structures for stats
-      const statsData = statsRes.data || null
-      
-      // Note: Individual payments endpoint is not available in the current API
-      // This will show payment statistics but no individual payment records
-      setPayments([])
-      setStats(statsData)
+      // Transform API data to match frontend interface
+      const transformedPayments: Payment[] = response.payments.map(payment => ({
+        id: payment.id,
+        reference: payment.reference,
+        studentId: payment.student_id,
+        studentName: `${payment.student.first_name} ${payment.student.last_name}`,
+        matricNumber: payment.student.matric_number,
+        amount: parseFloat(payment.amount),
+        currency: payment.currency,
+        status: payment.status as 'pending' | 'processing' | 'successful' | 'failed' | 'cancelled' | 'refunded' | 'partially_refunded',
+        gateway: payment.payment_gateway as 'paystack' | 'flutterwave' | 'remita' | 'internal',
+        paymentMethod: payment.payment_method,
+        description: payment.description,
+        metadata: {
+          applicationId: payment.application_id || undefined,
+          hostelName: undefined, // Not available in API response
+          academicYear: undefined, // Not available in API response
+          semester: undefined // Not available in API response
+        },
+        gatewayReference: payment.transaction_id,
+        gatewayResponse: payment.gateway_response,
+        redirectUrl: undefined, // Not available in API response
+        createdAt: payment.created_at,
+        updatedAt: payment.updated_at,
+        paidAt: payment.payment_date
+      }))
+
+      setPayments(transformedPayments)
+
+      // Transform statistics
+      const transformedStats: PaymentStats = {
+        totalPayments: response.statistics.total_payments,
+        successfulPayments: response.statistics.successful_payments,
+        failedPayments: response.statistics.failed_payments,
+        pendingPayments: response.statistics.pending_payments,
+        totalRevenue: parseFloat(response.statistics.total_revenue),
+        successRate: response.statistics.successful_payments > 0 
+          ? (response.statistics.successful_payments / response.statistics.total_payments) * 100 
+          : 0,
+        revenueByGateway: [], // Not available in API response
+        revenueByMonth: [] // Not available in API response
+      }
+
+      setStats(transformedStats)
     } catch (err: unknown) {
       const errorMessage = err instanceof Error ? err.message : 'Failed to fetch payments'
       setError(errorMessage)
       console.error('Payments fetch error:', err)
+      
+      // Set fallback data even on error
+      setPayments([])
+      setStats({
+        totalPayments: 0,
+        successfulPayments: 0,
+        failedPayments: 0,
+        pendingPayments: 0,
+        totalRevenue: 0,
+        successRate: 0,
+        revenueByGateway: [],
+        revenueByMonth: []
+      })
     } finally {
       setLoading(false)
     }
@@ -192,7 +239,7 @@ export default function PaymentsPage() {
 
   return (
     <DashboardLayout>
-      <div className="max-w-7xl mx-auto">
+      <div className="mx-auto">
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-8">
           <div>

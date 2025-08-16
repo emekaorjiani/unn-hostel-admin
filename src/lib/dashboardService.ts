@@ -1,677 +1,665 @@
-import { apiClient } from "./api";
-import { config } from "./config";
+import { apiClient } from './api'
 
-// Dashboard data types based on actual NestJS backend response
-export interface DashboardMetrics {
-  // General metrics
-  generalMetrics: {
-    totalStudents: number;
-    totalApplications: number;
-    availableBeds: number;
-    totalRevenue: number;
-    changePercentage: number;
-  };
-
-  // Occupancy data
-  occupancy: {
-    totalHostels: number;
-    averageOccupancyRate: number;
-    totalBeds: number;
-    occupiedBeds: number;
-  };
-
-  // Hostel occupancy breakdown
-  hostelOccupancy: Array<{
-    hostelId: string;
-    hostelName: string;
-    totalBeds: number;
-    occupiedBeds: number;
-    availableBeds: number;
-    occupancyRate?: number;
-    occupancyPercentage?: number;
-    blocks?: Array<Record<string, unknown>>;
-  }>;
-
-  // Revenue data
-  revenue: {
-    totalRevenue: number;
-    totalPayments: number;
-    pendingPayments: number;
-    successRate: number;
-  };
-
-  // Financial metrics
-  financialMetrics: {
-    totalRevenue: number;
-    pendingPayments: number;
-    successfulPayments: number;
-    failedPayments: number;
-    successRate: number;
-  };
-
-  // Applications data
-  applications: {
-    totalApplications: number;
-    approvedApplications: number;
-    pendingApplications: number;
-    approvalRate: number;
-  };
-
-  // Application metrics
-  applicationMetrics: {
-    totalApplications: number;
-    pendingApplications: number;
-    approvedApplications: number;
-    rejectedApplications: number;
-  };
-
-  // Maintenance data
-  maintenance: {
-    totalTickets: number;
-    openTickets: number;
-    resolvedTickets: number;
-    resolutionRate: number;
-    averageResolutionTime: number;
-  };
-
-  // Maintenance metrics
-  maintenanceMetrics: {
-    totalTickets: number;
-    openTickets: number;
-    inProgressTickets: number;
-    resolvedTickets: number;
-    averageResolutionTime: number;
-  };
-
-  // Student metrics
-  studentMetrics: {
-    totalStudents: number;
-    activeStudents: number;
-    newStudents: number;
-    studentsByFaculty: Array<{ faculty: string; count: number }>;
-    studentsByLevel: Array<{ level: string; count: number }>;
-  };
-
-  // Role metrics
-  roleMetrics: {
-    role: string;
-  };
-
-  // Charts data
-  charts: Array<{
-    title: string;
-    type: string;
-    data: Array<{ label: string; value: number }> | { labels: string[]; datasets: Array<{ label: string; data: number[] }> };
-  }>;
-
-  // Recent activities
-  recentActivities: Array<{
-    id: string;
-    type: string;
-    title: string;
-    description: string;
-    timestamp: string;
-    status: string;
-  }>;
-
-  // Pending items
-  pendingItems: Array<{ id: string; type: string; title: string; description: string }>;
-
-  // Quick actions
-  quickActions: Array<{ id: string; title: string; description: string; action: string }>;
-
-  // Last updated timestamp
-  lastUpdated: string;
-
-  // User role
-  role: string;
-}
-
-export interface DashboardFilters {
-  period?: "week" | "month" | "year";
-  startDate?: string;
-  endDate?: string;
-  hostel?: string;
-  faculty?: string;
-}
-
-export interface DashboardResponse {
-  success?: boolean;
-  data?: DashboardMetrics;
-  filters?: DashboardFilters;
-  userRole?: string;
-  timestamp?: string;
-  // Allow the response to be the data directly
-  [key: string]: unknown;
-}
-
-/**
- * Generate dummy dashboard data for development/testing
- */
-function generateDummyDashboardData(): DashboardMetrics {
-  const currentDate = new Date();
-  const lastMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1);
-  
-  return {
-    generalMetrics: {
-      totalStudents: 2847,
-      totalApplications: 2156,
-      availableBeds: 423,
-      totalRevenue: 156800000,
-      changePercentage: 12.5
-    },
-    occupancy: {
-      totalHostels: 8,
-      averageOccupancyRate: 85.2,
-      totalBeds: 3200,
-      occupiedBeds: 2725
-    },
-    hostelOccupancy: [
-      {
-        hostelId: "1",
-        hostelName: "Zik Hall",
-        totalBeds: 450,
-        occupiedBeds: 398,
-        availableBeds: 52,
-        occupancyRate: 88.4
-      },
-      {
-        hostelId: "2",
-        hostelName: "Mariere Hall",
-        totalBeds: 380,
-        occupiedBeds: 342,
-        availableBeds: 38,
-        occupancyRate: 90.0
-      },
-      {
-        hostelId: "3",
-        hostelName: "Mellanby Hall",
-        totalBeds: 420,
-        occupiedBeds: 356,
-        availableBeds: 64,
-        occupancyRate: 84.8
-      },
-      {
-        hostelId: "4",
-        hostelName: "Kuti Hall",
-        totalBeds: 400,
-        occupiedBeds: 378,
-        availableBeds: 22,
-        occupancyRate: 94.5
-      },
-      {
-        hostelId: "5",
-        hostelName: "Alvan Ikoku Hall",
-        totalBeds: 350,
-        occupiedBeds: 298,
-        availableBeds: 52,
-        occupancyRate: 85.1
-      },
-      {
-        hostelId: "6",
-        hostelName: "Eni Njoku Hall",
-        totalBeds: 320,
-        occupiedBeds: 275,
-        availableBeds: 45,
-        occupancyRate: 85.9
-      },
-      {
-        hostelId: "7",
-        hostelName: "Moremi Hall",
-        totalBeds: 280,
-        occupiedBeds: 238,
-        availableBeds: 42,
-        occupancyRate: 85.0
-      },
-      {
-        hostelId: "8",
-        hostelName: "Jaja Hall",
-        totalBeds: 200,
-        occupiedBeds: 180,
-        availableBeds: 20,
-        occupancyRate: 90.0
-      }
-    ],
-    revenue: {
-      totalRevenue: 156800000,
-      totalPayments: 142000000,
-      pendingPayments: 14800000,
-      successRate: 90.5
-    },
-    financialMetrics: {
-      totalRevenue: 156800000,
-      pendingPayments: 14800000,
-      successfulPayments: 142000000,
-      failedPayments: 8000000,
-      successRate: 90.5
-    },
-    applications: {
-      totalApplications: 2156,
-      approvedApplications: 1847,
-      pendingApplications: 309,
-      approvalRate: 85.7
-    },
-    applicationMetrics: {
-      totalApplications: 2156,
-      pendingApplications: 309,
-      approvedApplications: 1847,
-      rejectedApplications: 0
-    },
-    maintenance: {
-      totalTickets: 156,
-      openTickets: 23,
-      resolvedTickets: 133,
-      resolutionRate: 85.3,
-      averageResolutionTime: 2.4
-    },
-    maintenanceMetrics: {
-      totalTickets: 156,
-      openTickets: 23,
-      inProgressTickets: 18,
-      resolvedTickets: 115,
-      averageResolutionTime: 2.4
-    },
-    studentMetrics: {
-      totalStudents: 2847,
-      activeStudents: 2725,
-      newStudents: 156,
-      studentsByFaculty: [
-        { faculty: "Engineering", count: 856 },
-        { faculty: "Sciences", count: 723 },
-        { faculty: "Arts", count: 456 },
-        { faculty: "Social Sciences", count: 389 },
-        { faculty: "Medicine", count: 423 }
-      ],
-      studentsByLevel: [
-        { level: "100 Level", count: 723 },
-        { level: "200 Level", count: 689 },
-        { level: "300 Level", count: 567 },
-        { level: "400 Level", count: 456 },
-        { level: "500 Level", count: 412 }
-      ]
-    },
-    roleMetrics: {
-      role: "admin"
-    },
-    charts: [
-      {
-        title: "Monthly Revenue Trend",
-        type: "line",
-        data: {
-          labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
-          datasets: [
-            {
-              label: "Revenue (₦)",
-              data: [12500000, 13800000, 14200000, 15600000, 16800000, 17500000, 18200000, 18900000, 19500000, 20100000, 20800000, 21500000]
-            }
-          ]
-        }
-      },
-      {
-        title: "Applications by Status",
-        type: "doughnut",
-        data: [
-          { label: "Approved", value: 1847 },
-          { label: "Pending", value: 309 },
-          { label: "Under Review", value: 156 },
-          { label: "Waitlisted", value: 89 }
-        ]
-      },
-      {
-        title: "Hostel Occupancy Rates",
-        type: "bar",
-        data: [
-          { label: "Zik Hall", value: 88.4 },
-          { label: "Mariere Hall", value: 90.0 },
-          { label: "Mellanby Hall", value: 84.8 },
-          { label: "Kuti Hall", value: 94.5 },
-          { label: "Alvan Ikoku Hall", value: 85.1 },
-          { label: "Eni Njoku Hall", value: 85.9 },
-          { label: "Moremi Hall", value: 85.0 },
-          { label: "Jaja Hall", value: 90.0 }
-        ]
-      }
-    ],
-    recentActivities: [
-      {
-        id: "1",
-        type: "application",
-        title: "New Application Submitted",
-        description: "John Doe submitted hostel application for Zik Hall",
-        timestamp: new Date(Date.now() - 5 * 60 * 1000).toISOString(),
-        status: "completed"
-      },
-      {
-        id: "2",
-        type: "payment",
-        title: "Payment Received",
-        description: "Payment of ₦150,000 received from Jane Smith",
-        timestamp: new Date(Date.now() - 15 * 60 * 1000).toISOString(),
-        status: "completed"
-      },
-      {
-        id: "3",
-        type: "maintenance",
-        title: "Maintenance Ticket Resolved",
-        description: "Electrical issue in Room 205, Zik Hall resolved",
-        timestamp: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
-        status: "completed"
-      },
-      {
-        id: "4",
-        type: "application",
-        title: "Application Approved",
-        description: "Sarah Johnson's application for Mariere Hall approved",
-        timestamp: new Date(Date.now() - 4 * 60 * 60 * 1000).toISOString(),
-        status: "completed"
-      },
-      {
-        id: "5",
-        type: "maintenance",
-        title: "New Maintenance Ticket",
-        description: "Plumbing issue reported in Room 312, Mellanby Hall",
-        timestamp: new Date(Date.now() - 6 * 60 * 60 * 1000).toISOString(),
-        status: "pending"
-      }
-    ],
-    pendingItems: [
-      {
-        id: "1",
-        type: "application",
-        title: "15 Applications Pending Review",
-        description: "Applications submitted in the last 24 hours require review"
-      },
-      {
-        id: "2",
-        type: "payment",
-        title: "23 Pending Payments",
-        description: "Payments awaiting confirmation or processing"
-      },
-      {
-        id: "3",
-        type: "maintenance",
-        title: "8 Maintenance Tickets Open",
-        description: "Maintenance requests requiring attention"
-      },
-      {
-        id: "4",
-        type: "student",
-        title: "12 Student Registrations",
-        description: "New student registrations pending verification"
-      }
-    ],
-    quickActions: [
-      {
-        id: "1",
-        title: "Review Applications",
-        description: "Review pending hostel applications",
-        action: "review"
-      },
-      {
-        id: "2",
-        title: "Process Payments",
-        description: "Handle pending payment confirmations",
-        action: "payments"
-      },
-      {
-        id: "3",
-        title: "Maintenance Dashboard",
-        description: "View and manage maintenance tickets",
-        action: "maintenance"
-      },
-      {
-        id: "4",
-        title: "Generate Reports",
-        description: "Create and export dashboard reports",
-        action: "reports"
-      }
-    ],
-    lastUpdated: new Date().toISOString(),
-    role: "admin"
-  };
-}
-
-/**
- * Dashboard Service
- * Handles all dashboard-related data with dummy data for development
- */
-export class DashboardService {
-  /**
-   * Fetch dashboard data with optional filters
-   * @param filters - Optional filters for the dashboard data
-   * @returns Promise<DashboardMetrics>
-   */
-  static async getDashboardData(
-    filters: DashboardFilters = {}
-  ): Promise<DashboardMetrics> {
-    // Simulate API delay for realistic feel
-    await new Promise(resolve => setTimeout(resolve, 500));
-    
-    // Generate dummy data
-    const dummyData = generateDummyDashboardData();
-    
-    // Apply filters if needed (for future use when backend is ready)
-    if (filters.period) {
-      console.log("Filter applied:", filters.period);
-    }
-    if (filters.hostel) {
-      console.log("Hostel filter applied:", filters.hostel);
-    }
-    if (filters.faculty) {
-      console.log("Faculty filter applied:", filters.faculty);
-    }
-    
-    console.log("Returning dummy dashboard data");
-    return dummyData;
+// Dashboard Overview Interface
+export interface DashboardOverview {
+  overview: {
+    total_hostels: number
+    total_students: number
+    total_applications: number
+    pending_applications: number
+    approved_applications: number
+    total_revenue: string
+    monthly_revenue: number
+    occupancy_rate: number
+    maintenance_tickets: number
+    security_incidents: number
+    active_visitor_passes: number
+    unread_notifications: number
   }
-
-  /**
-   * Get real-time dashboard updates
-   * @param filters - Optional filters
-   * @param callback - Callback function to handle updates
-   * @returns Function to stop polling
-   */
-  static startRealTimeUpdates(
-    filters: DashboardFilters = {},
-    callback: (data: DashboardMetrics) => void,
-    interval: number = config.dashboard.refreshInterval
-  ): () => void {
-    let isPolling = true;
-
-    const poll = async () => {
-      if (!isPolling) return;
-
-      try {
-        const data = await this.getDashboardData(filters);
-        callback(data);
-      } catch (error) {
-        console.error("Real-time update error:", error);
-      }
-
-      if (isPolling) {
-        setTimeout(poll, interval);
-      }
-    };
-
-    // Start polling
-    poll();
-
-    // Return function to stop polling
-    return () => {
-      isPolling = false;
-    };
+  charts: {
+    revenue_trend: Array<{ month: string; value: number }>
+    occupancy_trend: Array<{ month: string; value: number }>
+    applications_trend: Array<{ month: string; value: number }>
+    maintenance_trend: Array<{ month: string; value: number }>
   }
+  recent_activities: Array<{
+    type: string
+    title: string
+    description: string
+    timestamp: string
+    user: string
+    status: string
+    priority: string
+    metadata: any
+  }>
+}
 
-  /**
-   * Export dashboard data to CSV
-   * @param data - Dashboard data to export
-   * @param filename - Name of the exported file
-   */
-  static exportToCSV(
-    data: DashboardMetrics,
-    filename: string = "dashboard-data.csv"
-  ): void {
+// Hostel Interface
+export interface Hostel {
+  id: string
+  name: string
+  description: string
+  type: 'male' | 'female' | 'mixed'
+  address: string
+  phone_number: string
+  email: string
+  capacity: number
+  occupied_beds: number
+  available_beds: number
+  occupancy_rate: number
+  status: 'active' | 'inactive' | 'maintenance'
+  blocks: Block[]
+  created_at: string
+  updated_at: string
+}
+
+export interface Block {
+  id: string
+  name: string
+  description: string
+  floors: number
+  rooms: Room[]
+  created_at: string
+  updated_at: string
+}
+
+export interface Room {
+  id: string
+  number: string
+  type: 'single' | 'double' | 'triple' | 'quad'
+  capacity: number
+  occupied_beds: number
+  available_beds: number
+  status: 'available' | 'occupied' | 'maintenance'
+  beds: Bed[]
+  created_at: string
+  updated_at: string
+}
+
+export interface Bed {
+  id: string
+  number: string
+  status: 'available' | 'occupied' | 'maintenance' | 'reserved'
+  student_id?: string
+  student_name?: string
+  created_at: string
+  updated_at: string
+}
+
+export interface HostelStats {
+  total_hostels: number
+  active_hostels: number
+  male_hostels: number
+  female_hostels: number
+  mixed_hostels: number
+}
+
+// Application Interface
+export interface Application {
+  id: string
+  student_id: string
+  student_name: string
+  matric_number: string
+  hostel_id: string
+  hostel_name: string
+  room_type: string
+  status: 'pending' | 'approved' | 'rejected' | 'waitlisted'
+  type: string
+  academic_year: string
+  semester: string
+  submitted_at: string
+  processed_at?: string
+  approved_at?: string
+  rejection_reason?: string
+  waitlist_position?: number
+  application_window_id?: string
+  window_name?: string
+}
+
+export interface ApplicationStats {
+  total_applications: number
+  pending_applications: number
+  approved_applications: number
+  rejected_applications: number
+  waitlisted_applications: number
+  this_month_applications: number
+  approval_rate: number
+}
+
+// Payment Interface
+export interface Payment {
+  id: string
+  student_id: string
+  application_id: string | null
+  amount: string
+  currency: string
+  payment_method: string
+  payment_gateway: string
+  reference: string
+  status: 'pending' | 'successful' | 'failed'
+  gateway_response: string | null
+  transaction_id: string
+  payment_date: string
+  due_date: string | null
+  description: string
+  receipt_url: string | null
+  metadata: any
+  created_at: string
+  updated_at: string
+  deleted_at: string | null
+  fee_id: string | null
+  student: {
+    id: string
+    first_name: string
+    last_name: string
+    email: string
+    matric_number: string
+    staff_id: string | null
+    phone_number: string
+    role: string
+    status: string
+    is_email_verified: boolean
+    is_phone_verified: boolean
+    two_factor_enabled: boolean
+    last_login_at: string | null
+    last_login_ip: string | null
+    preferences: any
+    profile_picture: string | null
+    faculty: string | null
+    department: string
+    level: string
+    gender: string
+    date_of_birth: string | null
+    emergency_contact: string | null
+    emergency_phone: string | null
+    address: string | null
+    state_of_origin: string | null
+    local_government: string | null
+    tribe: string | null
+    religion: string | null
+    is_pwd: boolean
+    pwd_details: string | null
+    is_international_student: boolean
+    nationality: string | null
+    passport_number: string | null
+    nin_number: string | null
+    employee_id: string | null
+    designation: string | null
+    admin_department: string | null
+    permissions: any
+    created_at: string
+    updated_at: string
+    deleted_at: string | null
+  }
+}
+
+export interface PaymentStats {
+  total_payments: number
+  successful_payments: number
+  failed_payments: number
+  pending_payments: number
+  total_revenue: string
+  monthly_revenue: number
+  average_payment_amount: string
+}
+
+// Maintenance Interface
+export interface MaintenanceTicket {
+  id: string
+  title: string
+  description: string
+  category: string
+  priority: 'low' | 'medium' | 'high' | 'urgent'
+  status: 'open' | 'in_progress' | 'completed' | 'cancelled'
+  reporter_id: string
+  reporter_name: string
+  assigned_to_id?: string
+  assigned_to_name?: string
+  location: string
+  estimated_completion?: string
+  completed_at?: string
+  rating?: number
+  feedback?: string
+  created_at: string
+  updated_at: string
+}
+
+export interface MaintenanceStats {
+  total_tickets: number
+  open_tickets: number
+  in_progress_tickets: number
+  completed_tickets: number
+  urgent_tickets: number
+  high_priority_tickets: number
+  average_resolution_time: number
+}
+
+// Student Interface
+export interface Student {
+  id: string
+  first_name: string
+  last_name: string
+  email: string
+  matric_number: string
+  phone_number?: string
+  faculty?: string
+  department?: string
+  level?: string
+  gender?: string
+  date_of_birth?: string
+  address?: string
+  state_of_origin?: string
+  nationality?: string
+  status: 'active' | 'inactive' | 'suspended' | 'pending_verification'
+  is_email_verified: boolean
+  is_phone_verified: boolean
+  has_application: boolean
+  has_allocation: boolean
+  created_at: string
+  updated_at: string
+}
+
+export interface StudentStats {
+  total_students: number
+  active_students: number
+  inactive_students: number
+  students_with_applications: number
+  students_with_allocations: number
+  new_students_this_month: number
+}
+
+// Report Interface
+export interface Report {
+  id: string
+  name: string
+  description: string
+  endpoint: string
+  parameters: string[]
+  category: string
+  is_active: boolean
+  created_at: string
+}
+
+export interface ReportStats {
+  total_reports_generated: number
+  reports_this_month: number
+  most_accessed_report: string
+  average_report_generation_time: string
+}
+
+// Settings Interface
+export interface SystemSettings {
+  site_name: string
+  site_description: string
+  contact_email: string
+  contact_phone: string
+  maintenance_mode: boolean
+  registration_enabled: boolean
+  application_windows_enabled: boolean
+  payment_gateways: string[]
+  default_currency: string
+  timezone: string
+}
+
+// Pagination Interface
+export interface Pagination {
+  current_page: number
+  per_page: number
+  total: number
+  last_page: number
+  from: number
+  to: number
+}
+
+// API Response Interfaces
+export interface DashboardOverviewResponse {
+  success: boolean
+  message: string
+  data: {
+    overview: {
+      total_hostels: number
+      total_students: number
+      total_applications: number
+      pending_applications: number
+      approved_applications: number
+      rejected_applications: number
+      waitlisted_applications: number
+      total_revenue: string
+      monthly_revenue: number
+      occupancy_rate: number
+      maintenance_tickets: number
+      open_maintenance_tickets: number
+      in_progress_maintenance_tickets: number
+      completed_maintenance_tickets: number
+      security_incidents: number
+      open_security_incidents: number
+      active_visitor_passes: number
+      unread_notifications: number
+      total_payments: number
+      successful_payments: number
+      failed_payments: number
+      pending_payments: number
+      average_payment_amount: string
+      total_allocations: number
+      active_allocations: number
+      expired_allocations: number
+      total_fees: number
+      active_fees: number
+      total_wallets: number
+      active_wallets: number
+      total_wallet_transactions: number
+      this_month_transactions: number
+    }
+    charts: {
+      revenue_trend: {
+        labels: string[]
+        data: string[]
+      }
+      occupancy_trend: {
+        labels: string[]
+        data: number[]
+      }
+      applications_trend: {
+        labels: string[]
+        data: number[]
+      }
+      maintenance_trend: {
+        labels: string[]
+        data: number[]
+      }
+      payment_trend: {
+        labels: string[]
+        data: number[]
+      }
+      student_enrollment_trend: {
+        labels: string[]
+        data: number[]
+      }
+    }
+    recent_activities: Array<{
+      type: string
+      title: string
+      description: string
+      timestamp: string
+      user: string
+      status: string
+      priority: string
+      metadata: any
+    }>
+    quick_stats: {
+      approval_rate: number
+      payment_success_rate: number
+      average_resolution_time: number
+      student_satisfaction_score: number
+      system_uptime: number
+      active_sessions: number
+      peak_hours: string
+      most_active_hostel: string
+    }
+  }
+}
+
+export interface HostelsResponse {
+  success: boolean
+  message: string
+  data: {
+    hostels: Hostel[]
+    statistics: HostelStats
+    pagination: Pagination
+  }
+}
+
+export interface ApplicationsResponse {
+  success: boolean
+  message: string
+  data: {
+    applications: Application[]
+    statistics: ApplicationStats
+    pagination: Pagination
+  }
+}
+
+export interface PaymentsResponse {
+  success: boolean
+  message: string
+  data: {
+    payments: Payment[]
+    statistics: PaymentStats
+    pagination: Pagination
+  }
+}
+
+export interface MaintenanceResponse {
+  success: boolean
+  message: string
+  data: {
+    tickets: MaintenanceTicket[]
+    statistics: MaintenanceStats
+    pagination: Pagination
+  }
+}
+
+export interface StudentsResponse {
+  success: boolean
+  message: string
+  data: {
+    students: Student[]
+    statistics: StudentStats
+    pagination: Pagination
+  }
+}
+
+export interface ReportsResponse {
+  success: boolean
+  message: string
+  data: {
+    available_reports: Report[]
+    recent_reports: any[]
+    report_statistics: ReportStats
+  }
+}
+
+export interface SettingsResponse {
+  success: boolean
+  message: string
+  data: {
+    system_settings: SystemSettings
+    user_preferences: any
+    notification_settings: any
+  }
+}
+
+// Dashboard Service
+export const dashboardService = {
+  // Get dashboard overview - using the correct endpoint
+  async getOverview(): Promise<DashboardOverview> {
     try {
-      // Convert data to CSV format
-      const csvContent = this.convertToCSV(data);
-
-      // Create and download file
-      const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
-      const link = document.createElement("a");
-
-      if (link.download !== undefined) {
-        const url = URL.createObjectURL(blob);
-        link.setAttribute("href", url);
-        link.setAttribute("download", filename);
-        link.style.visibility = "hidden";
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
+      const response = await apiClient.get<DashboardOverviewResponse>('/admin/dashboard/overview')
+      const apiData = response.data.data
+      
+      // The API already returns the data in the correct format
+      const transformedData: DashboardOverview = {
+        overview: {
+          total_hostels: apiData.overview.total_hostels,
+          total_students: apiData.overview.total_students,
+          total_applications: apiData.overview.total_applications,
+          pending_applications: apiData.overview.pending_applications,
+          approved_applications: apiData.overview.approved_applications,
+          total_revenue: apiData.overview.total_revenue,
+          monthly_revenue: apiData.overview.monthly_revenue,
+          occupancy_rate: apiData.overview.occupancy_rate,
+          maintenance_tickets: apiData.overview.maintenance_tickets,
+          security_incidents: apiData.overview.security_incidents,
+          active_visitor_passes: apiData.overview.active_visitor_passes,
+          unread_notifications: apiData.overview.unread_notifications
+        },
+        charts: {
+          revenue_trend: apiData.charts.revenue_trend.data.map((value, index) => ({
+            month: apiData.charts.revenue_trend.labels[index],
+            value: parseFloat(value) || 0
+          })),
+          occupancy_trend: apiData.charts.occupancy_trend.data.map((value, index) => ({
+            month: apiData.charts.occupancy_trend.labels[index],
+            value: value
+          })),
+          applications_trend: apiData.charts.applications_trend.data.map((value, index) => ({
+            month: apiData.charts.applications_trend.labels[index],
+            value: value
+          })),
+          maintenance_trend: apiData.charts.maintenance_trend.data.map((value, index) => ({
+            month: apiData.charts.maintenance_trend.labels[index],
+            value: value
+          }))
+        },
+        recent_activities: apiData.recent_activities
       }
+      
+      return transformedData
     } catch (error) {
-      console.error("Export error:", error);
-      throw new Error("Failed to export data");
+      console.error('Error fetching dashboard overview:', error)
+      throw error
     }
-  }
+  },
 
-  /**
-   * Convert dashboard data to CSV format
-   * @param data - Dashboard data
-   * @returns CSV string
-   */
-  private static convertToCSV(data: DashboardMetrics): string {
-    const lines: string[] = [];
+  // Get hostels with pagination and filters - using hostel service endpoint
+  async getHostels(params?: {
+    page?: number
+    limit?: number
+    type?: string
+    search?: string
+  }): Promise<{ hostels: Hostel[], statistics: HostelStats, pagination: Pagination }> {
+    try {
+      const queryParams = new URLSearchParams()
+      if (params?.page) queryParams.append('page', params.page.toString())
+      if (params?.limit) queryParams.append('limit', params.limit.toString())
+      if (params?.type) queryParams.append('type', params.type)
+      if (params?.search) queryParams.append('search', params.search)
 
-    // Add header
-    lines.push("Dashboard Report");
-    lines.push(`Generated: ${new Date().toLocaleString()}`);
-    lines.push("");
-
-    // Add summary metrics
-    lines.push("Summary Metrics");
-    lines.push("Metric,Value");
-    lines.push(`Total Students,${data.generalMetrics.totalStudents}`);
-    lines.push(`Total Applications,${data.generalMetrics.totalApplications}`);
-    lines.push(`Available Beds,${data.generalMetrics.availableBeds}`);
-    lines.push(`Total Revenue,₦${data.generalMetrics.totalRevenue.toLocaleString()}`);
-    lines.push(`Occupancy Rate,${data.occupancy.averageOccupancyRate}%`);
-    lines.push(`Total Hostels,${data.occupancy.totalHostels}`);
-    lines.push("");
-
-    // Add hostel distribution
-    lines.push("Hostel Distribution");
-    lines.push("Hostel,Total Beds,Occupied Beds,Available Beds,Occupancy Rate");
-    data.hostelOccupancy.forEach((hostel) => {
-      lines.push(
-        `${hostel.hostelName},${hostel.totalBeds},${hostel.occupiedBeds},${hostel.availableBeds},${hostel.occupancyRate}%`
-      );
-    });
-    lines.push("");
-
-    // Add application metrics
-    lines.push("Application Metrics");
-    lines.push("Metric,Count");
-    lines.push(`Total Applications,${data.applicationMetrics.totalApplications}`);
-    lines.push(`Pending Applications,${data.applicationMetrics.pendingApplications}`);
-    lines.push(`Approved Applications,${data.applicationMetrics.approvedApplications}`);
-    lines.push(`Rejected Applications,${data.applicationMetrics.rejectedApplications}`);
-    lines.push("");
-
-    // Add maintenance metrics
-    lines.push("Maintenance Metrics");
-    lines.push("Metric,Count");
-    lines.push(`Total Tickets,${data.maintenanceMetrics.totalTickets}`);
-    lines.push(`Open Tickets,${data.maintenanceMetrics.openTickets}`);
-    lines.push(`In Progress Tickets,${data.maintenanceMetrics.inProgressTickets}`);
-    lines.push(`Resolved Tickets,${data.maintenanceMetrics.resolvedTickets}`);
-
-    return lines.join("\n");
-  }
-
-  /**
-   * Get chart data for specific chart type
-   * @param data - Dashboard data
-   * @param chartType - Type of chart ('occupancy', 'revenue', 'applications')
-   * @returns Chart data object
-   */
-  static getChartData(
-    data: DashboardMetrics,
-    chartType: "occupancy" | "revenue" | "applications"
-  ) {
-    switch (chartType) {
-      case 'occupancy':
-        return {
-          labels: data.hostelOccupancy.map(h => h.hostelName),
-          data: data.hostelOccupancy.map(h => h.occupancyRate)
-        };
-      case 'revenue':
-        // Try to find revenue chart from backend charts data
-        const revenueChart = data.charts.find(chart => chart.type === 'line' && chart.title.includes('Revenue'));
-        if (revenueChart?.data) {
-          return revenueChart.data;
-        }
-        // Fallback to simple data
-        return {
-          labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
-          data: [0, 0, 0, 0, 0, 0]
-        };
-      case 'applications':
-        // Try to find applications chart from backend charts data
-        const applicationsChart = data.charts.find(chart => chart.type === 'bar' && chart.title.includes('Application'));
-        if (applicationsChart?.data) {
-          return applicationsChart.data;
-        }
-        // Fallback to simple data
-        return {
-          labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
-          data: [0, 0, 0, 0, 0, 0]
-        };
-      default:
-        return { labels: [], data: [] };
+      const response = await apiClient.get<HostelsResponse>(`/hostels?${queryParams.toString()}`)
+      return response.data.data
+    } catch (error) {
+      console.error('Error fetching hostels:', error)
+      throw error
     }
-  }
+  },
 
-  /**
-   * Format currency values
-   * @param amount - Amount to format
-   * @returns Formatted currency string
-   */
-  static formatCurrency(amount: number): string {
-    return new Intl.NumberFormat("en-NG", {
-      style: "currency",
-      currency: "NGN",
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 0,
-    }).format(amount);
-  }
+  // Get applications with pagination and filters - using the correct endpoint
+  async getApplications(params?: {
+    page?: number
+    limit?: number
+    status?: string
+    type?: string
+    search?: string
+  }): Promise<{ applications: Application[], statistics: ApplicationStats, pagination: Pagination }> {
+    try {
+      const queryParams = new URLSearchParams()
+      if (params?.page) queryParams.append('page', params.page.toString())
+      if (params?.limit) queryParams.append('limit', params.limit.toString())
+      if (params?.status) queryParams.append('status', params.status)
+      if (params?.type) queryParams.append('type', params.type)
+      if (params?.search) queryParams.append('search', params.search)
 
-  /**
-   * Format percentage values
-   * @param value - Value to format
-   * @returns Formatted percentage string
-   */
-  static formatPercentage(value: number | undefined | null): string {
-    if (value === undefined || value === null || isNaN(value)) {
-      return '0.0%';
+      const response = await apiClient.get<ApplicationsResponse>(`/admin/dashboard/applications?${queryParams.toString()}`)
+      return response.data.data
+    } catch (error) {
+      console.error('Error fetching applications:', error)
+      throw error
     }
-    return `${value.toFixed(1)}%`;
-  }
+  },
 
-  /**
-   * Get status color for activities
-   * @param status - Activity status
-   * @returns CSS color class
-   */
-  static getStatusColor(status: "pending" | "completed" | "failed"): string {
-    switch (status) {
-      case "completed":
-        return "text-green-600 bg-green-100";
-      case "pending":
-        return "text-yellow-600 bg-yellow-100";
-      case "failed":
-        return "text-red-600 bg-red-100";
-      default:
-        return "text-gray-600 bg-gray-100";
+  // Get payments with pagination and filters - using the correct endpoint
+  async getPayments(params?: {
+    page?: number
+    limit?: number
+    status?: string
+    payment_method?: string
+    search?: string
+  }): Promise<{ payments: Payment[], statistics: PaymentStats, pagination: Pagination }> {
+    try {
+      const queryParams = new URLSearchParams()
+      if (params?.page) queryParams.append('page', params.page.toString())
+      if (params?.limit) queryParams.append('limit', params.limit.toString())
+      if (params?.status) queryParams.append('status', params.status)
+      if (params?.payment_method) queryParams.append('payment_method', params.payment_method)
+      if (params?.search) queryParams.append('search', params.search)
+
+      const response = await apiClient.get<PaymentsResponse>(`/admin/dashboard/payments?${queryParams.toString()}`)
+      return response.data.data
+    } catch (error) {
+      console.error('Error fetching payments:', error)
+      throw error
+    }
+  },
+
+  // Get maintenance tickets with pagination and filters - using maintenance service endpoint
+  async getMaintenance(params?: {
+    page?: number
+    limit?: number
+    status?: string
+    category?: string
+    priority?: string
+    search?: string
+  }): Promise<{ tickets: MaintenanceTicket[], statistics: MaintenanceStats, pagination: Pagination }> {
+    try {
+      const queryParams = new URLSearchParams()
+      if (params?.page) queryParams.append('page', params.page.toString())
+      if (params?.limit) queryParams.append('limit', params.limit.toString())
+      if (params?.status) queryParams.append('status', params.status)
+      if (params?.category) queryParams.append('category', params.category)
+      if (params?.priority) queryParams.append('priority', params.priority)
+      if (params?.search) queryParams.append('search', params.search)
+
+      const response = await apiClient.get<MaintenanceResponse>(`/maintenance/tickets?${queryParams.toString()}`)
+      return response.data.data
+    } catch (error) {
+      console.error('Error fetching maintenance tickets:', error)
+      throw error
+    }
+  },
+
+  // Get students with pagination and filters - using student service endpoint
+  async getStudents(params?: {
+    page?: number
+    limit?: number
+    status?: string
+    department?: string
+    search?: string
+  }): Promise<{ students: Student[], statistics: StudentStats, pagination: Pagination }> {
+    try {
+      const queryParams = new URLSearchParams()
+      if (params?.page) queryParams.append('page', params.page.toString())
+      if (params?.limit) queryParams.append('limit', params.limit.toString())
+      if (params?.status) queryParams.append('status', params.status)
+      if (params?.department) queryParams.append('department', params.department)
+      if (params?.search) queryParams.append('search', params.search)
+
+      const response = await apiClient.get<StudentsResponse>(`/students?${queryParams.toString()}`)
+      return response.data.data
+    } catch (error) {
+      console.error('Error fetching students:', error)
+      throw error
+    }
+  },
+
+  // Get reports - using report service endpoint
+  async getReports(): Promise<{ available_reports: Report[], recent_reports: any[], report_statistics: ReportStats }> {
+    try {
+      const response = await apiClient.get<ReportsResponse>('/reports')
+      return response.data.data
+    } catch (error) {
+      console.error('Error fetching reports:', error)
+      throw error
+    }
+  },
+
+  // Get settings - using settings endpoint
+  async getSettings(): Promise<{ system_settings: SystemSettings, user_preferences: any, notification_settings: any }> {
+    try {
+      const response = await apiClient.get<SettingsResponse>('/settings')
+      return response.data.data
+    } catch (error) {
+      console.error('Error fetching settings:', error)
+      throw error
     }
   }
 }

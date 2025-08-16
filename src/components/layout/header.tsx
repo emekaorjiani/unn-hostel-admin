@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { Button } from '../ui/button'
 import { Input } from '../ui/input'
 import { authService } from '@/lib/auth'
+import { safeLocalStorage } from '../../lib/utils'
 import { ConfirmationModal } from '../ui/confirmation-modal'
 
 interface HeaderProps {
@@ -24,22 +25,22 @@ export default function Header({ onMenuToggle }: HeaderProps) {
       if (isStudent) {
         await authService.logoutStudent()
         // Clear any additional localStorage items
-        localStorage.clear()
+        safeLocalStorage.clear()
         window.location.href = '/student/auth/login'
       } else if (isAdmin) {
         await authService.logout()
         // Clear any additional localStorage items
-        localStorage.clear()
+        safeLocalStorage.clear()
         window.location.href = '/auth/login'
       } else {
         // Fallback: clear everything and redirect to admin login
-        localStorage.clear()
+        safeLocalStorage.clear()
         window.location.href = '/auth/login'
       }
     } catch (error) {
       console.error('Logout failed:', error)
       // Even if logout API fails, clear local storage and redirect
-      localStorage.clear()
+      safeLocalStorage.clear()
       window.location.href = '/auth/login'
     }
   }

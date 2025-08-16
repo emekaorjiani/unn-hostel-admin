@@ -112,9 +112,9 @@ unn-hostel-admin/
    
    Configure the following variables:
    ```env
-   NEXT_PUBLIC_API_URL=https://api.unnaccomodation.com/api/v1
-   NEXT_PUBLIC_ADMIN_API_URL=https://api.unnaccomodation.com/api/v1
-   NEXT_PUBLIC_STUDENT_API_URL=http://localhost:3034/api/v1
+   NEXT_PUBLIC_API_URL=https://api.unnaccomodation.com/api
+NEXT_PUBLIC_ADMIN_API_URL=https://api.unnaccomodation.com/api
+NEXT_PUBLIC_STUDENT_API_URL=http://localhost:3034/api
    ```
 
 4. **Run the development server**
@@ -151,31 +151,31 @@ The system implements a clear separation between administrative and student port
 ### API Endpoints
 
 #### Authentication
-- `POST /api/v1/auth/login` - User authentication
-- `POST /api/v1/auth/logout` - User logout
-- `GET /api/v1/auth/profile` - User profile
+- `POST /api/auth/login` - User authentication
+- `POST /api/auth/logout` - User logout
+- `GET /api/auth/profile` - User profile
 
 #### Applications
-- `GET /api/v1/applications` - List applications
-- `POST /api/v1/applications` - Create application
-- `PUT /api/v1/applications/:id` - Update application
-- `DELETE /api/v1/applications/:id` - Delete application
+- `GET /api/admin/dashboard/applications` - List applications
+- `POST /api/admin/dashboard/applications` - Create application
+- `PUT /api/admin/dashboard/applications/:id` - Update application
+- `DELETE /api/admin/dashboard/applications/:id` - Delete application
 
 #### Hostels
-- `GET /api/v1/hostels` - List hostels
-- `POST /api/v1/hostels` - Create hostel
-- `PUT /api/v1/hostels/:id` - Update hostel
-- `DELETE /api/v1/hostels/:id` - Delete hostel
+- `GET /api/admin/dashboard/hostels` - List hostels
+- `POST /api/admin/dashboard/hostels` - Create hostel
+- `PUT /api/admin/dashboard/hostels/:id` - Update hostel
+- `DELETE /api/admin/dashboard/hostels/:id` - Delete hostel
 
 #### Payments
-- `GET /api/v1/payments` - List payments
-- `POST /api/v1/payments` - Process payment
-- `GET /api/v1/payments/:id` - Payment details
+- `GET /api/admin/dashboard/payments` - List payments
+- `POST /api/admin/dashboard/payments` - Process payment
+- `GET /api/admin/dashboard/payments/:id` - Payment details
 
 #### Reports
-- `GET /api/v1/reports/dashboard` - Dashboard statistics
-- `GET /api/v1/reports/applications` - Application reports
-- `GET /api/v1/reports/revenue` - Revenue reports
+- `GET /api/admin/dashboard/overview` - Dashboard statistics
+- `GET /api/admin/dashboard/reports` - Application reports
+- `GET /api/admin/dashboard/reports` - Revenue reports
 
 ## 🎨 UI Components
 
@@ -269,7 +269,7 @@ yarn start
 ### Environment Configuration
 ```env
 # Production environment variables
-NEXT_PUBLIC_API_URL=https://api.unn.edu.ng/api/v1
+NEXT_PUBLIC_API_URL=https://api.unn.edu.ng/api
 NODE_ENV=production
 ```
 

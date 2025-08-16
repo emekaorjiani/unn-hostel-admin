@@ -85,7 +85,10 @@ export default function HostelDetailPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // Fetch hostel details
+  /**
+   * Fetches hostel details from the API using the hostel ID
+   * Handles authentication, data transformation, and occupancy calculations
+   */
   const fetchHostel = async () => {
     try {
       setError(null);
@@ -95,40 +98,46 @@ export default function HostelDetailPage() {
         throw new Error('No authentication token found');
       }
 
-      // Try to get detailed hostel info first
+      // Get detailed hostel info from the API
       const hostelRes = await apiClient.get(`/hostels/${hostelId}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
 
-      let hostelData = hostelRes.data;
+      let hostelData = hostelRes.data.data || hostelRes.data;
 
-      // If detailed info is not available, get from stats
-      if (!hostelData || Object.keys(hostelData).length === 0) {
-        const statsRes = await apiClient.get('/hostels/stats/overview', {
-          headers: { Authorization: `Bearer ${token}` }
-        });
+      // Transform the API response to match our interface
+      if (hostelData) {
+        // Calculate occupancy rate from blocks data for accurate statistics
+        const totalBeds = hostelData.blocks?.reduce((sum: number, block: any) => sum + (block.total_beds || 0), 0) || 0;
+        const occupiedBeds = hostelData.blocks?.reduce((sum: number, block: any) => sum + (block.occupied_beds || 0), 0) || 0;
+        const occupancyRate = totalBeds > 0 ? (occupiedBeds / totalBeds) * 100 : 0;
 
-        const hostelsData = Array.isArray(statsRes.data) ? statsRes.data : [];
-        const hostelStats = hostelsData.find((h: {hostelId: string}) => h.hostelId === hostelId);
-
-        if (hostelStats) {
-          hostelData = {
-            id: hostelStats.hostelId,
-            name: hostelStats.hostelName,
-            description: hostelStats.hostelName,
-            address: 'Address not available',
-            phoneNumber: 'Phone not available',
-            email: 'Email not available',
-            capacity: hostelStats.capacity || 0,
-            occupiedBeds: hostelStats.occupiedBeds || 0,
-            availableBeds: hostelStats.availableBeds || 0,
-            occupancyRate: hostelStats.occupancyRate || 0,
-            status: 'active' as const,
-            blocks: [],
-            createdAt: new Date().toISOString(),
-            updatedAt: new Date().toISOString()
-          };
+        // Defensive: ensure hostelData.name is a string before using toLowerCase
+        let email = hostelData.manager_email;
+        if (!email) {
+          if (typeof hostelData.name === 'string' && hostelData.name.trim() !== '') {
+            email = `${hostelData.name.toLowerCase().replace(/\s+/g, '.')}@unn.edu.ng`;
+          } else {
+            email = 'hostel@unn.edu.ng';
+          }
         }
+
+        hostelData = {
+          id: hostelData.id,
+          name: hostelData.name,
+          description: hostelData.description || (typeof hostelData.name === 'string' ? `${hostelData.name} - University of Nigeria, Nsukka` : 'University of Nigeria, Nsukka Hostel'),
+          address: hostelData.address || `University of Nigeria, Nsukka Campus`,
+          phoneNumber: hostelData.manager_phone || '+234 123 456 7890',
+          email: email,
+          capacity: totalBeds,
+          occupiedBeds: occupiedBeds,
+          availableBeds: totalBeds - occupiedBeds,
+          occupancyRate: occupancyRate,
+          status: hostelData.is_active ? 'active' as const : 'inactive' as const,
+          blocks: hostelData.blocks || [],
+          createdAt: hostelData.created_at || new Date().toISOString(),
+          updatedAt: hostelData.updated_at || new Date().toISOString()
+        };
       }
 
       if (!hostelData) {

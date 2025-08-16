@@ -4,6 +4,13 @@ import { config } from "./config";
 // API base configuration
 const API_BASE_URL = config.backend.baseUrl;
 
+// Debug: Log the base URL being used
+console.log("API Base URL:", API_BASE_URL);
+console.log("Environment variables:", {
+  NEXT_PUBLIC_BACKEND_API_URL: process.env.NEXT_PUBLIC_BACKEND_API_URL,
+  BACKEND_API_URL: process.env.BACKEND_API_URL
+});
+
 // Create axios instance with default configuration
 export const apiClient = axios.create({
   baseURL: API_BASE_URL,
@@ -43,10 +50,11 @@ apiClient.interceptors.request.use(
       config.headers.Authorization = `Bearer ${token}`;
     }
     
-    // Debug: Log the request headers
-    console.log("Request headers:", config.headers);
+    // Debug: Log the request details
     console.log("Request URL:", config.url);
+    console.log("Full URL:", `${config.baseURL}${config.url}`);
     console.log("Request method:", config.method);
+    console.log("Request headers:", config.headers);
     
     return config;
   },

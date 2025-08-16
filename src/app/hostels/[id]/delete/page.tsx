@@ -399,9 +399,10 @@ export default function DeleteHostelPage() {
             </Button>
             <Button
               onClick={handleDelete}
-              disabled={deleting || !document.getElementById('confirm-delete')?.checked || 
-                       !document.getElementById('confirm-students')?.checked || 
-                       !document.getElementById('confirm-final')?.checked}
+              disabled={deleting || 
+                       !(document.getElementById('confirm-delete') as HTMLInputElement)?.checked || 
+                       !(document.getElementById('confirm-students') as HTMLInputElement)?.checked || 
+                       !(document.getElementById('confirm-final') as HTMLInputElement)?.checked}
               className="bg-red-600 hover:bg-red-700 text-white"
             >
               {deleting ? (
