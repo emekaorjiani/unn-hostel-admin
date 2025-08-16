@@ -22,13 +22,13 @@ import {
 } from 'lucide-react';
 import DashboardLayout from '@/components/layout/dashboard-layout';
 import { apiClient } from '@/lib/api';
-import { safeLocalStorage } from '@/lib/utils';
 
 interface HostelForm {
   name: string;
   description: string;
+  type: 'male' | 'female' | 'mixed';
   address: string;
-  phoneNumber: string;
+  phone_number: string;
   email: string;
   capacity: number;
   status: 'active' | 'inactive' | 'maintenance';
@@ -42,8 +42,9 @@ export default function EditHostelPage() {
   const [formData, setFormData] = useState<HostelForm>({
     name: '',
     description: '',
+    type: 'mixed',
     address: '',
-    phoneNumber: '',
+    phone_number: '',
     email: '',
     capacity: 0,
     status: 'active'
@@ -58,46 +59,15 @@ export default function EditHostelPage() {
   const fetchHostel = async () => {
     try {
       setError(null);
-      const token = safeLocalStorage.getItem('auth_token') || safeLocalStorage.getItem('student_token');
-      
-      if (!token) {
-        throw new Error('No authentication token found');
+      setLoading(true);
+
+      // Get detailed hostel info from API
+      const hostelRes = await apiClient.get(`/hostels/${hostelId}`);
+      let hostelData = hostelRes.data.data?.hostel || hostelRes.data.data || hostelRes.data;
+
+      if (!hostelData) {
+        throw new Error('Hostel not found');
       }
-
-      // Try to get detailed hostel info first
-      const hostelRes = await apiClient.get(`/hostels/${hostelId}`, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-
-      let hostelData = hostelRes.data;
-
-      // If detailed info is not available, get from stats
-      if (!hostelData || Object.keys(hostelData).length === 0) {
-        const statsRes = await apiClient.get('/hostels/stats/overview', {
-          headers: { Authorization: `Bearer ${token}` }
-        });
-
-        const hostelsData = Array.isArray(statsRes.data) ? statsRes.data : [];
-        const hostelStats = hostelsData.find((h: any) => h.hostelId === hostelId);
-
-        if (hostelStats) {
-          hostelData = {
-            id: hostelStats.hostelId,
-            name: hostelStats.hostelName,
-            description: hostelStats.hostelName,
-            address: 'Address not available',
-            phoneNumber: 'Phone not available',
-            email: 'Email not available',
-            capacity: hostelStats.capacity || 0,
-            occupiedBeds: hostelStats.occupiedBeds || 0,
-            availableBeds: hostelStats.availableBeds || 0,
-            occupancyRate: hostelStats.occupancyRate || 0,
-            status: 'active' as const,
-            blocks: [],
-            createdAt: new Date().toISOString(),
-            updatedAt: new Date().toISOString()
-          };
-        }
       }
 
       if (!hostelData) {
