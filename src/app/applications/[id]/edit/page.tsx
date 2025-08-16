@@ -409,7 +409,7 @@ export default function EditApplicationPage() {
               <div>
                 <h3 className="text-lg font-medium text-gray-900">Application #{originalApplication.id}</h3>
                 <p className="text-sm text-gray-600">
-                  Created on {originalApplication.createdAt ? new Date(originalApplication.createdAt).toLocaleDateString() : 'N/A'}
+                  Created on {originalApplication.created_at ? new Date(originalApplication.created_at).toLocaleDateString() : 'N/A'}
                 </p>
               </div>
               <Badge className={
@@ -444,15 +444,15 @@ export default function EditApplicationPage() {
                     Application Window *
                   </label>
                   <select
-                    value={formData.applicationWindowId}
-                    onChange={(e) => handleInputChange('applicationWindowId', e.target.value)}
+                    value={formData.application_window_id}
+                    onChange={(e) => handleInputChange('application_window_id', e.target.value)}
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
                     required
                   >
                     <option value="">Select an application window</option>
                     {applicationWindows.map((window) => (
                       <option key={window.id} value={window.id}>
-                        {window.name} ({new Date(window.startDate).toLocaleDateString()} - {new Date(window.endDate).toLocaleDateString()})
+                        {window.name} ({new Date(window.start_date).toLocaleDateString()} - {new Date(window.end_date).toLocaleDateString()})
                       </option>
                     ))}
                   </select>
@@ -468,11 +468,11 @@ export default function EditApplicationPage() {
                     <div className="grid grid-cols-2 gap-4 text-sm">
                       <div>
                         <span className="text-blue-600">Start Date:</span>
-                        <span className="ml-2 text-blue-900">{new Date(selectedWindow.startDate).toLocaleDateString()}</span>
+                        <span className="ml-2 text-blue-900">{new Date(selectedWindow.start_date).toLocaleDateString()}</span>
                       </div>
                       <div>
                         <span className="text-blue-600">End Date:</span>
-                        <span className="ml-2 text-blue-900">{new Date(selectedWindow.endDate).toLocaleDateString()}</span>
+                        <span className="ml-2 text-blue-900">{new Date(selectedWindow.end_date).toLocaleDateString()}</span>
                       </div>
                     </div>
                     <div className="mt-2">
@@ -504,8 +504,8 @@ export default function EditApplicationPage() {
                     Hostel *
                   </label>
                   <select
-                    value={formData.hostelId}
-                    onChange={(e) => handleInputChange('hostelId', e.target.value)}
+                    value={formData.hostel_id}
+                    onChange={(e) => handleInputChange('hostel_id', e.target.value)}
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
                     required
                   >
@@ -549,8 +549,8 @@ export default function EditApplicationPage() {
                     </label>
                     <Input
                       type="text"
-                      value={formData.roomId}
-                      onChange={(e) => handleInputChange('roomId', e.target.value)}
+                      value={formData.room_id}
+                      onChange={(e) => handleInputChange('room_id', e.target.value)}
                       placeholder="e.g., A101"
                     />
                   </div>
@@ -560,8 +560,8 @@ export default function EditApplicationPage() {
                     </label>
                     <Input
                       type="text"
-                      value={formData.bedId}
-                      onChange={(e) => handleInputChange('bedId', e.target.value)}
+                      value={formData.bed_id}
+                      onChange={(e) => handleInputChange('bed_id', e.target.value)}
                       placeholder="e.g., 1"
                     />
                   </div>
@@ -663,7 +663,7 @@ export default function EditApplicationPage() {
             </Button>
             <Button
               type="submit"
-              disabled={submitting || !formData.applicationWindowId || !formData.hostelId}
+              disabled={submitting || !formData.application_window_id || !formData.hostel_id}
             >
               {submitting ? (
                 <>

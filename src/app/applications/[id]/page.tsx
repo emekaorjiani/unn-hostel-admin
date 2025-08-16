@@ -2,9 +2,9 @@
 
 import { useState, useEffect } from 'react'
 import { useRouter, useParams } from 'next/navigation'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../../../components/ui/card'
-import { Button } from '../../../components/ui/button'
-import { Badge } from '../../../components/ui/badge'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
 import { 
   FileText, 
   ArrowLeft, 
@@ -25,9 +25,9 @@ import {
   Bed,
   CreditCard
 } from 'lucide-react'
-import DashboardLayout from '../../../components/layout/dashboard-layout'
-import { apiClient } from '../../../lib/api'
-import { safeLocalStorage } from '../../../lib/utils'
+import DashboardLayout from '@/components/layout/dashboard-layout'
+import { apiClient } from '@/lib/api'
+import { safeLocalStorage } from '@/lib/utils'
 
 // Application interface matching the API response
 interface Application {
@@ -110,7 +110,6 @@ export default function ViewApplicationPage() {
   const router = useRouter()
   const params = useParams()
   const applicationId = params.id as string
-  
   const [application, setApplication] = useState<Application | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -123,7 +122,6 @@ export default function ViewApplicationPage() {
     try {
       setError(null)
       setLoading(true)
-      
       // Check for authentication token (supports both admin and student tokens)
       const token = safeLocalStorage.getItem('auth_token') || safeLocalStorage.getItem('student_token')
       if (!token) {
@@ -228,7 +226,7 @@ export default function ViewApplicationPage() {
           <div className="text-center">
             <FileText className="h-12 w-12 mx-auto text-gray-400 mb-4" />
             <h2 className="text-xl font-semibold text-gray-900 mb-2">Application Not Found</h2>
-            <p className="text-gray-600 mb-4">The application you're looking for doesn't exist.</p>
+            <p className="text-gray-600 mb-4">The application you&apos;re looking for doesn&apos;t exist.</p>
             <Button onClick={() => router.back()} variant="outline">
               <ArrowLeft className="h-4 w-4 mr-2" />
               Go Back
@@ -448,7 +446,7 @@ export default function ViewApplicationPage() {
                 <h3 className="font-medium text-gray-900 mb-2">Documents</h3>
                 <div className="space-y-1">
                   {application.documents && application.documents.length > 0 ? (
-                    application.documents.map((doc, index) => (
+                    application.documents.map((doc: any, index: number) => (
                       <div key={index} className="flex items-center space-x-2">
                         <FileText className="h-4 w-4 text-gray-400" />
                         <span className="text-sm text-gray-900">{doc.name}</span>
@@ -489,7 +487,7 @@ export default function ViewApplicationPage() {
                   </p>
                 </div>
               </div>
-              
+
               {application.status === 'approved' && (
                 <div className="flex items-center space-x-4">
                   <div className="flex-shrink-0">
@@ -516,7 +514,7 @@ export default function ViewApplicationPage() {
                   <div>
                     <p className="text-sm font-medium text-gray-900">Application Rejected</p>
                     <p className="text-sm text-gray-600">
-                      {application.updatedAt ? new Date(application.updatedAt).toLocaleString() : 'N/A'}
+                      {application.updated_at ? new Date(application.updated_at).toLocaleString() : 'N/A'}
                     </p>
                   </div>
                 </div>
