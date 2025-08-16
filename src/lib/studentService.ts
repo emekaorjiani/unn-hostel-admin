@@ -2,25 +2,27 @@ import { apiClient } from './api';
 
 // Student dashboard data types based on API documentation
 export interface StudentProfile {
-  id: string;
-  first_name: string;
-  last_name: string;
-  email: string;
-  matric_number: string;
-  phone_number?: string;
-  faculty?: string;
-  department?: string;
-  level?: string;
-  gender?: string;
-  date_of_birth?: string;
-  address?: string;
-  state_of_origin?: string;
-  nationality?: string;
-  status: 'active' | 'inactive' | 'suspended' | 'pending_verification';
-  is_email_verified: boolean;
-  is_phone_verified: boolean;
-  created_at: string;
-  updated_at: string;
+  user: {
+    id: string;
+    first_name: string;
+    last_name: string;
+    email: string;
+    matric_number: string;
+    phone_number?: string;
+    faculty?: string;
+    department?: string;
+    level?: string;
+    gender?: string;
+    date_of_birth?: string;
+    address?: string;
+    state_of_origin?: string;
+    nationality?: string;
+    status: 'active' | 'inactive' | 'suspended' | 'pending_verification';
+    is_email_verified: boolean;
+    is_phone_verified: boolean;
+    created_at: string;
+    updated_at: string;
+  };
 }
 
 // Application Window interface for the required field
@@ -119,7 +121,7 @@ export const studentService = {
     try {
       // Get student profile to get the student ID
       const profile = await this.getProfile();
-      const studentId = profile.id;
+      const studentId = profile.user.id;
       
       // Use the correct endpoint structure with student ID
       const response = await apiClient.get<{ success: boolean; data: StudentApplication[] }>(`applications/student/${studentId}`);
@@ -136,7 +138,7 @@ export const studentService = {
     try {
       // Get student profile to get the student ID
       const profile = await this.getProfile();
-      const studentId = profile.id;
+      const studentId = profile.user.id;
       
       // Use the correct endpoint structure with student ID
       const response = await apiClient.get<{ success: boolean; data: StudentPayment[] }>(`payments/student/${studentId}`);
@@ -267,7 +269,7 @@ export const studentService = {
     try {
       // Get student profile to get the student ID
       const profile = await this.getProfile();
-      const studentId = profile.id;
+      const studentId = profile.user.id;
       
       // Use the correct endpoint structure - POST to applications with student_id in body
       const dataWithStudentId = {
@@ -296,7 +298,7 @@ export const studentService = {
     try {
       // Get student profile to get the student ID
       const profile = await this.getProfile();
-      const studentId = profile.id;
+      const studentId = profile.user.id;
       
       // Add student_id to the payment data
       const dataWithStudentId = {
