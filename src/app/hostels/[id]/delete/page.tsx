@@ -18,6 +18,7 @@ import {
 } from 'lucide-react';
 import DashboardLayout from '@/components/layout/dashboard-layout';
 import { apiClient } from '@/lib/api';
+import { safeLocalStorage } from '@/lib/utils';
 
 interface Hostel {
   id: string;
@@ -55,7 +56,7 @@ export default function DeleteHostelPage() {
 
       // Get detailed hostel info from API
       const hostelRes = await apiClient.get(`/hostels/${hostelId}`);
-      let hostelData = hostelRes.data.data?.hostel || hostelRes.data.data || hostelRes.data;
+      const hostelData = hostelRes.data.data?.hostel || hostelRes.data.data || hostelRes.data;
 
       if (!hostelData) {
         throw new Error('Hostel not found');

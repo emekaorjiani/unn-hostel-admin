@@ -63,12 +63,7 @@ export default function EditHostelPage() {
 
       // Get detailed hostel info from API
       const hostelRes = await apiClient.get(`/hostels/${hostelId}`);
-      let hostelData = hostelRes.data.data?.hostel || hostelRes.data.data || hostelRes.data;
-
-      if (!hostelData) {
-        throw new Error('Hostel not found');
-      }
-      }
+      const hostelData = hostelRes.data.data?.hostel || hostelRes.data.data || hostelRes.data;
 
       if (!hostelData) {
         throw new Error('Hostel not found');
