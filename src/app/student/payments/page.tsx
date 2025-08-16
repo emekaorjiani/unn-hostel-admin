@@ -159,7 +159,11 @@ export default function StudentPaymentsPage() {
         onBackClick={() => router.back()}
       />
 
-      <div className="pt-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="mb-6">
+          <QuickActions />
+      </div>
+
+      <div className="pt-26 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="space-y-6">
           {/* Payment Summary Cards */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">

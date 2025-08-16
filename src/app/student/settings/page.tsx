@@ -215,7 +215,7 @@ export default function StudentSettingsPage() {
           <QuickActions />
         </div>
         
-        <div className="space-y-8">
+        <div className="mt-20 space-y-8">
         {/* Message Display */}
         {message && (
           <div className={`mb-6 p-4 rounded-lg flex items-center space-x-2 ${

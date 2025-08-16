@@ -93,8 +93,6 @@ export default function StudentApplicationsPage() {
         onBackClick={() => router.back()}
       />
 
-      {/* Quick Actions */}
-      <QuickActions />
 
       <div className="pt-16 max-w-7xl mx-auto px-4 py-8">
         {/* Quick Actions - Fixed at top */}
@@ -102,7 +100,7 @@ export default function StudentApplicationsPage() {
           <QuickActions />
         </div>
         
-        <div className="space-y-6">
+        <div className="mt-18 space-y-6">
           {/* Filter Section */}
           <Card>
             <CardContent className="p-6">

@@ -126,42 +126,18 @@ export default function StudentMaintenancePage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50">
       {/* Header */}
-      <div className="bg-white shadow-sm border-b border-gray-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
-          <div className="flex items-center space-x-4">
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => router.back()}
-                className="flex items-center space-x-2"
-              >
-                <ArrowLeft className="h-4 w-4" />
-                <span>Back</span>
-              </Button>
-              <div className="h-10 w-10 bg-gradient-to-br from-green-600 to-emerald-700 rounded-xl flex items-center justify-center shadow-lg">
-                <Wrench className="h-6 w-6 text-white" />
-              </div>
-              <div>
-                <h1 className="text-xl font-bold bg-gradient-to-r from-green-600 to-emerald-700 bg-clip-text text-transparent">
-                  Maintenance Requests
-                </h1>
-                <p className="text-xs text-gray-600">Report and track hostel maintenance issues</p>
-              </div>
-            </div>
-            
-            <Button 
-              onClick={() => setShowNewRequestModal(true)}
-              className="bg-gradient-to-r from-green-600 to-emerald-700 hover:from-green-700 hover:to-emerald-800"
-            >
-              <Plus className="h-4 w-4 mr-2" />
-              New Request
-            </Button>
-          </div>
-        </div>
-      </div>
+      <StudentHeader
+        title="Maintenance Requests"
+        subtitle="Report and track hostel maintenance issues"
+        showBackButton={true}
+        onBackClick={() => router.back()}
+      />
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="mb-6">
+          <QuickActions />
+        </div>
+
+      <div className="mt-26 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="space-y-6">
           {/* Search and Filter */}
           <Card>
