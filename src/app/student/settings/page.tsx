@@ -2,10 +2,10 @@
 
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../../../components/ui/card'
-import { Button } from '../../../components/ui/button'
-import { Input } from '../../../components/ui/input'
-import { Badge } from '../../../components/ui/badge'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Badge } from '@/components/ui/badge'
 import { 
   User,
   Bell,
@@ -33,6 +33,8 @@ import {
   CreditCard
 } from 'lucide-react'
 import { studentService } from '@/lib/studentService'
+import StudentHeader from '@/components/layout/student-header'
+import { QuickActions } from '@/components/ui/quick-actions'
 
 interface StudentProfile {
   id: string
@@ -234,27 +236,20 @@ export default function StudentSettingsPage() {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
-      <div className="bg-white shadow-sm border-b">
-        <div className="max-w-7xl mx-auto px-4 py-4">
-          <div className="flex items-center space-x-4">
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => router.back()}
-              className="text-gray-600 hover:text-gray-900"
-            >
-              <ArrowLeft className="h-4 w-4 mr-2" />
-              Back
-            </Button>
-            <div>
-              <h1 className="text-2xl font-bold text-gray-900">Settings</h1>
-              <p className="text-gray-600">Manage your account preferences and settings</p>
-            </div>
-          </div>
-        </div>
-      </div>
+      <StudentHeader
+        title="Settings"
+        subtitle="Manage your account preferences and settings"
+        showBackButton={true}
+        onBackClick={() => router.back()}
+      />
 
-      <div className="max-w-7xl mx-auto px-4 py-8">
+      <div className="pt-16 max-w-7xl mx-auto px-4 py-8">
+        {/* Quick Actions - Fixed at top */}
+        <div className="mb-6">
+          <QuickActions showAllActions={false} />
+        </div>
+        
+        <div className="space-y-8">
         {/* Message Display */}
         {message && (
           <div className={`mb-6 p-4 rounded-lg flex items-center space-x-2 ${
@@ -936,5 +931,6 @@ export default function StudentSettingsPage() {
         )}
       </div>
     </div>
+  </div>
   )
 }

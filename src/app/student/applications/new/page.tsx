@@ -12,8 +12,9 @@ import {
   AlertCircle,
   ArrowLeft
 } from 'lucide-react'
-import { studentService, Hostel } from '@/lib/studentService'
+import { studentService, Hostel, ApplicationWindow } from '@/lib/studentService'
 import StudentHeader from '@/components/layout/student-header'
+import { QuickActions } from '@/components/ui/quick-actions'
 
 interface ApplicationForm {
   hostelId: string
@@ -26,11 +27,13 @@ interface ApplicationForm {
   parentPhone: string
   parentEmail: string
   agreement: boolean
+  applicationWindowId: string // Add this field
 }
 
 export default function NewApplicationPage() {
   const router = useRouter()
   const [hostels, setHostels] = useState<Hostel[]>([])
+  const [applicationWindows, setApplicationWindows] = useState<ApplicationWindow[]>([])
   const [selectedHostel, setSelectedHostel] = useState<Hostel | null>(null)
   const [formData, setFormData] = useState<ApplicationForm>({
     hostelId: '',
@@ -42,11 +45,28 @@ export default function NewApplicationPage() {
     parentName: '',
     parentPhone: '',
     parentEmail: '',
-    agreement: false
+    agreement: false,
+    applicationWindowId: '' // Initialize this field
   })
   const [loading, setLoading] = useState(true)
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
+
+  // Check authentication on component mount
+  useEffect(() => {
+    const checkAuth = () => {
+      const adminToken = localStorage.getItem("auth_token");
+      const studentToken = localStorage.getItem("student_token");
+      
+      if (!adminToken && !studentToken) {
+        console.warn('No authentication token found, redirecting to login');
+        router.push('/student/auth/login');
+        return;
+      }
+    };
+    
+    checkAuth();
+  }, [router]);
 
   // Fetch available hostels from API
   useEffect(() => {
@@ -63,7 +83,43 @@ export default function NewApplicationPage() {
       }
     }
 
-    fetchHostels()
+    // Only fetch hostels if user is authenticated
+    const adminToken = localStorage.getItem("auth_token");
+    const studentToken = localStorage.getItem("student_token");
+    
+    if (adminToken || studentToken) {
+      fetchHostels()
+    }
+  }, [])
+
+  // Fetch available application windows
+  useEffect(() => {
+    const fetchApplicationWindows = async () => {
+      try {
+        const windowsData = await studentService.getApplicationWindows()
+        setApplicationWindows(windowsData)
+        
+        // Set the first active window as default if available
+        const activeWindow = windowsData.find(window => window.is_active)
+        if (activeWindow) {
+          setFormData(prev => ({
+            ...prev,
+            applicationWindowId: activeWindow.id
+          }))
+        }
+      } catch (err) {
+        console.error('Failed to fetch application windows:', err)
+        setError('Failed to load application windows. Please try again.')
+      }
+    }
+
+    // Only fetch application windows if user is authenticated
+    const adminToken = localStorage.getItem("auth_token");
+    const studentToken = localStorage.getItem("student_token");
+    
+    if (adminToken || studentToken) {
+      fetchApplicationWindows()
+    }
   }, [])
 
   const handleHostelSelect = (hostel: Hostel) => {
@@ -90,6 +146,11 @@ export default function NewApplicationPage() {
       return
     }
 
+    if (!formData.applicationWindowId) {
+      setError('Please select an application period')
+      return
+    }
+
     setSubmitting(true)
     setError(null)
 
@@ -97,9 +158,17 @@ export default function NewApplicationPage() {
       // Create application using real API
       const applicationData = {
         hostel_id: selectedHostel.id,
-        room_type: 'Standard Room', // Default room type, can be enhanced later
+        room_type: formData.preferredRoomType === 'any' ? 'Standard Room' : formData.preferredRoomType,
         preferred_room_number: '',
-        special_requirements: ''
+        special_requirements: formData.specialRequirements || '',
+        emergency_contact: formData.emergencyContact,
+        emergency_phone: formData.emergencyPhone,
+        parent_name: formData.parentName,
+        parent_phone: formData.parentPhone,
+        parent_email: formData.parentEmail,
+        application_date: new Date().toISOString().split('T')[0],
+        status: 'pending',
+        application_window_id: formData.applicationWindowId // Add the required field
       }
 
       const response = await studentService.createApplication(applicationData)
@@ -133,7 +202,19 @@ export default function NewApplicationPage() {
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600 mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading hostels...</p>
+          <p className="text-gray-600">Loading hostels and application periods...</p>
+        </div>
+      </div>
+    )
+  }
+
+  if (applicationWindows.length === 0) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <AlertCircle className="h-12 w-12 text-red-500 mx-auto mb-4" />
+          <p className="text-gray-600">No application periods are currently available.</p>
+          <p className="text-gray-500 text-sm mt-2">Please check back later or contact the administration.</p>
         </div>
       </div>
     )
@@ -149,7 +230,14 @@ export default function NewApplicationPage() {
         onBackClick={() => router.back()}
       />
 
+      <QuickActions />
+
       <div className="pt-20 max-w-7xl mx-auto px-4 py-8">
+        {/* Quick Actions - Fixed at top */}
+        <div className="mb-6">
+          <QuickActions showAllActions={false} />
+        </div>
+        
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Hostel Selection */}
           <div className="lg:col-span-2">
@@ -243,6 +331,27 @@ export default function NewApplicationPage() {
                         </select>
                       </div>
                       
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                          Application Period
+                        </label>
+                        <select
+                          value={formData.applicationWindowId}
+                          onChange={(e) => handleInputChange('applicationWindowId', e.target.value)}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                          required
+                        >
+                          <option value="">Select Application Period</option>
+                          {applicationWindows.map((window) => (
+                            <option key={window.id} value={window.id}>
+                              {window.name} ({new Date(window.start_date).toLocaleDateString()} - {new Date(window.end_date).toLocaleDateString()})
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-2">
                           Special Requirements

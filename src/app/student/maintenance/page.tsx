@@ -23,6 +23,8 @@ import {
   Settings
 } from 'lucide-react'
 import { studentService, MaintenanceTicket } from '@/lib/studentService'
+import StudentHeader from '@/components/layout/student-header'
+import { QuickActions } from '@/components/ui/quick-actions'
 
 export default function StudentMaintenancePage() {
   const router = useRouter()
