@@ -132,7 +132,7 @@ export const authService = {
       console.log("Student login credentials:", { matricNumber: credentials.matricNumber, password: "***" });
       
       const response = await apiClient.post<BackendAuthResponse>(
-        "/auth/login",
+        "/v1/auth/login",
         {
           login_type: "student",
           matric_number: credentials.matricNumber,
