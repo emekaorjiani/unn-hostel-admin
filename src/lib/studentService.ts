@@ -204,21 +204,21 @@ export const studentService = {
       };
     } catch (error) {
       console.error('Error fetching dashboard data:', error);
-      // Return mock data as fallback
+      // Return empty data as fallback
       const quickStats = {
-        totalApplications: mockApplications.length,
-        approvedApplications: mockApplications.filter(app => app.status === 'approved').length,
-        pendingPayments: mockPayments.filter(pay => pay.status === 'pending').length,
-        activeTickets: mockMaintenanceTickets.filter(ticket => ticket.status === 'pending' || ticket.status === 'in_progress').length,
-        unreadNotifications: mockNotifications.filter(notif => !notif.read).length,
+        totalApplications: 0,
+        approvedApplications: 0,
+        pendingPayments: 0,
+        activeTickets: 0,
+        unreadNotifications: 0,
       };
       
       return {
-        profile: mockProfile,
-        applications: mockApplications,
-        payments: mockPayments,
-        maintenanceTickets: mockMaintenanceTickets,
-        notifications: mockNotifications,
+        profile: {} as StudentProfile,
+        applications: [],
+        payments: [],
+        maintenanceTickets: [],
+        notifications: [],
         quickStats,
       };
     }
@@ -261,7 +261,7 @@ export const studentService = {
     try {
       // Get student profile to get the student ID
       const profile = await this.getProfile();
-      const studentId = profile.user.id;
+      const studentId = profile.id;
       
       // Use the correct endpoint structure - POST to applications with student_id in body
       const dataWithStudentId = {
@@ -290,7 +290,7 @@ export const studentService = {
     try {
       // Get student profile to get the student ID
       const profile = await this.getProfile();
-      const studentId = profile.user.id;
+      const studentId = profile.id;
       
       // Add student_id to the payment data
       const dataWithStudentId = {
