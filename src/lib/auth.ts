@@ -14,8 +14,8 @@ export interface MatricLoginCredentials {
 export interface BackendUser {
   id: string;
   email: string;
-  firstName: string;
-  lastName: string;
+  first_name: string;
+  last_name: string;
   role:
     | "student"
     | "hall_admin"
@@ -23,13 +23,18 @@ export interface BackendUser {
     | "maintenance"
     | "security"
     | "super_admin";
-  matricNumber?: string;
+  matric_number?: string;
   status: "active" | "inactive" | "suspended" | "pending_verification";
 }
 
 export interface BackendAuthResponse {
-  access_token: string;
-  user: BackendUser;
+  success: boolean;
+  message: string;
+  data: {
+    token: string;
+    expires_in: number;
+    user: BackendUser;
+  };
 }
 
 // Frontend types for compatibility
@@ -72,29 +77,33 @@ export const authService = {
     try {
       const response = await apiClient.post<BackendAuthResponse>(
         "/auth/login",
-        credentials
+        {
+          login_type: "admin",
+          email: credentials.email,
+          password: credentials.password
+        }
       );
 
       console.log("Backend response:", response.data);
 
       const backendResponse = response.data;
 
-      if (!backendResponse.access_token) {
+      if (!backendResponse.success || !backendResponse.data.token) {
         throw new Error("Access token not found in response");
       }
 
       // Store tokens in localStorage
-      localStorage.setItem("auth_token", backendResponse.access_token);
+      localStorage.setItem("auth_token", backendResponse.data.token);
 
       // Convert backend user to frontend admin profile format
       const adminProfile: AdminProfile = {
-        id: backendResponse.user.id,
-        email: backendResponse.user.email,
-        firstName: backendResponse.user.firstName,
-        lastName: backendResponse.user.lastName,
+        id: backendResponse.data.user.id,
+        email: backendResponse.data.user.email,
+        firstName: backendResponse.data.user.first_name,
+        lastName: backendResponse.data.user.last_name,
         role:
-          backendResponse.user.role === "super_admin" ? "super_admin" : "admin",
-        isActive: backendResponse.user.status === "active",
+          backendResponse.data.user.role === "super_admin" ? "super_admin" : "admin",
+        isActive: backendResponse.data.user.status === "active",
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
       };
@@ -102,7 +111,7 @@ export const authService = {
       localStorage.setItem("admin_profile", JSON.stringify(adminProfile));
 
       return {
-        accessToken: backendResponse.access_token,
+        accessToken: backendResponse.data.token,
         admin: adminProfile,
       };
     } catch (error: unknown) {
@@ -119,32 +128,39 @@ export const authService = {
     credentials: MatricLoginCredentials
   ): Promise<LoginResponse> {
     try {
+      console.log("Student login - calling /auth/login endpoint");
+      console.log("Student login credentials:", { matricNumber: credentials.matricNumber, password: "***" });
+      
       const response = await apiClient.post<BackendAuthResponse>(
-        "/auth/login/matric",
-        credentials
+        "/auth/login",
+        {
+          login_type: "student",
+          matric_number: credentials.matricNumber,
+          password: credentials.password
+        }
       );
 
       console.log("Backend response:", response.data);
 
       const backendResponse = response.data;
 
-      if (!backendResponse.access_token) {
+      if (!backendResponse.success || !backendResponse.data.token) {
         throw new Error("Access token not found in response");
       }
 
       // Store tokens in localStorage
-      localStorage.setItem("student_token", backendResponse.access_token);
+      localStorage.setItem("student_token", backendResponse.data.token);
 
       // Convert backend user to frontend student profile format
       const studentProfile: StudentProfile = {
-        id: backendResponse.user.id,
-        email: backendResponse.user.email,
-        firstName: backendResponse.user.firstName,
-        lastName: backendResponse.user.lastName,
+        id: backendResponse.data.user.id,
+        email: backendResponse.data.user.email,
+        firstName: backendResponse.data.user.first_name,
+        lastName: backendResponse.data.user.last_name,
         matricNumber:
-          backendResponse.user.matricNumber || credentials.matricNumber,
+          backendResponse.data.user.matric_number || credentials.matricNumber,
         role: "student",
-        isActive: backendResponse.user.status === "active",
+        isActive: backendResponse.data.user.status === "active",
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
       };
@@ -152,7 +168,7 @@ export const authService = {
       localStorage.setItem("student_profile", JSON.stringify(studentProfile));
 
       return {
-        accessToken: backendResponse.access_token,
+        accessToken: backendResponse.data.token,
         student: studentProfile,
       };
     } catch (error: unknown) {
@@ -198,8 +214,8 @@ export const authService = {
     const adminProfile: AdminProfile = {
       id: backendUser.id,
       email: backendUser.email,
-      firstName: backendUser.firstName || backendUser.email.split('@')[0], // Fallback to email prefix
-      lastName: backendUser.lastName || 'User', // Fallback to 'User'
+      firstName: backendUser.first_name || backendUser.email.split('@')[0], // Fallback to email prefix
+      lastName: backendUser.last_name || 'User', // Fallback to 'User'
       role: backendUser.role === "super_admin" ? "super_admin" : "admin",
       isActive: backendUser.status === "active" || true, // Default to active if not provided
       createdAt: new Date().toISOString(),
@@ -219,9 +235,9 @@ export const authService = {
     const studentProfile: StudentProfile = {
       id: backendUser.id,
       email: backendUser.email,
-      firstName: backendUser.firstName || backendUser.email.split('@')[0], // Fallback to email prefix
-      lastName: backendUser.lastName || 'Student', // Fallback to 'Student'
-      matricNumber: backendUser.matricNumber || "",
+      firstName: backendUser.first_name || backendUser.email.split('@')[0], // Fallback to email prefix
+      lastName: backendUser.last_name || 'Student', // Fallback to 'Student'
+      matricNumber: backendUser.matric_number || "",
       role: "student",
       isActive: backendUser.status === "active" || true, // Default to active if not provided
       createdAt: new Date().toISOString(),
@@ -246,8 +262,8 @@ export const authService = {
     const updatedProfile: AdminProfile = {
       id: backendUser.id,
       email: backendUser.email,
-      firstName: backendUser.firstName,
-      lastName: backendUser.lastName,
+      firstName: backendUser.first_name,
+      lastName: backendUser.last_name,
       role: backendUser.role === "super_admin" ? "super_admin" : "admin",
       isActive: backendUser.status === "active",
       createdAt: new Date().toISOString(),

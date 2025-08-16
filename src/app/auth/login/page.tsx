@@ -130,7 +130,7 @@ export default function LoginPage() {
               <h4 className="text-sm font-medium text-green-900 mb-2">Demo Credentials</h4>
               <p className="text-xs text-green-700">
                 Email: admin@unn.edu.ng<br />
-                Password: admin123
+                Password: password123
               </p>
             </div>
           </CardContent>

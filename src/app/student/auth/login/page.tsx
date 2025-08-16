@@ -38,10 +38,13 @@ export default function StudentLoginPage() {
     setError('')
 
     try {
+      console.log("Student login form submitted with data:", { matricNumber: data.matricNumber, password: "***" });
+      
       // Use the proper authentication service
       await authService.loginWithMatric(data as MatricLoginCredentials)
       router.push('/student/dashboard')
     } catch (err: unknown) {
+      console.error("Student login error:", err);
       const errorMessage = err instanceof Error ? err.message : 'Login failed. Please try again.'
       setError(errorMessage)
     } finally {
@@ -130,8 +133,8 @@ export default function StudentLoginPage() {
             <div className="mt-6 p-4 bg-green-50 border border-green-200 rounded-md">
               <h4 className="text-sm font-medium text-green-900 mb-2">Demo Credentials</h4>
               <p className="text-xs text-green-700">
-                Matric Number: 2020/123456<br />
-                Password: student123
+                Matric Number: 2021/123456<br />
+                Password: password123
               </p>
             </div>
           </CardContent>

@@ -6,7 +6,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { getStatusColor, formatCurrency, formatDate, getInitials } from '@/lib/utils'
-import DashboardLayout from '@/components/layout/dashboard-layout'
+import { studentService, StudentDashboardData } from '@/lib/studentService'
 import {
   User,
   Building2,
@@ -77,8 +77,9 @@ import {
 
 export default function StudentDashboardPage() {
   const router = useRouter()
-  const [isLoading, setIsLoading] = useState(false)
-  const [studentData, setStudentData] = useState<any>(null)
+  const [isLoading, setIsLoading] = useState(true)
+  const [dashboardData, setDashboardData] = useState<StudentDashboardData | null>(null)
+  const [error, setError] = useState<string | null>(null)
 
   // Mock student data
   const mockStudentData = {
@@ -189,43 +190,77 @@ export default function StudentDashboardPage() {
     ]
   }
 
-  const student = studentData || mockStudentData
+  // Fetch dashboard data on component mount
+  useEffect(() => {
+    const fetchDashboardData = async () => {
+      try {
+        setIsLoading(true)
+        setError(null)
+        const data = await studentService.getDashboardData()
+        setDashboardData(data)
+      } catch (err) {
+        console.error('Error fetching dashboard data:', err)
+        setError(err instanceof Error ? err.message : 'Failed to load dashboard data')
+        // Fallback to mock data for development
+        setDashboardData({
+          profile: mockStudentData,
+          applications: [],
+          payments: [],
+          maintenanceTickets: [],
+          notifications: [],
+          quickStats: {
+            totalApplications: 0,
+            approvedApplications: 0,
+            pendingPayments: 0,
+            activeTickets: 0,
+            unreadNotifications: 0,
+          }
+        })
+      } finally {
+        setIsLoading(false)
+      }
+    }
+
+    fetchDashboardData()
+  }, [])
+
+  const student = dashboardData?.profile || mockStudentData
 
   // Quick stats
   const quickStats = [
     {
-      title: 'Current GPA',
-      value: student.academicInfo.cgpa.toFixed(1),
-      change: '+0.2',
-      changeType: 'positive' as const,
-      icon: TrendingUp,
-      color: 'text-green-600',
-      bgColor: 'bg-green-100',
-    },
-    {
-      title: 'Hostel Balance',
-      value: formatCurrency(0),
-      change: '₦0',
+      title: 'Total Applications',
+      value: dashboardData?.quickStats.totalApplications.toString() || '0',
+      change: '0',
       changeType: 'neutral' as const,
-      icon: Wallet,
+      icon: FileText,
       color: 'text-blue-600',
       bgColor: 'bg-blue-100',
     },
     {
-      title: 'Active Tickets',
-      value: student.maintenanceTickets.filter((t: any) => t.status === 'pending').length.toString(),
-      change: '-1',
+      title: 'Approved Applications',
+      value: dashboardData?.quickStats.approvedApplications.toString() || '0',
+      change: '0',
       changeType: 'positive' as const,
-      icon: Wrench,
+      icon: CheckCircle,
+      color: 'text-green-600',
+      bgColor: 'bg-green-100',
+    },
+    {
+      title: 'Pending Payments',
+      value: dashboardData?.quickStats.pendingPayments.toString() || '0',
+      change: '0',
+      changeType: 'warning' as const,
+      icon: CreditCard,
       color: 'text-orange-600',
       bgColor: 'bg-orange-100',
     },
     {
-      title: 'Unread Notifications',
-      value: student.notifications.filter((n: any) => !n.read).length.toString(),
-      change: '+2',
-      changeType: 'negative' as const,
-      icon: Bell,
+      title: 'Active Tickets',
+      value: dashboardData?.quickStats.activeTickets.toString() || '0',
+      change: '0',
+      changeType: 'neutral' as const,
+      icon: Wrench,
       color: 'text-purple-600',
       bgColor: 'bg-purple-100',
     },
@@ -267,42 +302,34 @@ export default function StudentDashboardPage() {
     },
   ]
 
-  // Recent activities
+  // Recent activities from real data
   const recentActivities = [
-    {
-      id: '1',
-      action: 'Payment completed',
-      description: 'Hostel rent payment for January 2024',
-      amount: 50000,
-      date: '2024-01-15',
-      type: 'payment',
-      status: 'completed'
-    },
-    {
-      id: '2',
-      action: 'Application approved',
-      description: 'Hostel application for Zik Hall approved',
-      date: '2024-01-14',
-      type: 'application',
-      status: 'approved'
-    },
-    {
-      id: '3',
-      action: 'Maintenance resolved',
-      description: 'Electrical issue in room resolved',
-      date: '2024-01-12',
-      type: 'maintenance',
-      status: 'resolved'
-    },
-    {
-      id: '4',
-      action: 'Document uploaded',
-      description: 'Medical certificate uploaded',
-      date: '2024-01-10',
-      type: 'document',
-      status: 'completed'
-    }
-  ]
+    ...(dashboardData?.payments.slice(0, 2).map(payment => ({
+      id: payment.id,
+      action: `${payment.type} payment ${payment.status}`,
+      description: `${payment.type} payment via ${payment.gateway}`,
+      amount: payment.amount,
+      date: payment.date,
+      type: 'payment' as const,
+      status: payment.status
+    })) || []),
+    ...(dashboardData?.applications.slice(0, 2).map(app => ({
+      id: app.id,
+      action: `Application ${app.status}`,
+      description: `Hostel application for ${app.hostel_name}`,
+      date: app.application_date,
+      type: 'application' as const,
+      status: app.status
+    })) || []),
+    ...(dashboardData?.maintenanceTickets.slice(0, 2).map(ticket => ({
+      id: ticket.id,
+      action: `Maintenance ${ticket.status}`,
+      description: ticket.issue,
+      date: ticket.created_at,
+      type: 'maintenance' as const,
+      status: ticket.status
+    })) || [])
+  ].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()).slice(0, 4)
 
   // Upcoming events
   const upcomingEvents = [
@@ -331,6 +358,37 @@ export default function StudentDashboardPage() {
       priority: 'low'
     }
   ]
+
+  // Show loading state while data is being fetched
+  if (isLoading || !dashboardData) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading dashboard...</p>
+        </div>
+      </div>
+    )
+  }
+
+  // Show error state if there's an error and no data
+  if (error && !dashboardData) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="text-red-600 mb-4">
+            <AlertTriangle className="h-12 w-12 mx-auto" />
+          </div>
+          <h2 className="text-xl font-semibold text-gray-900 mb-2">Error Loading Dashboard</h2>
+          <p className="text-gray-600 mb-4">{error}</p>
+          <Button onClick={() => window.location.reload()}>
+            <RefreshCw className="h-4 w-4 mr-2" />
+            Retry
+          </Button>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50">
@@ -388,11 +446,11 @@ export default function StudentDashboardPage() {
                                  <div className="flex items-center space-x-6 text-sm">
                    <div className="flex items-center space-x-2">
                      <Building2 className="h-4 w-4" />
-                     <span>{student.hostelInfo.hostelName} - Room {student.hostelInfo.roomNumber}</span>
+                     <span>{student.faculty || 'Not Assigned'} - {student.department || 'Not Assigned'}</span>
                    </div>
                    <div className="flex items-center space-x-2">
                      <GraduationCap className="h-4 w-4" />
-                     <span>{student.faculty} - {student.department} - Level {student.level}</span>
+                     <span>Level {student.level || 'Not Assigned'}</span>
                    </div>
                    <div className="flex items-center space-x-2">
                      <User className="h-4 w-4" />
@@ -564,13 +622,13 @@ export default function StudentDashboardPage() {
                     Notifications
                   </div>
                   <Badge variant="secondary">
-                    {student.notifications.filter((n: any) => !n.read).length} new
+                    {dashboardData?.quickStats.unreadNotifications || 0} new
                   </Badge>
                 </CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
-                  {student.notifications.slice(0, 3).map((notification: any, index: number) => (
+                  {dashboardData?.notifications.slice(0, 3).map((notification, index) => (
                     <div key={notification.id} className={`flex items-start space-x-3 p-3 rounded-lg ${
                       notification.read ? 'bg-gray-50' : 'bg-blue-50'
                     }`}>
@@ -581,19 +639,68 @@ export default function StudentDashboardPage() {
                       <div className="flex-1">
                         <p className="text-sm font-medium text-gray-900">{notification.title}</p>
                         <p className="text-sm text-gray-600">{notification.message}</p>
-                        <p className="text-xs text-gray-400 mt-1">{formatDate(notification.createdAt)}</p>
+                        <p className="text-xs text-gray-400 mt-1">{formatDate(notification.created_at)}</p>
                       </div>
                       {!notification.read && (
                         <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
                       )}
                     </div>
-                  ))}
+                  )) || (
+                    <div className="text-center py-4 text-gray-500">
+                      No notifications
+                    </div>
+                  )}
                 </div>
               </CardContent>
             </Card>
           </div>
 
-                     {/* Student Information */}
+          {/* Current Applications */}
+          {dashboardData?.applications && dashboardData.applications.length > 0 && (
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center">
+                  <FileText className="h-5 w-5 mr-2" />
+                  Current Applications
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  {dashboardData.applications.map((application) => (
+                    <div key={application.id} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                      <div className="flex-1">
+                        <h4 className="font-medium text-gray-900">{application.hostel_name}</h4>
+                        <p className="text-sm text-gray-600">
+                          {application.room_type} Room • {formatCurrency(application.amount)}
+                        </p>
+                        <p className="text-xs text-gray-400 mt-1">
+                          Applied on {formatDate(application.application_date)}
+                        </p>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <Badge 
+                          variant={
+                            application.status === 'approved' ? 'default' :
+                            application.status === 'pending' ? 'secondary' :
+                            application.status === 'rejected' ? 'destructive' : 'outline'
+                          }
+                        >
+                          {application.status}
+                        </Badge>
+                        {application.payment_status === 'pending' && (
+                          <Badge variant="outline" className="text-orange-600">
+                            Payment Pending
+                          </Badge>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          )}
+
+          {/* Student Information */}
            <Card>
              <CardHeader>
                <CardTitle className="flex items-center">
@@ -605,63 +712,32 @@ export default function StudentDashboardPage() {
                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                  <div className="text-center p-4 bg-orange-50 rounded-lg">
                    <GraduationCap className="h-8 w-8 text-orange-600 mx-auto mb-2" />
-                   <p className="text-lg font-semibold text-gray-900">{student.faculty}</p>
+                   <p className="text-lg font-semibold text-gray-900">{student.faculty || 'Not Assigned'}</p>
                    <p className="text-sm text-gray-600">Faculty</p>
                  </div>
                  
                  <div className="text-center p-4 bg-yellow-50 rounded-lg">
                    <BookOpen className="h-8 w-8 text-yellow-600 mx-auto mb-2" />
-                   <p className="text-lg font-semibold text-gray-900">{student.department}</p>
+                   <p className="text-lg font-semibold text-gray-900">{student.department || 'Not Assigned'}</p>
                    <p className="text-sm text-gray-600">Department</p>
                  </div>
                  
                  <div className="text-center p-4 bg-blue-50 rounded-lg">
                    <MapPin className="h-8 w-8 text-blue-600 mx-auto mb-2" />
-                   <p className="text-lg font-semibold text-gray-900">{student.stateOfOrigin}</p>
+                   <p className="text-lg font-semibold text-gray-900">{student.state_of_origin || 'Not Assigned'}</p>
                    <p className="text-sm text-gray-600">State of Origin</p>
                  </div>
                  
                  <div className="text-center p-4 bg-purple-50 rounded-lg">
                    <Map className="h-8 w-8 text-purple-600 mx-auto mb-2" />
-                   <p className="text-lg font-semibold text-gray-900">{student.nationality}</p>
+                   <p className="text-lg font-semibold text-gray-900">{student.nationality || 'Nigerian'}</p>
                    <p className="text-sm text-gray-600">Nationality</p>
                  </div>
                </div>
              </CardContent>
            </Card>
 
-           {/* Hostel Information */}
-           <Card>
-             <CardHeader>
-               <CardTitle className="flex items-center">
-                 <Home className="h-5 w-5 mr-2" />
-                 Hostel Information
-               </CardTitle>
-             </CardHeader>
-             <CardContent>
-               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                 <div className="text-center p-4 bg-green-50 rounded-lg">
-                   <p className="text-lg font-semibold text-gray-900">{student.hostelInfo.hostelName}</p>
-                   <p className="text-sm text-gray-600">Current Hostel</p>
-                 </div>
-                 
-                 <div className="text-center p-4 bg-green-50 rounded-lg">
-                   <p className="text-lg font-semibold text-gray-900">Room {student.hostelInfo.roomNumber}</p>
-                   <p className="text-sm text-gray-600">{student.hostelInfo.roomType} Room</p>
-                 </div>
-                 
-                 <div className="text-center p-4 bg-green-50 rounded-lg">
-                   <p className="text-lg font-semibold text-gray-900">{formatDate(student.hostelInfo.checkInDate)}</p>
-                   <p className="text-sm text-gray-600">Check-in Date</p>
-                 </div>
-                 
-                 <div className="text-center p-4 bg-green-50 rounded-lg">
-                   <p className="text-lg font-semibold text-gray-900">{formatCurrency(student.hostelInfo.monthlyRent)}</p>
-                   <p className="text-sm text-gray-600">Monthly Rent</p>
-                 </div>
-               </div>
-             </CardContent>
-           </Card>
+
         </div>
       </div>
     </div>

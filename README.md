@@ -112,8 +112,8 @@ unn-hostel-admin/
    
    Configure the following variables:
    ```env
-   NEXT_PUBLIC_API_URL=http://localhost:3033/api/v1
-   NEXT_PUBLIC_ADMIN_API_URL=http://localhost:3033/api/v1
+   NEXT_PUBLIC_API_URL=https://api.unnaccomodation.com/api/v1
+   NEXT_PUBLIC_ADMIN_API_URL=https://api.unnaccomodation.com/api/v1
    NEXT_PUBLIC_STUDENT_API_URL=http://localhost:3034/api/v1
    ```
 

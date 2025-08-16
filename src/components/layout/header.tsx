@@ -17,15 +17,28 @@ export default function Header({ onMenuToggle }: HeaderProps) {
     try {
       // Check if user is admin or student and logout accordingly
       const isStudent = authService.isStudentAuthenticated()
+      const isAdmin = authService.isAuthenticated()
+      
       if (isStudent) {
         await authService.logoutStudent()
+        // Clear any additional localStorage items
+        localStorage.clear()
         window.location.href = '/student/auth/login'
-      } else {
+      } else if (isAdmin) {
         await authService.logout()
+        // Clear any additional localStorage items
+        localStorage.clear()
+        window.location.href = '/auth/login'
+      } else {
+        // Fallback: clear everything and redirect to admin login
+        localStorage.clear()
         window.location.href = '/auth/login'
       }
     } catch (error) {
       console.error('Logout failed:', error)
+      // Even if logout API fails, clear local storage and redirect
+      localStorage.clear()
+      window.location.href = '/auth/login'
     }
   }
 
@@ -70,8 +83,21 @@ export default function Header({ onMenuToggle }: HeaderProps) {
           </div>
         </div>
 
-        {/* Right side - Notifications and profile */}
+        {/* Right side - Help, Notifications and profile */}
         <div className="flex items-center space-x-4">
+          {/* Help */}
+          <Button 
+            variant="ghost" 
+            size="sm" 
+            onClick={() => window.location.href = '/help'}
+            className="flex items-center space-x-2"
+          >
+            <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <span className="hidden md:inline">Help</span>
+          </Button>
+
           {/* Notifications */}
           <Button variant="ghost" size="sm" className="relative">
             <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

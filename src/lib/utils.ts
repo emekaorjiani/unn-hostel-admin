@@ -66,22 +66,38 @@ export function formatPercentage(value: number): string {
 
 // Format date
 export function formatDate(date: string | Date): string {
-  return new Intl.DateTimeFormat('en-NG', {
-    year: 'numeric',
-    month: 'short',
-    day: 'numeric',
-  }).format(new Date(date))
+  try {
+    const dateObj = new Date(date)
+    if (isNaN(dateObj.getTime())) {
+      return 'Invalid Date'
+    }
+    return new Intl.DateTimeFormat('en-NG', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+    }).format(dateObj)
+  } catch (error) {
+    return 'Invalid Date'
+  }
 }
 
 // Format date and time
 export function formatDateTime(date: string | Date): string {
-  return new Intl.DateTimeFormat('en-NG', {
-    year: 'numeric',
-    month: 'short',
-    day: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit',
-  }).format(new Date(date))
+  try {
+    const dateObj = new Date(date)
+    if (isNaN(dateObj.getTime())) {
+      return 'Invalid Date'
+    }
+    return new Intl.DateTimeFormat('en-NG', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+    }).format(dateObj)
+  } catch (error) {
+    return 'Invalid Date'
+  }
 }
 
 // Generate random ID

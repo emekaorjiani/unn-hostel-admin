@@ -38,7 +38,7 @@ export default function TestAuthPage() {
       setAuthStatus('Logging in...')
       const result = await authService.login({
         email: 'admin@unn.edu.ng',
-        password: 'admin123'
+        password: 'password123'
       })
       setAuthStatus('Login successful!')
       setToken(result.accessToken)
@@ -56,7 +56,7 @@ export default function TestAuthPage() {
 
     try {
       setAuthStatus('Testing dashboard call...')
-      const response = await fetch('http://localhost:3033/api/v1/reports/dashboard', {
+      const response = await fetch('https://api.unnaccomodation.com/api/v1/reports/dashboard', {
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
@@ -73,6 +73,84 @@ export default function TestAuthPage() {
       }
     } catch (error) {
       setAuthStatus(`Dashboard call error: ${error instanceof Error ? error.message : 'Unknown error'}`)
+    }
+  }
+
+  const testDirectFetch = async () => {
+    try {
+      setAuthStatus('Testing direct fetch...')
+      const response = await fetch('https://api.unnaccomodation.com/api/v1/auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'X-Requested-With': 'XMLHttpRequest',
+        },
+        body: JSON.stringify({
+          login_type: 'admin',
+          email: 'admin@unn.edu.ng',
+          password: 'password123'
+        })
+      })
+
+      console.log('Direct fetch response status:', response.status)
+      console.log('Direct fetch response headers:', response.headers)
+
+      if (response.ok) {
+        const data = await response.json()
+        setAuthStatus('Direct fetch successful!')
+        console.log('Direct fetch data:', data)
+      } else {
+        const errorData = await response.text()
+        setAuthStatus(`Direct fetch failed: ${response.status} - ${errorData}`)
+        console.log('Direct fetch error data:', errorData)
+      }
+    } catch (error) {
+      setAuthStatus(`Direct fetch error: ${error instanceof Error ? error.message : 'Unknown error'}`)
+    }
+  }
+
+  const testMinimalFetch = async () => {
+    try {
+      setAuthStatus('Testing minimal fetch...')
+      
+      // Create request exactly like curl
+      const requestBody = JSON.stringify({
+        login_type: 'admin',
+        email: 'admin@unn.edu.ng',
+        password: 'password123'
+      })
+      
+      const response = await fetch('https://api.unnaccomodation.com/api/v1/auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'X-Requested-With': 'XMLHttpRequest',
+        },
+        body: requestBody
+      })
+
+      console.log('Minimal fetch response status:', response.status)
+      console.log('Minimal fetch response headers:', [...response.headers.entries()])
+
+      if (response.ok) {
+        const data = await response.json()
+        setAuthStatus('Minimal fetch successful!')
+        console.log('Minimal fetch data:', data)
+        
+        // Store the token if successful
+        if (data.success && data.data.token) {
+          localStorage.setItem('auth_token', data.data.token)
+          console.log('Token stored:', data.data.token)
+        }
+      } else {
+        const errorData = await response.text()
+        setAuthStatus(`Minimal fetch failed: ${response.status} - ${errorData}`)
+        console.log('Minimal fetch error data:', errorData)
+      }
+    } catch (error) {
+      setAuthStatus(`Minimal fetch error: ${error instanceof Error ? error.message : 'Unknown error'}`)
     }
   }
 
@@ -118,6 +196,20 @@ export default function TestAuthPage() {
               className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 ml-2"
             >
               Test Dashboard Call
+            </button>
+            
+            <button
+              onClick={testDirectFetch}
+              className="bg-purple-500 text-white px-4 py-2 rounded hover:bg-purple-600 ml-2"
+            >
+              Test Direct Fetch
+            </button>
+            
+            <button
+              onClick={testMinimalFetch}
+              className="bg-orange-500 text-white px-4 py-2 rounded hover:bg-orange-600 ml-2"
+            >
+              Test Minimal Fetch
             </button>
             
             <button

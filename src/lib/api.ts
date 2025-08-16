@@ -10,12 +10,30 @@ export const apiClient = axios.create({
   timeout: config.backend.timeout,
   headers: {
     "Content-Type": "application/json",
+    "Accept": "application/json",
+    "X-Requested-With": "XMLHttpRequest",
   },
+  // Disable automatic request transformation
+  transformRequest: [(data) => {
+    if (data) {
+      return JSON.stringify(data);
+    }
+    return data;
+  }],
+  // Force axios to send requests as-is
+  withCredentials: false,
 });
 
 // Request interceptor to add auth token
 apiClient.interceptors.request.use(
   (config) => {
+    // Ensure Accept header is set for all requests
+    config.headers.Accept = "application/json";
+    config.headers["X-Requested-With"] = "XMLHttpRequest";
+    
+    // Add cache-busting header
+    config.headers["Cache-Control"] = "no-cache";
+    
     // Check for both admin and student tokens
     const adminToken = localStorage.getItem("auth_token");
     const studentToken = localStorage.getItem("student_token");
@@ -24,6 +42,12 @@ apiClient.interceptors.request.use(
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
+    
+    // Debug: Log the request headers
+    console.log("Request headers:", config.headers);
+    console.log("Request URL:", config.url);
+    console.log("Request method:", config.method);
+    
     return config;
   },
   (error) => {
