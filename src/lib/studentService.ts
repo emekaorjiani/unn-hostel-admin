@@ -2,25 +2,37 @@ import { apiClient } from './api';
 
 // Student dashboard data types based on API documentation
 export interface StudentProfile {
-  id: string;
-  first_name: string;
-  last_name: string;
-  email: string;
-  matric_number: string;
-  phone_number?: string;
-  faculty?: string;
-  department?: string;
-  level?: string;
-  gender?: string;
-  date_of_birth?: string;
-  address?: string;
-  state_of_origin?: string;
-  nationality?: string;
-  status: 'active' | 'inactive' | 'suspended' | 'pending_verification';
-  is_email_verified: boolean;
-  is_phone_verified: boolean;
-  created_at: string;
-  updated_at: string;
+  user: {
+    id: string;
+    first_name: string;
+    last_name: string;
+    email: string;
+    matric_number: string;
+    phone_number?: string;
+    faculty?: string;
+    department?: string;
+    level?: string;
+    gender?: string;
+    date_of_birth?: string;
+    address?: string;
+    state_of_origin?: string;
+    nationality?: string;
+    local_government?: string;
+    tribe?: string;
+    religion?: string;
+    emergency_contact?: string;
+    emergency_phone?: string;
+    is_pwd?: boolean;
+    pwd_details?: string;
+    is_international_student?: boolean;
+    passport_number?: string;
+    nin_number?: string;
+    status: 'active' | 'inactive' | 'suspended' | 'pending_verification';
+    is_email_verified: boolean;
+    is_phone_verified: boolean;
+    created_at: string;
+    updated_at: string;
+  };
 }
 
 // Application Window interface for the required field
@@ -119,12 +131,12 @@ export const studentService = {
     try {
       // Get student profile to get the student ID
       const profile = await this.getProfile();
-      const studentId = profile.id;
+      const studentId = profile.user.id;
       
       // Use the correct endpoint structure with student ID
       const response = await apiClient.get<{ success: boolean; data: StudentApplication[] }>(`applications/student/${studentId}`);
       console.log('API Applications response:', response.data);
-      return response.data.data;
+      return Array.isArray(response.data.data) ? response.data.data : [];
     } catch (error) {
       console.warn('Applications endpoint not available, returning empty array');
       return [];
@@ -136,12 +148,12 @@ export const studentService = {
     try {
       // Get student profile to get the student ID
       const profile = await this.getProfile();
-      const studentId = profile.id;
+      const studentId = profile.user.id;
       
       // Use the correct endpoint structure with student ID
       const response = await apiClient.get<{ success: boolean; data: StudentPayment[] }>(`payments/student/${studentId}`);
       console.log('API Payments response:', response.data);
-      return response.data.data;
+      return Array.isArray(response.data.data) ? response.data.data : [];
     } catch (error) {
       console.warn('Payments endpoint not available, returning empty array');
       return [];
@@ -152,7 +164,7 @@ export const studentService = {
   async getMaintenanceTickets(): Promise<MaintenanceTicket[]> {
     try {
       const response = await apiClient.get<{ success: boolean; data: MaintenanceTicket[] }>('/maintenance/tickets');
-      return response.data.data;
+      return Array.isArray(response.data.data) ? response.data.data : [];
     } catch (error) {
       console.warn('Maintenance tickets endpoint not available, returning empty array');
       return [];
@@ -163,7 +175,7 @@ export const studentService = {
   async getNotifications(): Promise<Notification[]> {
     try {
       const response = await apiClient.get<{ success: boolean; data: Notification[] }>('/notifications');
-      return response.data.data;
+      return Array.isArray(response.data.data) ? response.data.data : [];
     } catch (error) {
       console.warn('Notifications endpoint not available, returning empty array');
       return [];
@@ -185,21 +197,27 @@ export const studentService = {
         this.getNotifications(),
       ]);
 
+      // Ensure all data is properly handled as arrays and add null checks
+      const safeApplications = Array.isArray(applications) ? applications : [];
+      const safePayments = Array.isArray(payments) ? payments : [];
+      const safeMaintenanceTickets = Array.isArray(maintenanceTickets) ? maintenanceTickets : [];
+      const safeNotifications = Array.isArray(notifications) ? notifications : [];
+
       // Calculate quick statistics for dashboard display
       const quickStats = {
-        totalApplications: applications.length,
-        approvedApplications: applications.filter(app => app.status === 'approved').length,
-        pendingPayments: payments.filter(pay => pay.status === 'pending').length,
-        activeTickets: maintenanceTickets.filter(ticket => ticket.status === 'pending' || ticket.status === 'in_progress').length,
-        unreadNotifications: notifications.filter(notif => !notif.read).length,
+        totalApplications: safeApplications.length,
+        approvedApplications: safeApplications.filter(app => app.status === 'approved').length,
+        pendingPayments: safePayments.filter(pay => pay.status === 'pending').length,
+        activeTickets: safeMaintenanceTickets.filter(ticket => ticket.status === 'pending' || ticket.status === 'in_progress').length,
+        unreadNotifications: safeNotifications.filter(notif => !notif.read).length,
       };
 
       return {
         profile,
-        applications,
-        payments,
-        maintenanceTickets,
-        notifications,
+        applications: safeApplications,
+        payments: safePayments,
+        maintenanceTickets: safeMaintenanceTickets,
+        notifications: safeNotifications,
         quickStats,
       };
     } catch (error) {
@@ -261,7 +279,7 @@ export const studentService = {
     try {
       // Get student profile to get the student ID
       const profile = await this.getProfile();
-      const studentId = profile.id;
+      const studentId = profile.user.id;
       
       // Use the correct endpoint structure - POST to applications with student_id in body
       const dataWithStudentId = {
@@ -290,7 +308,7 @@ export const studentService = {
     try {
       // Get student profile to get the student ID
       const profile = await this.getProfile();
-      const studentId = profile.id;
+      const studentId = profile.user.id;
       
       // Add student_id to the payment data
       const dataWithStudentId = {
@@ -443,7 +461,7 @@ export const studentService = {
 
   // Update student settings
   async updateSettings(settings: {
-    profile?: Partial<StudentProfile>;
+    profile?: Partial<StudentProfile['user']>;
     notifications?: {
       emailNotifications: boolean;
       smsNotifications: boolean;
@@ -460,7 +478,7 @@ export const studentService = {
   }): Promise<void> {
     try {
       if (settings.profile) {
-        // Update profile
+        // Update profile - send user data directly to API
         await apiClient.put<{ success: boolean }>('/auth/profile', settings.profile);
       }
       

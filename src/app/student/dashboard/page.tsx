@@ -1,11 +1,10 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { useRouter } from 'next/navigation'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { getStatusColor, formatCurrency, formatDate, getInitials } from '@/lib/utils'
+import { formatCurrency, formatDate, getInitials } from '@/lib/utils'
 import { studentService, StudentDashboardData } from '@/lib/studentService'
 import QuickActions  from '@/components/ui/quick-actions'
 import {
@@ -15,94 +14,49 @@ import {
   CreditCard,
   Calendar,
   Bell,
-  Clock,
   CheckCircle,
-  XCircle,
+  Wrench,
   AlertTriangle,
-  Home,
   GraduationCap,
   BookOpen,
-  Users,
-  BarChart3,
-  Settings,
-  Download,
-  RefreshCw,
-  Eye,
-  Plus,
-  ArrowRight,
+  MapPin,
+  Map,
+  Minus,
   ArrowUpRight,
   ArrowDownRight,
-  MoreHorizontal,
-  ChevronRight,
-  Star,
-  Award,
-  Target,
-  TrendingUp,
-  TrendingDown,
-  MapPin,
-  Phone,
-  Mail,
-  Globe,
-  Shield,
-  Zap,
-  Heart,
-  Bookmark,
-  Share2,
-  ExternalLink,
-  Clock3,
-  CalendarDays,
-  Receipt,
-  Wallet,
-  PiggyBank,
-  CreditCard as CreditCardIcon,
-  Banknote,
-  QrCode,
-  Smartphone,
-  Wifi,
-  Wrench,
-  ShieldCheck,
-  Users2,
-  MessageSquare,
-  HelpCircle,
-  Info,
-  CheckSquare,
-  Square,
-  Circle,
-  Minus,
-  Plus as PlusIcon,
-  LogOut,
-  Flag,
-  Map,
+  RefreshCw
 } from 'lucide-react'
 import StudentHeader from '@/components/layout/student-header'
 
 export default function StudentDashboardPage() {
-  const router = useRouter()
+
   const [isLoading, setIsLoading] = useState(true)
   const [dashboardData, setDashboardData] = useState<StudentDashboardData | null>(null)
   const [error, setError] = useState<string | null>(null)
 
   // Mock student data
   const mockStudentData = {
-    id: 'student-001',
-    matric_number: '2021/123456',
-    first_name: 'John',
-    last_name: 'Doe',
-    email: 'john.doe@unn.edu.ng',
-    phone_number: '+234 801 234 5678',
-    faculty: 'Engineering',
-    department: 'Computer Engineering',
-    level: '300',
-    gender: 'Male',
-    date_of_birth: '2000-01-15',
-    address: '123 Main Street, Nsukka, Enugu State',
-    state_of_origin: 'Enugu',
-    nationality: 'Nigerian',
-    status: 'active' as const,
-    is_email_verified: true,
-    is_phone_verified: true,
-    created_at: '2021-09-01T00:00:00Z',
-    updated_at: '2024-01-01T00:00:00Z'
+    user: {
+      id: 'student-001',
+      matric_number: '2021/123456',
+      first_name: 'John',
+      last_name: 'Doe',
+      email: 'john.doe@unn.edu.ng',
+      phone_number: '+234 801 234 5678',
+      faculty: 'Engineering',
+      department: 'Computer Engineering',
+      level: '300',
+      gender: 'Male',
+      date_of_birth: '2000-01-15',
+      address: '123 Main Street, Nsukka, Enugu State',
+      state_of_origin: 'Enugu',
+      nationality: 'Nigerian',
+      status: 'active' as const,
+      is_email_verified: true,
+      is_phone_verified: true,
+      created_at: '2021-09-01T00:00:00Z',
+      updated_at: '2024-01-01T00:00:00Z'
+    }
   }
 
   // Fetch dashboard data on component mount
@@ -287,31 +241,31 @@ export default function StudentDashboardPage() {
           <div className="bg-gradient-to-r from-green-600 to-emerald-700 rounded-2xl p-8 text-white">
             <div className="flex items-center justify-between">
               <div>
-                <h2 className="text-3xl font-bold mb-2">
-                  Welcome back, {student?.first_name}
-                </h2>
-                <p className="text-green-100 text-lg mb-4">
-                  Here's what's happening with your hostel accommodation
-                </p>
-                                                    <div className="flex items-center space-x-6 text-sm">
-                     <div className="flex items-center space-x-2">
-                       <Building2 className="h-4 w-4" />
-                       <span>{student?.faculty || 'Not Assigned'} - {student?.department || 'Not Assigned'}</span>
-                     </div>
-                     <div className="flex items-center">
-                      <BookOpen className="h-4 w-4 mr-2 text-gray-400" />
-                      <span>Level {student?.level || 'Not Assigned'}</span>
+                  <h2 className="text-3xl font-bold mb-2">
+                    Welcome back, {student?.user?.first_name}
+                  </h2>
+                  <p className="text-green-100 text-lg mb-4">
+                    Here&apos;s what&apos;s happening with your hostel accommodation
+                  </p>
+                  <div className="flex items-center space-x-6 text-sm">
+                    <div className="flex items-center space-x-2">
+                      <Building2 className="h-4 w-4" />
+                      <span>{student?.user?.faculty || 'Not Assigned'} - {student?.user?.department || 'Not Assigned'}</span>
                     </div>
-                     <div className="flex items-center space-x-2">
-                       <User className="h-4 w-4" />
-                       <span>Matric: {student?.matric_number}</span>
-                     </div>
-                   </div>
+                    <div className="flex items-center">
+                      <BookOpen className="h-4 w-4 mr-2 text-gray-400" />
+                      <span>Level {student?.user?.level || 'Not Assigned'}</span>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <User className="h-4 w-4" />
+                      <span>Matric: {student?.user?.matric_number}</span>
+                    </div>
+                  </div>
               </div>
               <div className="hidden lg:block">
                 <div className="h-24 w-24 bg-white/20 rounded-full flex items-center justify-center">
                   <span className="text-2xl font-bold">
-                    {getInitials(student?.first_name, student?.last_name)}
+                    {getInitials(student?.user?.first_name, student?.user?.last_name)}
                   </span>
                 </div>
               </div>
@@ -365,7 +319,7 @@ export default function StudentDashboardPage() {
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-4">
-                    {recentActivities.map((activity, index) => (
+                    {recentActivities.map((activity) => (
                       <div key={activity.id} className="flex items-start space-x-4 p-4 bg-gray-50 rounded-lg">
                         <div className="flex-shrink-0">
                           <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center">
@@ -409,7 +363,7 @@ export default function StudentDashboardPage() {
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
-                  {upcomingEvents.map((event, index) => (
+                  {upcomingEvents.map((event) => (
                     <div key={event.id} className="flex items-start space-x-3 p-3 bg-gray-50 rounded-lg">
                       <div className={`w-2 h-2 rounded-full mt-2 ${
                         event.priority === 'high' ? 'bg-red-500' :
@@ -441,7 +395,7 @@ export default function StudentDashboardPage() {
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
-                  {dashboardData?.notifications.slice(0, 3).map((notification, index) => (
+                  {dashboardData?.notifications.slice(0, 3).map((notification) => (
                     <div key={notification.id} className={`flex items-start space-x-3 p-3 rounded-lg ${
                       notification.read ? 'bg-gray-50' : 'bg-blue-50'
                     }`}>
@@ -525,25 +479,25 @@ export default function StudentDashboardPage() {
                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                  <div className="text-center p-4 bg-orange-50 rounded-lg">
                    <GraduationCap className="h-8 w-8 text-orange-600 mx-auto mb-2" />
-                   <p className="text-lg font-semibold text-gray-900">{student?.faculty || 'Not Assigned'}</p>
+                   <p className="text-lg font-semibold text-gray-900">{student?.user?.faculty || 'Not Assigned'}</p>
                    <p className="text-sm text-gray-600">Faculty</p>
                  </div>
                  
                  <div className="text-center p-4 bg-yellow-50 rounded-lg">
                    <BookOpen className="h-8 w-8 text-yellow-600 mx-auto mb-2" />
-                   <p className="text-lg font-semibold text-gray-900">{student?.department || 'Not Assigned'}</p>
+                   <p className="text-lg font-semibold text-gray-900">{student?.user?.department || 'Not Assigned'}</p>
                    <p className="text-sm text-gray-600">Department</p>
                  </div>
                  
                  <div className="text-center p-4 bg-blue-50 rounded-lg">
                    <MapPin className="h-8 w-8 text-blue-600 mx-auto mb-2" />
-                   <p className="text-lg font-semibold text-gray-900">{student?.state_of_origin || 'Not Assigned'}</p>
+                   <p className="text-lg font-semibold text-gray-900">{student?.user?.state_of_origin || 'Not Assigned'}</p>
                    <p className="text-sm text-gray-600">State of Origin</p>
                  </div>
                  
                  <div className="text-center p-4 bg-purple-50 rounded-lg">
                    <Map className="h-8 w-8 text-purple-600 mx-auto mb-2" />
-                   <p className="text-lg font-semibold text-gray-900">{student?.nationality || 'Nigerian'}</p>
+                   <p className="text-lg font-semibold text-gray-900">{student?.user?.nationality || 'Nigerian'}</p>
                    <p className="text-sm text-gray-600">Nationality</p>
                  </div>
                </div>

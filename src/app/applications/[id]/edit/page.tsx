@@ -473,7 +473,7 @@ export default function EditApplicationPage() {
                     </div>
                     <div className="mt-2">
                       <Badge className={selectedWindow.status === 'active' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'}>
-                        {selectedWindow.status === 'active' ? 'Active' : 'Draft'}
+                        {selectedWindow.status === 'active' ? 'Active' : selectedWindow.status}
                       </Badge>
                     </div>
                   </div>

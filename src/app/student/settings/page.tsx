@@ -30,42 +30,9 @@ import {
   Heart,
   CreditCard
 } from 'lucide-react'
-import { studentService } from '@/lib/studentService'
+import { studentService, StudentProfile } from '@/lib/studentService'
 import StudentHeader from '@/components/layout/student-header'
 import QuickActions from '@/components/ui/quick-actions'
-
-interface StudentProfile {
-  id: string
-  matricNumber: string
-  firstName: string
-  lastName: string
-  email: string
-  phoneNumber: string
-  faculty: string
-  department: string
-  level: string
-  gender: 'Male' | 'Female'
-  dateOfBirth: string
-  address: string
-  stateOfOrigin: string
-  localGovernment: string
-  tribe: string
-  religion: string
-  emergencyContact: string
-  emergencyPhone: string
-  isPWD: boolean
-  pwdDetails?: string
-  isInternationalStudent: boolean
-  nationality: string
-  passportNumber?: string
-  ninNumber?: string
-  status: 'active' | 'inactive' | 'suspended' | 'pending_verification'
-  isEmailVerified: boolean
-  isPhoneVerified: boolean
-  lastLoginAt?: string
-  createdAt?: string
-  updatedAt?: string
-}
 
 interface NotificationSettings {
   emailNotifications: boolean
@@ -95,36 +62,37 @@ export default function StudentSettingsPage() {
 
   // Mock student data based on API schema
   const [student, setStudent] = useState<StudentProfile>({
-    id: 'student-001',
-    matricNumber: '2021/123456',
-    firstName: 'John',
-    lastName: 'Doe',
-    email: 'john.doe@unn.edu.ng',
-    phoneNumber: '+234 801 234 5678',
-    faculty: 'Engineering',
-    department: 'Computer Engineering',
-    level: '300',
-    gender: 'Male',
-    dateOfBirth: '2000-01-15',
-    address: '123 Main Street, Nsukka, Enugu State',
-    stateOfOrigin: 'Enugu',
-    localGovernment: 'Nsukka',
-    tribe: 'Igbo',
-    religion: 'Christianity',
-    emergencyContact: 'Jane Doe',
-    emergencyPhone: '+234 802 345 6789',
-    isPWD: false,
-    pwdDetails: '',
-    isInternationalStudent: false,
-    nationality: 'Nigerian',
-    passportNumber: '',
-    ninNumber: '12345678901',
-    status: 'active',
-    isEmailVerified: true,
-    isPhoneVerified: false,
-    lastLoginAt: '2024-01-20T10:30:00Z',
-    createdAt: '2023-09-01T00:00:00Z',
-    updatedAt: '2024-01-20T10:30:00Z'
+    user: {
+      id: 'student-001',
+      matric_number: '2021/123456',
+      first_name: 'John',
+      last_name: 'Doe',
+      email: 'john.doe@unn.edu.ng',
+      phone_number: '+234 801 234 5678',
+      faculty: 'Engineering',
+      department: 'Computer Engineering',
+      level: '300',
+      gender: 'male',
+      date_of_birth: '2000-01-15',
+      address: '123 Main Street, Nsukka, Enugu State',
+      state_of_origin: 'Enugu',
+      local_government: 'Nsukka',
+      tribe: 'Igbo',
+      religion: 'Christianity',
+      nationality: 'Nigerian',
+      emergency_contact: 'Jane Doe',
+      emergency_phone: '+234 802 345 6789',
+      is_pwd: false,
+      pwd_details: '',
+      is_international_student: false,
+      passport_number: '',
+      nin_number: '12345678901',
+      status: 'active',
+      is_email_verified: true,
+      is_phone_verified: false,
+      created_at: '2023-09-01T00:00:00Z',
+      updated_at: '2024-01-20T10:00:00Z'
+    }
   })
 
   const [notifications, setNotifications] = useState<NotificationSettings>({
@@ -157,7 +125,7 @@ export default function StudentSettingsPage() {
     try {
       // Update profile using real API
       await studentService.updateSettings({
-        profile: student
+        profile: student?.user
       })
     setMessage({ type: 'success', text: 'Profile updated successfully!' })
     } catch (err) {
@@ -306,49 +274,49 @@ export default function StudentSettingsPage() {
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">First Name</label>
                     <Input
-                      value={student.firstName}
-                      onChange={(e) => setStudent(prev => ({ ...prev, firstName: e.target.value }))}
+                      value={student.user.first_name}
+                      onChange={(e) => setStudent(prev => ({ ...prev, user: { ...prev.user, first_name: e.target.value } }))}
                     />
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">Last Name</label>
                     <Input
-                      value={student.lastName}
-                      onChange={(e) => setStudent(prev => ({ ...prev, lastName: e.target.value }))}
+                      value={student.user.last_name}
+                      onChange={(e) => setStudent(prev => ({ ...prev, user: { ...prev.user, last_name: e.target.value } }))}
                     />
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">Email</label>
                     <Input
                       type="email"
-                      value={student.email}
-                      onChange={(e) => setStudent(prev => ({ ...prev, email: e.target.value }))}
+                      value={student.user.email}
+                      onChange={(e) => setStudent(prev => ({ ...prev, user: { ...prev.user, email: e.target.value } }))}
                     />
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">Phone Number</label>
                     <Input
-                      value={student.phoneNumber}
-                      onChange={(e) => setStudent(prev => ({ ...prev, phoneNumber: e.target.value }))}
+                      value={student.user.phone_number}
+                      onChange={(e) => setStudent(prev => ({ ...prev, user: { ...prev.user, phone_number: e.target.value } }))}
                     />
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">Date of Birth</label>
                     <Input
                       type="date"
-                      value={student.dateOfBirth}
-                      onChange={(e) => setStudent(prev => ({ ...prev, dateOfBirth: e.target.value }))}
+                      value={student.user.date_of_birth}
+                      onChange={(e) => setStudent(prev => ({ ...prev, user: { ...prev.user, date_of_birth: e.target.value } }))}
                     />
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">Gender</label>
                     <select
-                      value={student.gender}
-                      onChange={(e) => setStudent(prev => ({ ...prev, gender: e.target.value as 'Male' | 'Female' }))}
+                      value={student.user.gender}
+                      onChange={(e) => setStudent(prev => ({ ...prev, user: { ...prev.user, gender: e.target.value as 'male' | 'female' } }))}
                       className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
                     >
-                      <option value="Male">Male</option>
-                      <option value="Female">Female</option>
+                      <option value="male">Male</option>
+                      <option value="female">Female</option>
                     </select>
                   </div>
                 </div>
@@ -356,8 +324,8 @@ export default function StudentSettingsPage() {
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">Address</label>
                   <Input
-                    value={student.address}
-                    onChange={(e) => setStudent(prev => ({ ...prev, address: e.target.value }))}
+                    value={student.user.address}
+                    onChange={(e) => setStudent(prev => ({ ...prev, user: { ...prev.user, address: e.target.value } }))}
                   />
                 </div>
 
@@ -365,22 +333,22 @@ export default function StudentSettingsPage() {
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">State of Origin</label>
                     <Input
-                      value={student.stateOfOrigin}
-                      onChange={(e) => setStudent(prev => ({ ...prev, stateOfOrigin: e.target.value }))}
+                      value={student.user.state_of_origin}
+                      onChange={(e) => setStudent(prev => ({ ...prev, user: { ...prev.user, state_of_origin: e.target.value } }))}
                     />
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">Local Government</label>
                     <Input
-                      value={student.localGovernment}
-                      onChange={(e) => setStudent(prev => ({ ...prev, localGovernment: e.target.value }))}
+                      value={student.user.local_government}
+                      onChange={(e) => setStudent(prev => ({ ...prev, user: { ...prev.user, local_government: e.target.value } }))}
                     />
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">Tribe</label>
                     <Input
-                      value={student.tribe}
-                      onChange={(e) => setStudent(prev => ({ ...prev, tribe: e.target.value }))}
+                      value={student.user.tribe}
+                      onChange={(e) => setStudent(prev => ({ ...prev, user: { ...prev.user, tribe: e.target.value } }))}
                     />
                   </div>
                 </div>
@@ -388,8 +356,8 @@ export default function StudentSettingsPage() {
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">Religion</label>
                   <Input
-                    value={student.religion}
-                    onChange={(e) => setStudent(prev => ({ ...prev, religion: e.target.value }))}
+                    value={student.user.religion}
+                    onChange={(e) => setStudent(prev => ({ ...prev, user: { ...prev.user, religion: e.target.value } }))}
                   />
                 </div>
 
@@ -429,7 +397,7 @@ export default function StudentSettingsPage() {
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">Matric Number</label>
                     <Input
-                      value={student.matricNumber}
+                      value={student.user.matric_number}
                       disabled
                       className="bg-gray-50"
                     />
@@ -437,23 +405,23 @@ export default function StudentSettingsPage() {
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">Faculty</label>
                     <Input
-                      value={student.faculty}
-                      onChange={(e) => setStudent(prev => ({ ...prev, faculty: e.target.value }))}
+                      value={student.user.faculty}
+                      onChange={(e) => setStudent(prev => ({ ...prev, user: { ...prev.user, faculty: e.target.value } }))}
                     />
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">Department</label>
                     <Input
-                      value={student.department}
-                      onChange={(e) => setStudent(prev => ({ ...prev, department: e.target.value }))}
+                      value={student.user.department}
+                      onChange={(e) => setStudent(prev => ({ ...prev, user: { ...prev.user, department: e.target.value } }))}
                     />
                   </div>
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">Level</label>
                   <Input
-                    value={student.level}
-                    onChange={(e) => setStudent(prev => ({ ...prev, level: e.target.value }))}
+                    value={student.user.level}
+                    onChange={(e) => setStudent(prev => ({ ...prev, user: { ...prev.user, level: e.target.value } }))}
                   />
                 </div>
               </CardContent>
@@ -475,15 +443,15 @@ export default function StudentSettingsPage() {
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">Contact Name</label>
                     <Input
-                      value={student.emergencyContact}
-                      onChange={(e) => setStudent(prev => ({ ...prev, emergencyContact: e.target.value }))}
+                      value={student.user.emergency_contact}
+                      onChange={(e) => setStudent(prev => ({ ...prev, user: { ...prev.user, emergency_contact: e.target.value } }))}
                     />
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">Contact Phone</label>
                     <Input
-                      value={student.emergencyPhone}
-                      onChange={(e) => setStudent(prev => ({ ...prev, emergencyPhone: e.target.value }))}
+                      value={student.user.emergency_phone}
+                      onChange={(e) => setStudent(prev => ({ ...prev, user: { ...prev.user, emergency_phone: e.target.value } }))}
                     />
                   </div>
                 </div>
@@ -510,8 +478,8 @@ export default function StudentSettingsPage() {
                     </div>
                     <input
                       type="checkbox"
-                      checked={student.isPWD}
-                      onChange={(e) => setStudent(prev => ({ ...prev, isPWD: e.target.checked }))}
+                      checked={student.user.is_pwd}
+                      onChange={(e) => setStudent(prev => ({ ...prev, user: { ...prev.user, is_pwd: e.target.checked } }))}
                       className="h-4 w-4 text-green-600 focus:ring-green-500 border-gray-300 rounded"
                     />
                   </div>
@@ -522,19 +490,19 @@ export default function StudentSettingsPage() {
                     </div>
                     <input
                       type="checkbox"
-                      checked={student.isInternationalStudent}
-                      onChange={(e) => setStudent(prev => ({ ...prev, isInternationalStudent: e.target.checked }))}
+                      checked={student.user.is_international_student}
+                      onChange={(e) => setStudent(prev => ({ ...prev, user: { ...prev.user, is_international_student: e.target.checked } }))}
                       className="h-4 w-4 text-green-600 focus:ring-green-500 border-gray-300 rounded"
                     />
                   </div>
                 </div>
 
-                {student.isPWD && (
+                {student.user.is_pwd && (
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">PWD Details</label>
                     <textarea
-                      value={student.pwdDetails || ''}
-                      onChange={(e) => setStudent(prev => ({ ...prev, pwdDetails: e.target.value }))}
+                      value={student.user.pwd_details || ''}
+                      onChange={(e) => setStudent(prev => ({ ...prev, user: { ...prev.user, pwd_details: e.target.value } }))}
                       rows={3}
                       className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
                       placeholder="Please describe any special requirements or accommodations needed..."
@@ -542,20 +510,20 @@ export default function StudentSettingsPage() {
                   </div>
                 )}
 
-                {student.isInternationalStudent && (
+                {student.user.is_international_student && (
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">Nationality</label>
                       <Input
-                        value={student.nationality}
-                        onChange={(e) => setStudent(prev => ({ ...prev, nationality: e.target.value }))}
+                        value={student.user.nationality}
+                        onChange={(e) => setStudent(prev => ({ ...prev, user: { ...prev.user, nationality: e.target.value } }))}
                       />
                     </div>
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">Passport Number</label>
                       <Input
-                        value={student.passportNumber || ''}
-                        onChange={(e) => setStudent(prev => ({ ...prev, passportNumber: e.target.value }))}
+                        value={student.user.passport_number || ''}
+                        onChange={(e) => setStudent(prev => ({ ...prev, user: { ...prev.user, passport_number: e.target.value } }))}
                       />
                     </div>
                   </div>
@@ -564,8 +532,8 @@ export default function StudentSettingsPage() {
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">NIN Number</label>
                   <Input
-                    value={student.ninNumber || ''}
-                    onChange={(e) => setStudent(prev => ({ ...prev, ninNumber: e.target.value }))}
+                    value={student.user.nin_number || ''}
+                    onChange={(e) => setStudent(prev => ({ ...prev, user: { ...prev.user, nin_number: e.target.value } }))}
                     placeholder="National Identification Number"
                   />
                 </div>
@@ -880,45 +848,45 @@ export default function StudentSettingsPage() {
                     <div className="flex items-center space-x-2">
                       <GraduationCap className="h-4 w-4 text-gray-400" />
                       <span className="text-sm text-gray-600">Matric Number:</span>
-                      <span className="font-medium">{student.matricNumber}</span>
+                      <span className="font-medium">{student.user.matric_number}</span>
                     </div>
                     <div className="flex items-center space-x-2">
                       <Building2 className="h-4 w-4 text-gray-400" />
                       <span className="text-sm text-gray-600">Faculty:</span>
-                      <span className="font-medium">{student.faculty}</span>
+                      <span className="font-medium">{student.user.faculty}</span>
                     </div>
                     <div className="flex items-center space-x-2">
                       <BookOpen className="h-4 w-4 text-gray-400" />
                       <span className="text-sm text-gray-600">Department:</span>
-                      <span className="font-medium">{student.department}</span>
+                      <span className="font-medium">{student.user.department}</span>
                     </div>
                     <div className="flex items-center space-x-2">
                       <Calendar className="h-4 w-4 text-gray-400" />
                       <span className="text-sm text-gray-600">Level:</span>
-                      <span className="font-medium">{student.level}</span>
+                      <span className="font-medium">{student.user.level}</span>
                     </div>
                   </div>
                   <div className="space-y-3">
                     <div className="flex items-center space-x-2">
                       <Flag className="h-4 w-4 text-gray-400" />
                       <span className="text-sm text-gray-600">Nationality:</span>
-                      <span className="font-medium">{student.nationality}</span>
+                      <span className="font-medium">{student.user.nationality}</span>
                     </div>
                     <div className="flex items-center space-x-2">
                       <MapPin className="h-4 w-4 text-gray-400" />
                       <span className="text-sm text-gray-600">State:</span>
-                      <span className="font-medium">{student.stateOfOrigin}</span>
+                      <span className="font-medium">{student.user.state_of_origin}</span>
                     </div>
                     <div className="flex items-center space-x-2">
                       <CheckCircle className="h-4 w-4 text-green-400" />
                       <span className="text-sm text-gray-600">Status:</span>
-                      <Badge className="bg-green-100 text-green-800 capitalize">{student.status}</Badge>
+                      <Badge className="bg-green-100 text-green-800 capitalize">{student.user.status}</Badge>
                     </div>
                     <div className="flex items-center space-x-2">
                       <CreditCard className="h-4 w-4 text-gray-400" />
                       <span className="text-sm text-gray-600">Email Verified:</span>
-                      <Badge className={student.isEmailVerified ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"}>
-                        {student.isEmailVerified ? 'Yes' : 'No'}
+                      <Badge className={student.user.is_email_verified ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"}>
+                        {student.user.is_email_verified ? 'Yes' : 'No'}
                       </Badge>
                     </div>
                   </div>
