@@ -45,7 +45,7 @@ export default function StudentMaintenancePage() {
         // Fallback to empty array if API fails
         setMaintenanceRequests([])
       } finally {
-        setLoading(false)
+      setLoading(false)
       }
     }
 
@@ -127,11 +127,11 @@ export default function StudentMaintenancePage() {
       <div className="bg-white shadow-sm border-b border-gray-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
-            <div className="flex items-center space-x-4">
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => router.back()}
+          <div className="flex items-center space-x-4">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => router.back()}
                 className="flex items-center space-x-2"
               >
                 <ArrowLeft className="h-4 w-4" />
@@ -166,13 +166,13 @@ export default function StudentMaintenancePage() {
             <CardContent className="p-6">
               <div className="flex flex-col md:flex-row gap-4">
                 <div className="flex-1">
-                  <Input
+                <Input
                     placeholder="Search maintenance requests..."
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
                     className="w-full"
-                  />
-                </div>
+                />
+              </div>
                 <div className="flex gap-2">
                   {['all', 'pending', 'in_progress', 'resolved', 'closed'].map((status) => (
                     <Button
@@ -185,7 +185,7 @@ export default function StudentMaintenancePage() {
                       {status.replace('_', ' ')}
                     </Button>
                   ))}
-                </div>
+              </div>
                 <div className="flex gap-2">
                   {['all', 'electrical', 'plumbing', 'structural', 'furniture', 'appliance', 'security', 'other'].map((category) => (
                     <Button
@@ -198,19 +198,19 @@ export default function StudentMaintenancePage() {
                       {category}
                     </Button>
                   ))}
-                </div>
               </div>
-            </CardContent>
-          </Card>
+            </div>
+          </CardContent>
+        </Card>
 
-          {/* Maintenance Requests List */}
+        {/* Maintenance Requests List */}
           {filteredRequests.length > 0 ? (
             <div className="grid gap-6">
               {filteredRequests.map((request) => (
                 <Card key={request.id} className="hover:shadow-lg transition-shadow">
-                  <CardContent className="p-6">
+                <CardContent className="p-6">
                     <div className="flex items-start justify-between">
-                      <div className="flex-1">
+                    <div className="flex-1">
                         <div className="flex items-center space-x-3 mb-3">
                           <Wrench className="h-5 w-5 text-gray-500" />
                           <h3 className="text-lg font-semibold text-gray-900">
@@ -225,12 +225,12 @@ export default function StudentMaintenancePage() {
                           <Badge className={getPriorityColor(request.priority)}>
                             <span className="capitalize">{request.priority}</span>
                           </Badge>
-                        </div>
-                        
+                      </div>
+
                         {request.description && (
                           <p className="text-gray-600 mb-3">{request.description}</p>
                         )}
-                        
+
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm text-gray-600">
                           <div className="flex items-center space-x-2">
                             <Calendar className="h-4 w-4" />
@@ -255,15 +255,15 @@ export default function StudentMaintenancePage() {
                           size="sm"
                           onClick={() => router.push(`/student/maintenance/${request.id}`)}
                         >
-                          <Eye className="h-4 w-4 mr-2" />
-                          View Details
+                        <Eye className="h-4 w-4 mr-2" />
+                        View Details
                         </Button>
                       </div>
                     </div>
                   </CardContent>
                 </Card>
               ))}
-            </div>
+                  </div>
           ) : (
             <Card>
               <CardContent className="p-12 text-center">
@@ -282,8 +282,8 @@ export default function StudentMaintenancePage() {
                   <Plus className="h-4 w-4 mr-2" />
                   Submit Your First Request
                 </Button>
-              </CardContent>
-            </Card>
+                </CardContent>
+              </Card>
           )}
 
           {/* Summary Stats */}
@@ -329,19 +329,19 @@ export default function StudentMaintenancePage() {
                 <div className="text-center p-4 bg-red-50 rounded-lg">
                   <div className="text-2xl font-bold text-red-600">
                     {maintenanceRequests.filter(req => req.priority === 'urgent').length}
-                  </div>
+      </div>
                   <div className="text-sm text-red-600">Urgent</div>
-                </div>
+              </div>
                 <div className="text-center p-4 bg-orange-50 rounded-lg">
                   <div className="text-2xl font-bold text-orange-600">
                     {maintenanceRequests.filter(req => req.priority === 'high').length}
-                  </div>
+              </div>
                   <div className="text-sm text-orange-600">High</div>
-                </div>
+              </div>
                 <div className="text-center p-4 bg-yellow-50 rounded-lg">
                   <div className="text-2xl font-bold text-yellow-600">
                     {maintenanceRequests.filter(req => req.priority === 'medium').length}
-                  </div>
+              </div>
                   <div className="text-sm text-yellow-600">Medium</div>
                 </div>
                 <div className="text-center p-4 bg-green-50 rounded-lg">

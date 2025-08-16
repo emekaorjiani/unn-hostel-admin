@@ -3,26 +3,37 @@ import { apiClient } from './api';
 // Student dashboard data types based on API documentation
 export interface StudentProfile {
   user: {
-    id: string;
-    first_name: string;
-    last_name: string;
-    email: string;
-    matric_number: string;
-    phone_number?: string;
-    faculty?: string;
-    department?: string;
-    level?: string;
-    gender?: string;
-    date_of_birth?: string;
-    address?: string;
-    state_of_origin?: string;
-    nationality?: string;
-    status: 'active' | 'inactive' | 'suspended' | 'pending_verification';
-    is_email_verified: boolean;
-    is_phone_verified: boolean;
-    created_at: string;
-    updated_at: string;
-  }
+  id: string;
+  first_name: string;
+  last_name: string;
+  email: string;
+  matric_number: string;
+  phone_number?: string;
+  faculty?: string;
+  department?: string;
+  level?: string;
+  gender?: string;
+  date_of_birth?: string;
+  address?: string;
+  state_of_origin?: string;
+  nationality?: string;
+  status: 'active' | 'inactive' | 'suspended' | 'pending_verification';
+  is_email_verified: boolean;
+  is_phone_verified: boolean;
+  created_at: string;
+  updated_at: string;
+}
+}
+
+// Hostel interface based on actual API response
+export interface Hostel {
+  id: string;
+  name: string;
+  type: 'male' | 'female' | 'mixed';
+  price: number;
+  available: number;
+  description: string;
+  amenities: string[];
 }
 
 export interface StudentApplication {
@@ -197,7 +208,7 @@ export const studentService = {
     try {
       const response = await apiClient.get<{ success: boolean; data: StudentProfile }>('v1/auth/profile');
       console.log('API Profile response:', response.data);
-      return response.data.data;
+    return response.data.data;
     } catch (error) {
       console.warn('Profile endpoint not available, using mock data:', error);
       return mockProfile;
@@ -310,23 +321,8 @@ export const studentService = {
     preferred_room_number?: string;
     special_requirements?: string;
   }): Promise<StudentApplication> {
-    try {
-      const response = await apiClient.post<{ success: boolean; data: StudentApplication }>('applications', applicationData);
-      return response.data.data;
-    } catch (error) {
-      console.error('Failed to create application via API:', error);
-      // Return mock created application
-      const newApp: StudentApplication = {
-        id: `app-${Date.now()}`,
-        hostel_name: 'New Hostel',
-        room_type: applicationData.room_type,
-        status: 'pending',
-        application_date: new Date().toISOString().split('T')[0],
-        amount: 50000,
-        payment_status: 'pending',
-      };
-      return newApp;
-    }
+    const response = await apiClient.post<{ success: boolean; data: StudentApplication }>('applications', applicationData);
+    return response.data.data;
   },
 
   // Make payment - using correct endpoint from API docs
@@ -338,7 +334,7 @@ export const studentService = {
   }): Promise<StudentPayment> {
     try {
       const response = await apiClient.post<{ success: boolean; data: StudentPayment }>('payments', paymentData);
-      return response.data.data;
+    return response.data.data;
     } catch (error) {
       console.error('Failed to make payment via API:', error);
       // Return mock payment
@@ -365,7 +361,7 @@ export const studentService = {
   }): Promise<MaintenanceTicket> {
     try {
       const response = await apiClient.post<{ success: boolean; data: MaintenanceTicket }>('maintenance/tickets', ticketData);
-      return response.data.data;
+    return response.data.data;
     } catch (error) {
       console.error('Failed to create maintenance ticket via API:', error);
       // Return mock ticket
@@ -393,16 +389,80 @@ export const studentService = {
   },
 
   // Get available hostels for application - using correct endpoint from API docs
-  async getAvailableHostels(): Promise<any[]> {
+  async getAvailableHostels(): Promise<Hostel[]> {
     try {
-      const response = await apiClient.get<{ success: boolean; data: any[] }>('hostels/available');
-      return response.data.data;
+      const response = await apiClient.get<{ success: boolean; data: { hostels: any[] } }>('hostels');
+      console.log('API Hostels response:', response.data);
+      
+      // Transform API response to match our Hostel interface
+      const apiHostels = response.data.data.hostels || [];
+      const transformedHostels: Hostel[] = apiHostels.map(apiHostel => {
+        // Parse amenities from JSON string to array
+        let parsedAmenities: string[] = [];
+        try {
+          if (typeof apiHostel.amenities === 'string') {
+            parsedAmenities = JSON.parse(apiHostel.amenities);
+          } else if (Array.isArray(apiHostel.amenities)) {
+            parsedAmenities = apiHostel.amenities;
+          } else {
+            parsedAmenities = ['Basic amenities'];
+          }
+        } catch (e) {
+          console.warn(`Failed to parse amenities for hostel ${apiHostel.id}:`, apiHostel.amenities, e);
+          parsedAmenities = ['Basic amenities'];
+        }
+
+        // Calculate available beds/rooms and price from nested rooms array if available
+        let totalAvailable = 0;
+        let lowestPrice = Infinity;
+        
+        if (Array.isArray(apiHostel.rooms)) {
+          apiHostel.rooms.forEach((room: any) => {
+            const occupiedBeds = parseInt(room.occupied_beds || '0');
+            const capacity = parseInt(room.capacity || '0');
+            if (capacity > occupiedBeds) {
+              totalAvailable += (capacity - occupiedBeds);
+            }
+            const price = parseFloat(room.price_per_bed || '0');
+            if (price > 0 && price < lowestPrice) {
+              lowestPrice = price;
+            }
+          });
+        }
+
+        return {
+          id: apiHostel.id,
+          name: apiHostel.name,
+          type: apiHostel.gender || 'mixed', // Map gender to type
+          price: lowestPrice === Infinity ? 0 : lowestPrice, // Use lowest price from rooms
+          available: totalAvailable, // Sum of available beds from rooms
+          description: apiHostel.description || 'No description available',
+          amenities: parsedAmenities,
+        };
+      });
+      
+      return transformedHostels;
     } catch (error) {
-      console.warn('Available hostels endpoint not available:', error);
+      console.warn('Hostels endpoint not available, using mock data:', error);
       return [
-        { id: 'hostel-1', name: 'Zik Hall', available_rooms: 15 },
-        { id: 'hostel-2', name: 'Mariere Hall', available_rooms: 8 },
-        { id: 'hostel-3', name: 'Mellanby Hall', available_rooms: 12 },
+        {
+          id: 'hostel-1',
+          name: 'Zik Hall',
+          type: 'male',
+          price: 50000,
+          available: 25,
+          description: 'Modern hostel with excellent facilities',
+          amenities: ['WiFi', 'Security', 'Laundry', 'Kitchen'],
+        },
+        {
+          id: 'hostel-2',
+          name: 'Mariere Hall',
+          type: 'female',
+          price: 45000,
+          available: 18,
+          description: 'Comfortable accommodation for female students',
+          amenities: ['WiFi', 'Security', 'Laundry', 'Study Room'],
+        }
       ];
     }
   },
@@ -514,7 +574,7 @@ export const studentService = {
   async getStatistics(): Promise<any> {
     try {
       const response = await apiClient.get<{ success: boolean; data: any }>('student/statistics');
-      return response.data.data;
+    return response.data.data;
     } catch (error) {
       console.warn('Statistics endpoint not available, using mock data:', error);
       return {

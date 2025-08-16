@@ -2,26 +2,26 @@
 
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../../../components/ui/card'
-import { Button } from '../../../components/ui/button'
-import { Badge } from '../../../components/ui/badge'
-import { Input } from '../../../components/ui/input'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
 import { 
   CreditCard, 
-  DollarSign, 
-  Calendar,
-  CheckCircle,
-  Clock,
-  AlertCircle,
+  Calendar, 
   Download,
   Eye,
-  Plus,
-  ArrowLeft,
+  CheckCircle,
+  XCircle,
+  Clock,
+  AlertTriangle,
+  DollarSign,
   TrendingUp,
   TrendingDown,
-  Wallet
+  Plus
 } from 'lucide-react'
 import { studentService, StudentPayment } from '@/lib/studentService'
+import StudentHeader from '@/components/layout/student-header'
+import { Input } from '@/components/ui/input'
 
 interface PaymentSummary {
   totalPaid: number
@@ -118,7 +118,7 @@ export default function StudentPaymentsPage() {
       case 'pending':
         return <Clock className="h-4 w-4" />
       case 'failed':
-        return <AlertCircle className="h-4 w-4" />
+        return <AlertTriangle className="h-4 w-4" />
       case 'refunded':
         return <Download className="h-4 w-4" />
       default:
@@ -148,42 +148,12 @@ export default function StudentPaymentsPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50">
       {/* Header */}
-      <div className="bg-white shadow-sm border-b border-gray-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
-            <div className="flex items-center space-x-4">
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => router.back()}
-                className="flex items-center space-x-2"
-              >
-                <ArrowLeft className="h-4 w-4" />
-                <span>Back</span>
-              </Button>
-              <div className="h-10 w-10 bg-gradient-to-br from-green-600 to-emerald-700 rounded-xl flex items-center justify-center shadow-lg">
-                <CreditCard className="h-6 w-6 text-white" />
-              </div>
-              <div>
-                <h1 className="text-xl font-bold bg-gradient-to-r from-green-600 to-emerald-700 bg-clip-text text-transparent">
-                  My Payments
-                </h1>
-                <p className="text-xs text-gray-600">Payment history and management</p>
-              </div>
-            </div>
-            
-            <Button 
-              onClick={() => setShowPaymentModal(true)}
-              className="bg-gradient-to-r from-green-600 to-emerald-700 hover:from-green-700 hover:to-emerald-800"
-            >
-              <Plus className="h-4 w-4 mr-2" />
-              Make Payment
-            </Button>
-          </div>
-        </div>
-      </div>
+      <StudentHeader
+        title="My Payments"
+        subtitle="Payment history and outstanding balances"
+      />
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="pt-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="space-y-6">
           {/* Payment Summary Cards */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -229,7 +199,7 @@ export default function StudentPaymentsPage() {
                     </p>
                   </div>
                   <div className="h-12 w-12 bg-red-100 rounded-lg flex items-center justify-center">
-                    <AlertCircle className="h-6 w-6 text-red-600" />
+                    <AlertTriangle className="h-6 w-6 text-red-600" />
                   </div>
                 </div>
               </CardContent>

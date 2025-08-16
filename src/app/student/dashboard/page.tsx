@@ -74,6 +74,7 @@ import {
   Flag,
   Map,
 } from 'lucide-react'
+import StudentHeader from '@/components/layout/student-header'
 
 export default function StudentDashboardPage() {
   const router = useRouter()
@@ -395,46 +396,12 @@ export default function StudentDashboardPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50">
-      {/* Header */}
-      <div className="bg-white shadow-sm border-b border-gray-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
-            <div className="flex items-center space-x-4">
-              <div className="h-10 w-10 bg-gradient-to-br from-green-600 to-emerald-700 rounded-xl flex items-center justify-center shadow-lg">
-                <GraduationCap className="h-6 w-6 text-white" />
-              </div>
-              <div>
-                <h1 className="text-xl font-bold bg-gradient-to-r from-green-600 to-emerald-700 bg-clip-text text-transparent">
-                  Student Portal
-                </h1>
-                <p className="text-xs text-gray-600">UNN Hostel Management System</p>
-              </div>
-            </div>
-            
-            <div className="flex items-center space-x-4">
-              <Button 
-                variant="outline" 
-                size="sm"
-                onClick={() => router.push('/student/settings')}
-                className='cursor-pointer'
-              >
-                <Settings className="h-4 w-4 mr-2" />
-                Settings
-              </Button>
-              <Button variant="outline" size="sm">
-                <HelpCircle className="h-4 w-4 mr-2" />
-                Help
-              </Button>
-              <Button variant="outline" size="sm">
-                <LogOut className="h-4 w-4 mr-2" />
-                Logout
-              </Button>
-            </div>
-          </div>
-        </div>
-      </div>
+      <StudentHeader 
+        title="Student Portal"
+        subtitle="UNN Hostel Management System"
+      />
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="pt-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="space-y-8">
           {/* Welcome Section */}
           <div className="bg-gradient-to-r from-green-600 to-emerald-700 rounded-2xl p-8 text-white">

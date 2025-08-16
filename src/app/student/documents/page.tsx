@@ -87,8 +87,8 @@ export default function StudentDocumentsPage() {
         setDocuments([])
       } finally {
         setLoading(false)
-      }
     }
+  }
 
     fetchDocuments()
   }, [])
@@ -99,7 +99,7 @@ export default function StudentDocumentsPage() {
     const matchesStatus = filterStatus === 'all' || document.status === filterStatus
     const matchesSearch = searchQuery === '' || 
       document.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      document.description.toLowerCase().includes(searchQuery.toLowerCase())
+                         document.description.toLowerCase().includes(searchQuery.toLowerCase())
     return matchesType && matchesStatus && matchesSearch
   })
 
@@ -160,7 +160,7 @@ export default function StudentDocumentsPage() {
     if (!selectedFile) return
 
     try {
-      setUploading(true)
+    setUploading(true)
       const formData = new FormData()
       formData.append('file', selectedFile)
       formData.append('type', 'document')
@@ -173,13 +173,13 @@ export default function StudentDocumentsPage() {
       setDocuments(updatedDocuments)
       
       // Reset form
-      setSelectedFile(null)
-      setShowUploadModal(false)
+    setSelectedFile(null)
+    setShowUploadModal(false)
     } catch (error) {
       console.error('Error uploading document:', error)
     } finally {
-      setUploading(false)
-    }
+    setUploading(false)
+  }
   }
 
   if (loading) {
@@ -199,11 +199,11 @@ export default function StudentDocumentsPage() {
       <div className="bg-white shadow-sm border-b border-gray-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
-            <div className="flex items-center space-x-4">
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => router.back()}
+          <div className="flex items-center space-x-4">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => router.back()}
                 className="flex items-center space-x-2"
               >
                 <ArrowLeft className="h-4 w-4" />
@@ -257,7 +257,7 @@ export default function StudentDocumentsPage() {
                       {type.replace('_', ' ')}
                     </Button>
                   ))}
-                </div>
+              </div>
                 <div className="flex gap-2">
                   {['all', 'pending', 'approved', 'rejected', 'expired'].map((status) => (
                     <Button
@@ -266,37 +266,37 @@ export default function StudentDocumentsPage() {
                       size="sm"
                       onClick={() => setFilterStatus(status)}
                       className="capitalize"
-                    >
+                >
                       {status}
                     </Button>
                   ))}
-                </div>
               </div>
-            </CardContent>
-          </Card>
+            </div>
+          </CardContent>
+        </Card>
 
-          {/* Documents List */}
+        {/* Documents List */}
           {filteredDocuments.length > 0 ? (
             <div className="grid gap-6">
               {filteredDocuments.map((document) => (
                 <Card key={document.id} className="hover:shadow-lg transition-shadow">
-                  <CardContent className="p-6">
+                <CardContent className="p-6">
                     <div className="flex items-start justify-between">
-                      <div className="flex-1">
+                    <div className="flex-1">
                         <div className="flex items-center space-x-3 mb-3">
                           <FileText className="h-5 w-5 text-gray-500" />
                           <h3 className="text-lg font-semibold text-gray-900">
                             {document.name}
                           </h3>
-                          <Badge className={getTypeColor(document.type)}>
+                            <Badge className={getTypeColor(document.type)}>
                             <span className="capitalize">{document.type.replace('_', ' ')}</span>
-                          </Badge>
-                          <Badge className={getStatusColor(document.status)}>
+                            </Badge>
+                            <Badge className={getStatusColor(document.status)}>
                             <div className="flex items-center space-x-1">
                               {getStatusIcon(document.status)}
                               <span className="capitalize">{document.status}</span>
                             </div>
-                          </Badge>
+                            </Badge>
                         </div>
                         
                         <p className="text-gray-600 mb-3">{document.description}</p>
@@ -309,24 +309,24 @@ export default function StudentDocumentsPage() {
                           <div className="flex items-center space-x-2">
                             <FolderOpen className="h-4 w-4" />
                             <span>Size: {document.size}</span>
-                          </div>
-                          <div className="flex items-center space-x-2">
+                        </div>
+                        <div className="flex items-center space-x-2">
                             <span>Type: {document.fileType}</span>
                           </div>
                           {document.expiryDate && (
                             <div className="flex items-center space-x-2">
                               <Clock className="h-4 w-4" />
                               <span>Expires: {new Date(document.expiryDate).toLocaleDateString()}</span>
-                            </div>
-                          )}
                         </div>
+                          )}
+                      </div>
 
                         {/* Review Information */}
-                        {document.reviewer && (
+                            {document.reviewer && (
                           <div className="mt-3 p-3 bg-gray-50 rounded-lg">
                             <div className="text-sm text-gray-600">
                               <span className="font-medium">Reviewed by:</span> {document.reviewer}
-                              {document.reviewDate && (
+                            {document.reviewDate && (
                                 <span className="ml-2">
                                   on {new Date(document.reviewDate).toLocaleDateString()}
                                 </span>
@@ -345,19 +345,19 @@ export default function StudentDocumentsPage() {
                           size="sm"
                           onClick={() => router.push(`/student/documents/${document.id}`)}
                         >
-                          <Eye className="h-4 w-4 mr-2" />
-                          View
-                        </Button>
+                        <Eye className="h-4 w-4 mr-2" />
+                        View
+                      </Button>
                         {document.status === 'approved' && (
-                          <Button variant="outline" size="sm">
-                            <Download className="h-4 w-4 mr-2" />
-                            Download
-                          </Button>
-                        )}
-                      </div>
+                      <Button variant="outline" size="sm">
+                        <Download className="h-4 w-4 mr-2" />
+                        Download
+                        </Button>
+                      )}
                     </div>
-                  </CardContent>
-                </Card>
+                  </div>
+                </CardContent>
+              </Card>
               ))}
             </div>
           ) : (

@@ -2,22 +2,22 @@
 
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../../../components/ui/card'
-import { Button } from '../../../components/ui/button'
-import { Badge } from '../../../components/ui/badge'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
 import { 
   Building2, 
-  Calendar,
-  Clock,
+  FileText, 
+  Calendar, 
+  Plus,
   CheckCircle,
   XCircle,
-  AlertCircle,
-  Plus,
-  Eye,
-  ArrowLeft,
-  FileText
+  Clock,
+  AlertTriangle,
+  ArrowLeft
 } from 'lucide-react'
 import { studentService, StudentApplication } from '@/lib/studentService'
+import StudentHeader from '@/components/layout/student-header'
 
 export default function StudentApplicationsPage() {
   const router = useRouter()
@@ -75,7 +75,7 @@ export default function StudentApplicationsPage() {
       case 'rejected':
         return <XCircle className="h-4 w-4" />
       case 'waitlisted':
-        return <AlertCircle className="h-4 w-4" />
+        return <AlertTriangle className="h-4 w-4" />
       default:
         return <Clock className="h-4 w-4" />
     }
@@ -95,42 +95,14 @@ export default function StudentApplicationsPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50">
       {/* Header */}
-      <div className="bg-white shadow-sm border-b border-gray-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
-            <div className="flex items-center space-x-4">
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => router.back()}
-                className="flex items-center space-x-2"
-              >
-                <ArrowLeft className="h-4 w-4" />
-                <span>Back</span>
-              </Button>
-              <div className="h-10 w-10 bg-gradient-to-br from-green-600 to-emerald-700 rounded-xl flex items-center justify-center shadow-lg">
-                <FileText className="h-6 w-6 text-white" />
-              </div>
-              <div>
-                <h1 className="text-xl font-bold bg-gradient-to-r from-green-600 to-emerald-700 bg-clip-text text-transparent">
-                  My Applications
-                </h1>
-                <p className="text-xs text-gray-600">Hostel accommodation applications</p>
-              </div>
-            </div>
-            
-            <Button 
-              onClick={() => router.push('/student/applications/new')}
-              className="bg-gradient-to-r from-green-600 to-emerald-700 hover:from-green-700 hover:to-emerald-800"
-            >
-              <Plus className="h-4 w-4 mr-2" />
-              New Application
-            </Button>
-          </div>
-        </div>
-      </div>
+      <StudentHeader
+        title="My Applications"
+        subtitle="Hostel accommodation applications"
+        showBackButton={true}
+        onBackClick={() => router.back()}
+      />
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="pt-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="space-y-6">
           {/* Filter Section */}
           <Card>
@@ -153,6 +125,17 @@ export default function StudentApplicationsPage() {
               </div>
             </CardContent>
           </Card>
+
+          {/* New Application Button */}
+          <div className="flex justify-end">
+            <Button 
+              onClick={() => router.push('/student/applications/new')}
+              className="bg-gradient-to-r from-green-600 to-emerald-700 hover:from-green-700 hover:to-emerald-800"
+            >
+              <Plus className="h-4 w-4 mr-2" />
+              New Application
+            </Button>
+          </div>
 
           {/* Applications List */}
           {filteredApplications.length > 0 ? (
@@ -206,7 +189,7 @@ export default function StudentApplicationsPage() {
                           size="sm"
                           onClick={() => router.push(`/student/applications/${application.id}`)}
                         >
-                          <Eye className="h-4 w-4 mr-2" />
+                          <FileText className="h-4 w-4 mr-2" />
                           View Details
                         </Button>
                       </div>

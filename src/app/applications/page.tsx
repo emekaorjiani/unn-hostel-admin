@@ -197,8 +197,7 @@ export default function ApplicationsPage() {
     try {
       setError(null)
       
-      // Simulate API delay
-      await new Promise(resolve => setTimeout(resolve, 800))
+
       
       // Generate dummy data
       const applicationsData = generateDummyApplications()

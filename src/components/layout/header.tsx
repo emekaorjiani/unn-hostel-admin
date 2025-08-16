@@ -3,7 +3,8 @@
 import { useState } from 'react'
 import { Button } from '../ui/button'
 import { Input } from '../ui/input'
-import { authService } from '../../lib/auth'
+import { authService } from '@/lib/auth'
+import { ConfirmationModal } from '../ui/confirmation-modal'
 
 interface HeaderProps {
   onMenuToggle: () => void
@@ -12,6 +13,7 @@ interface HeaderProps {
 export default function Header({ onMenuToggle }: HeaderProps) {
   const [isProfileOpen, setIsProfileOpen] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
+  const [showLogoutModal, setShowLogoutModal] = useState(false)
 
   const handleLogout = async () => {
     try {
@@ -40,6 +42,11 @@ export default function Header({ onMenuToggle }: HeaderProps) {
       localStorage.clear()
       window.location.href = '/auth/login'
     }
+  }
+
+  const openLogoutModal = () => {
+    setShowLogoutModal(true)
+    setIsProfileOpen(false) // Close profile dropdown
   }
 
   const adminProfile = authService.getStoredProfile()
@@ -171,7 +178,7 @@ export default function Header({ onMenuToggle }: HeaderProps) {
                 <div className="border-t border-gray-100">
                   <Button
                     variant="ghost"
-                    onClick={handleLogout}
+                    onClick={openLogoutModal}
                     className="w-full justify-start text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50"
                   >
                     <svg className="h-4 w-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -193,6 +200,18 @@ export default function Header({ onMenuToggle }: HeaderProps) {
           onClick={() => setIsProfileOpen(false)}
         />
       )}
+
+      {/* Confirmation Modal */}
+      <ConfirmationModal
+        isOpen={showLogoutModal}
+        onClose={() => setShowLogoutModal(false)}
+        onConfirm={handleLogout}
+        title="Confirm Logout"
+        description="Are you sure you want to sign out? You will be redirected to the login page."
+        confirmText="Sign Out"
+        cancelText="Cancel"
+        variant="destructive"
+      />
     </header>
   )
 }

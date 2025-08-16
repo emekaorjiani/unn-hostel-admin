@@ -155,8 +155,7 @@ export default function ReviewApplicationPage() {
     try {
       setError(null)
       
-      // Simulate API delay
-      await new Promise(resolve => setTimeout(resolve, 600))
+
       
       // Generate dummy data
       const { application: appData, student: studentData, hostel: hostelData } = generateDummyApplicationData(applicationId)
@@ -257,9 +256,6 @@ export default function ReviewApplicationPage() {
       setSubmitting(true)
       setError(null)
       setSuccess(null)
-
-      // Simulate API delay
-      await new Promise(resolve => setTimeout(resolve, 1000))
 
       // Validate required fields
       if (!reviewForm.status || !reviewForm.reviewNotes) {
