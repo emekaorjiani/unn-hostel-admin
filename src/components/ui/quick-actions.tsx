@@ -1,21 +1,25 @@
 import React from 'react';
 import { Button } from './button';
 import { 
-  Users, 
-  Building2, 
   FileText, 
   DollarSign,
   Plus,
-  BarChart3
+  Wrench,
+  Bell,
+  User,
+  Settings,
+  HelpCircle
 } from 'lucide-react';
 
 const QuickActions = () => {
   const actions = [
-    { title: 'New App', href: '/applications/new', icon: <Plus className="h-4 w-4" /> },
-    { title: 'Students', href: '/students', icon: <Users className="h-4 w-4" /> },
-    { title: 'Hostels', href: '/hostels', icon: <Building2 className="h-4 w-4" /> },
-    { title: 'Reports', href: '/reports', icon: <BarChart3 className="h-4 w-4" /> },
-    { title: 'Payments', href: '/payments', icon: <DollarSign className="h-4 w-4" /> }
+    { title: 'New Application', href: '/student/applications/new', icon: <Plus className="h-4 w-4" /> },
+    { title: 'My Applications', href: '/student/applications', icon: <FileText className="h-4 w-4" /> },
+    { title: 'Payments', href: '/student/payments', icon: <DollarSign className="h-4 w-4" /> },
+    { title: 'Maintenance', href: '/student/maintenance', icon: <Wrench className="h-4 w-4" /> },
+    { title: 'Documents', href: '/student/documents', icon: <FileText className="h-4 w-4" /> },
+    { title: 'Settings', href: '/student/settings', icon: <Settings className="h-4 w-4" /> },
+    { title: 'Help', href: '/student/help', icon: <HelpCircle className="h-4 w-4" /> }
   ];
 
   return (

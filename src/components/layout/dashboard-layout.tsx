@@ -5,7 +5,6 @@ import { useRouter } from 'next/navigation'
 import { authService } from '../../lib/auth'
 import Sidebar from './sidebar'
 import Header from './header'
-import QuickActions from '../ui/quick-actions'
 import ClientProvider from '../providers/client-provider'
 
 interface DashboardLayoutProps {
@@ -74,9 +73,6 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
         <div className="lg:ml-64">
           {/* Header */}
           <Header onMenuToggle={toggleSidebar} />
-          
-          {/* Quick Actions */}
-          <QuickActions />
 
           {/* Page content */}
           <main className="p-4 lg:p-6">

@@ -440,4 +440,45 @@ export const studentService = {
     const response = await apiClient.get<{ success: boolean; data: any[] }>('/payment-gateways');
     return response.data.data;
   },
+
+  // Update student settings
+  async updateSettings(settings: {
+    profile?: Partial<StudentProfile>;
+    notifications?: {
+      emailNotifications: boolean;
+      smsNotifications: boolean;
+      pushNotifications: boolean;
+      paymentReminders: boolean;
+      maintenanceUpdates: boolean;
+      academicUpdates: boolean;
+      hostelAnnouncements: boolean;
+    };
+    security?: {
+      currentPassword: string;
+      newPassword: string;
+    };
+  }): Promise<void> {
+    try {
+      if (settings.profile) {
+        // Update profile
+        await apiClient.put<{ success: boolean }>('/auth/profile', settings.profile);
+      }
+      
+      if (settings.notifications) {
+        // Update notification preferences
+        await apiClient.put<{ success: boolean }>('/notifications/preferences', settings.notifications);
+      }
+      
+      if (settings.security) {
+        // Update password
+        await apiClient.put<{ success: boolean }>('/auth/change-password', {
+          current_password: settings.security.currentPassword,
+          new_password: settings.security.newPassword
+        });
+      }
+    } catch (error) {
+      console.error('Failed to update settings:', error);
+      throw error;
+    }
+  },
 };

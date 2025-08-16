@@ -14,7 +14,7 @@ import {
 } from 'lucide-react'
 import { studentService, Hostel, ApplicationWindow } from '@/lib/studentService'
 import StudentHeader from '@/components/layout/student-header'
-import { QuickActions } from '@/components/ui/quick-actions'
+import QuickActions from '@/components/ui/quick-actions'
 
 interface ApplicationForm {
   hostelId: string
@@ -233,10 +233,6 @@ export default function NewApplicationPage() {
       <QuickActions />
 
       <div className="pt-20 max-w-7xl mx-auto px-4 py-8">
-        {/* Quick Actions - Fixed at top */}
-        <div className="mb-6">
-          <QuickActions showAllActions={false} />
-        </div>
         
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Hostel Selection */}

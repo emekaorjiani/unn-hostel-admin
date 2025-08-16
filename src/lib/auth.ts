@@ -155,7 +155,7 @@ export const authService = {
       console.log("Student login credentials:", { matricNumber: credentials.matricNumber, password: "***" });
       
       const response = await apiClient.post<BackendAuthResponse>(
-        "/v1/auth/login",
+        "/auth/login",
         {
           login_type: "student",
           matric_number: credentials.matricNumber,
@@ -234,9 +234,9 @@ export const authService = {
       // Try generic endpoints
       'POST /auth/logout',
       'GET /auth/logout',
-      // Try v1 endpoints
-      'POST /v1/auth/logout',
-      'GET /v1/auth/logout',
+      // Try  endpoints
+      'POST /auth/logout',
+      'GET /auth/logout',
       // Try user-specific without type
       ...(userId ? [
         `POST /auth/logout/${userId}`,
