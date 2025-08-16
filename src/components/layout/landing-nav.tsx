@@ -1,5 +1,7 @@
+'use client'
 import React from 'react';
 import { Button } from '../ui/button';
+import Link from 'next/link';
 
 interface LandingNavProps {
   variant?: 'default' | 'transparent';
@@ -18,6 +20,7 @@ const LandingNav: React.FC<LandingNavProps> = ({
     <header className={`${navClasses} relative z-10`}>
       <div className="container mx-auto px-4 py-6">
         <div className="flex items-center justify-between">
+          <Link href='/'>
           <div className="flex items-center space-x-4">
             <div className="h-12 w-12 bg-white rounded-full flex items-center justify-center">
               <svg className="h-6 w-6 text-green-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -31,6 +34,7 @@ const LandingNav: React.FC<LandingNavProps> = ({
               </p>
             </div>
           </div>
+          </Link>
           
           {showButtons && (
             <div className="flex space-x-4">
