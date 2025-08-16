@@ -22,6 +22,7 @@ import {
 } from 'lucide-react'
 import DashboardLayout from '@/components/layout/dashboard-layout'
 import { dashboardService } from '@/lib/dashboardService'
+import { apiClient } from '@/lib/api'
 
 interface Hostel {
   id: string
@@ -103,13 +104,29 @@ export default function HostelsPage() {
       if (searchQuery) params.search = searchQuery
       
       // Fetch data from API
-      const response = await dashboardService.getHostels(params)
+      let response
+      try {
+        response = await dashboardService.getHostels(params)
+      } catch (error) {
+        console.error('Error fetching from dashboard service:', error)
+        // Try direct API call as fallback
+        const directResponse = await apiClient.get('/admin/dashboard/hostels')
+        console.log('Direct API response:', directResponse.data)
+        response = directResponse.data
+      }
       
       // Debug: Log the API response to see the structure
       console.log('Hostels API Response:', response)
       
+      // Handle different possible response structures
+      const hostelsData = response.hostels || response.data?.hostels || response.data || []
+      const statsData = response.statistics || response.data?.statistics || {}
+      
+      console.log('Hostels data:', hostelsData)
+      console.log('Statistics data:', statsData)
+      
       // Transform the hostels data to ensure all required fields are present
-      const transformedHostels = response.hostels.map((hostel: any) => {
+      const transformedHostels = hostelsData.map((hostel: any) => {
         // Calculate capacity and occupancy from blocks if not provided directly
         let totalCapacity = hostel.capacity || 0
         let totalOccupied = hostel.occupied_beds || 0
@@ -151,7 +168,7 @@ export default function HostelsPage() {
       })
       
       setHostels(transformedHostels)
-      setStats(response.statistics)
+      setStats(statsData)
     } catch (err: unknown) {
       const errorMessage = err instanceof Error ? err.message : 'Failed to fetch hostels'
       setError(errorMessage)
