@@ -521,7 +521,7 @@ export const dashboardService = {
     }
   },
 
-  // Get hostels with pagination and filters - using hostel service endpoint
+  // Get hostels with pagination and filters - using admin dashboard endpoint
   async getHostels(params?: {
     page?: number
     limit?: number
@@ -535,7 +535,7 @@ export const dashboardService = {
       if (params?.type) queryParams.append('type', params.type)
       if (params?.search) queryParams.append('search', params.search)
 
-      const response = await apiClient.get<HostelsResponse>(`/hostels?${queryParams.toString()}`)
+      const response = await apiClient.get<HostelsResponse>(`/admin/dashboard/hostels?${queryParams.toString()}`)
       return response.data.data
     } catch (error) {
       console.error('Error fetching hostels:', error)

@@ -24,23 +24,23 @@ import {
 } from 'lucide-react';
 import DashboardLayout from '@/components/layout/dashboard-layout';
 import { apiClient } from '@/lib/api';
-import { safeLocalStorage } from '@/lib/utils';
 
 interface Hostel {
   id: string;
   name: string;
   description: string;
+  type: 'male' | 'female' | 'mixed';
   address: string;
-  phoneNumber: string;
+  phone_number: string;
   email: string;
   capacity: number;
-  occupiedBeds: number;
-  availableBeds: number;
-  occupancyRate: number;
+  occupied_beds: number;
+  available_beds: number;
+  occupancy_rate: number;
   status: 'active' | 'inactive' | 'maintenance';
   blocks: Block[];
-  createdAt: string;
-  updatedAt: string;
+  created_at: string;
+  updated_at: string;
 }
 
 interface Block {
@@ -85,25 +85,15 @@ export default function HostelDetailPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  /**
-   * Fetches hostel details from the API using the hostel ID
-   * Handles authentication, data transformation, and occupancy calculations
-   */
+  // Fetch hostel details from API
   const fetchHostel = async () => {
     try {
       setError(null);
-      const token = safeLocalStorage.getItem('auth_token') || safeLocalStorage.getItem('student_token');
-      
-      if (!token) {
-        throw new Error('No authentication token found');
-      }
+      setLoading(true);
 
       // Get detailed hostel info from the API
-      const hostelRes = await apiClient.get(`/hostels/${hostelId}`, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-
-      let hostelData = hostelRes.data.data || hostelRes.data;
+      const hostelRes = await apiClient.get(`/hostels/${hostelId}`);
+      let hostelData = hostelRes.data.data?.hostel || hostelRes.data.data || hostelRes.data;
 
       // Transform the API response to match our interface
       if (hostelData) {
@@ -126,17 +116,18 @@ export default function HostelDetailPage() {
           id: hostelData.id,
           name: hostelData.name,
           description: hostelData.description || (typeof hostelData.name === 'string' ? `${hostelData.name} - University of Nigeria, Nsukka` : 'University of Nigeria, Nsukka Hostel'),
+          type: hostelData.type || 'mixed',
           address: hostelData.address || `University of Nigeria, Nsukka Campus`,
-          phoneNumber: hostelData.manager_phone || '+234 123 456 7890',
+          phone_number: hostelData.phone_number || hostelData.manager_phone || '+234 123 456 7890',
           email: email,
           capacity: totalBeds,
-          occupiedBeds: occupiedBeds,
-          availableBeds: totalBeds - occupiedBeds,
-          occupancyRate: occupancyRate,
-          status: hostelData.is_active ? 'active' as const : 'inactive' as const,
+          occupied_beds: occupiedBeds,
+          available_beds: totalBeds - occupiedBeds,
+          occupancy_rate: occupancyRate,
+          status: hostelData.status || (hostelData.is_active ? 'active' as const : 'inactive' as const),
           blocks: hostelData.blocks || [],
-          createdAt: hostelData.created_at || new Date().toISOString(),
-          updatedAt: hostelData.updated_at || new Date().toISOString()
+          created_at: hostelData.created_at || new Date().toISOString(),
+          updated_at: hostelData.updated_at || new Date().toISOString()
         };
       }
 
@@ -297,7 +288,7 @@ export default function HostelDetailPage() {
               <Users className="h-4 w-4 text-green-600" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{(hostel.occupiedBeds || 0).toLocaleString()}</div>
+              <div className="text-2xl font-bold">{(hostel.occupied_beds || 0).toLocaleString()}</div>
               <p className="text-xs text-muted-foreground">
                 Currently occupied
               </p>
@@ -310,7 +301,7 @@ export default function HostelDetailPage() {
               <Bed className="h-4 w-4 text-purple-600" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{(hostel.availableBeds || 0).toLocaleString()}</div>
+              <div className="text-2xl font-bold">{(hostel.available_beds || 0).toLocaleString()}</div>
               <p className="text-xs text-muted-foreground">
                 Ready for allocation
               </p>
@@ -323,8 +314,8 @@ export default function HostelDetailPage() {
               <TrendingUp className="h-4 w-4 text-orange-600" />
             </CardHeader>
             <CardContent>
-              <div className={`text-2xl font-bold ${getOccupancyColor(hostel.occupancyRate || 0)}`}>
-                {(hostel.occupancyRate || 0).toFixed(1)}%
+              <div className={`text-2xl font-bold ${getOccupancyColor(hostel.occupancy_rate || 0)}`}>
+                {(hostel.occupancy_rate || 0).toFixed(1)}%
               </div>
               <p className="text-xs text-muted-foreground">
                 Current utilization
