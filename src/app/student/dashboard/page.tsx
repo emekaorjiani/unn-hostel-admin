@@ -1,7 +1,6 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { useRouter } from 'next/navigation'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -22,8 +21,6 @@ import {
   BookOpen,
   MapPin,
   Map,
-  TrendingUp,
-  TrendingDown,
   Minus,
   ArrowUpRight,
   ArrowDownRight,
@@ -248,7 +245,7 @@ export default function StudentDashboardPage() {
                     Welcome back, {student?.user?.first_name}
                   </h2>
                   <p className="text-green-100 text-lg mb-4">
-                    Here's what's happening with your hostel accommodation
+                    Here&apos;s what&apos;s happening with your hostel accommodation
                   </p>
                   <div className="flex items-center space-x-6 text-sm">
                     <div className="flex items-center space-x-2">
@@ -322,7 +319,7 @@ export default function StudentDashboardPage() {
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-4">
-                    {recentActivities.map((activity, index) => (
+                    {recentActivities.map((activity) => (
                       <div key={activity.id} className="flex items-start space-x-4 p-4 bg-gray-50 rounded-lg">
                         <div className="flex-shrink-0">
                           <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center">
@@ -366,7 +363,7 @@ export default function StudentDashboardPage() {
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
-                  {upcomingEvents.map((event, index) => (
+                  {upcomingEvents.map((event) => (
                     <div key={event.id} className="flex items-start space-x-3 p-3 bg-gray-50 rounded-lg">
                       <div className={`w-2 h-2 rounded-full mt-2 ${
                         event.priority === 'high' ? 'bg-red-500' :
@@ -398,7 +395,7 @@ export default function StudentDashboardPage() {
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
-                  {dashboardData?.notifications.slice(0, 3).map((notification, index) => (
+                  {dashboardData?.notifications.slice(0, 3).map((notification) => (
                     <div key={notification.id} className={`flex items-start space-x-3 p-3 rounded-lg ${
                       notification.read ? 'bg-gray-50' : 'bg-blue-50'
                     }`}>

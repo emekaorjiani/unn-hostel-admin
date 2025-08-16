@@ -17,6 +17,16 @@ export interface StudentProfile {
     address?: string;
     state_of_origin?: string;
     nationality?: string;
+    local_government?: string;
+    tribe?: string;
+    religion?: string;
+    emergency_contact?: string;
+    emergency_phone?: string;
+    is_pwd?: boolean;
+    pwd_details?: string;
+    is_international_student?: boolean;
+    passport_number?: string;
+    nin_number?: string;
     status: 'active' | 'inactive' | 'suspended' | 'pending_verification';
     is_email_verified: boolean;
     is_phone_verified: boolean;
@@ -451,7 +461,7 @@ export const studentService = {
 
   // Update student settings
   async updateSettings(settings: {
-    profile?: Partial<StudentProfile>;
+    profile?: Partial<StudentProfile['user']>;
     notifications?: {
       emailNotifications: boolean;
       smsNotifications: boolean;
@@ -468,7 +478,7 @@ export const studentService = {
   }): Promise<void> {
     try {
       if (settings.profile) {
-        // Update profile
+        // Update profile - send user data directly to API
         await apiClient.put<{ success: boolean }>('/auth/profile', settings.profile);
       }
       
