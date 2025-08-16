@@ -22,7 +22,6 @@ export interface StudentProfile {
   created_at: string;
   updated_at: string;
 }
-}
 
 // Application Window interface for the required field
 export interface ApplicationWindow {
@@ -120,7 +119,7 @@ export const studentService = {
     try {
       // Get student profile to get the student ID
       const profile = await this.getProfile();
-      const studentId = profile.user.id;
+      const studentId = profile.id;
       
       // Use the correct endpoint structure with student ID
       const response = await apiClient.get<{ success: boolean; data: StudentApplication[] }>(`applications/student/${studentId}`);
@@ -137,7 +136,7 @@ export const studentService = {
     try {
       // Get student profile to get the student ID
       const profile = await this.getProfile();
-      const studentId = profile.user.id;
+      const studentId = profile.id;
       
       // Use the correct endpoint structure with student ID
       const response = await apiClient.get<{ success: boolean; data: StudentPayment[] }>(`payments/student/${studentId}`);
