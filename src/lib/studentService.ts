@@ -79,9 +79,15 @@ export interface StudentDashboardData {
   };
 }
 
-// Student service for API calls
+/**
+ * Student service for API calls
+ * Provides methods to interact with student-related endpoints
+ */
 export const studentService = {
-  // Get student profile
+  /**
+   * Fetches the current student's profile information
+   * @returns Promise<StudentProfile> - Student profile data
+   */
   async getProfile(): Promise<StudentProfile> {
     const response = await apiClient.get<{ success: boolean; data: StudentProfile }>('/auth/profile');
     return response.data.data;
@@ -131,10 +137,13 @@ export const studentService = {
     }
   },
 
-  // Get dashboard data (combined)
+  /**
+   * Fetches all dashboard data in parallel and calculates quick statistics
+   * @returns Promise<StudentDashboardData> - Complete dashboard data with calculated stats
+   */
   async getDashboardData(): Promise<StudentDashboardData> {
     try {
-      // Fetch all data in parallel
+      // Fetch all data in parallel for better performance
       const [profile, applications, payments, maintenanceTickets, notifications] = await Promise.all([
         this.getProfile(),
         this.getApplications(),
@@ -143,7 +152,7 @@ export const studentService = {
         this.getNotifications(),
       ]);
 
-      // Calculate quick stats
+      // Calculate quick statistics for dashboard display
       const quickStats = {
         totalApplications: applications.length,
         approvedApplications: applications.filter(app => app.status === 'approved').length,

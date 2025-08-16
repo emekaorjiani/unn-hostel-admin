@@ -20,8 +20,8 @@ fi
 # Create .env.local file
 cat > .env.local << EOF
 # Backend API Configuration
-NEXT_PUBLIC_BACKEND_API_URL=https://api.unnaccomodation.com/api/v1
-BACKEND_API_URL=https://api.unnaccomodation.com/api/v1
+NEXT_PUBLIC_BACKEND_API_URL=https://api.unnaccomodation.com/api
+BACKEND_API_URL=https://api.unnaccomodation.com/api
 
 # Frontend Configuration
 NEXT_PUBLIC_APP_NAME="UNN Hostel Admin"

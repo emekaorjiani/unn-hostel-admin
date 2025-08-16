@@ -75,6 +75,9 @@ export const authService = {
   // Login admin user
   async login(credentials: LoginCredentials): Promise<LoginResponse> {
     try {
+      console.log("Admin login - calling /auth/login endpoint");
+      console.log("Admin login credentials:", { email: credentials.email, password: "***" });
+      
       const response = await apiClient.post<BackendAuthResponse>(
         "/auth/login",
         {
@@ -93,7 +96,9 @@ export const authService = {
       }
 
       // Store tokens in localStorage
-      localStorage.setItem("auth_token", backendResponse.data.token);
+      if (typeof window !== 'undefined') {
+        localStorage.setItem("auth_token", backendResponse.data.token);
+      }
 
       // Convert backend user to frontend admin profile format
       const adminProfile: AdminProfile = {
@@ -108,7 +113,9 @@ export const authService = {
         updatedAt: new Date().toISOString(),
       };
 
-      localStorage.setItem("admin_profile", JSON.stringify(adminProfile));
+      if (typeof window !== 'undefined') {
+        localStorage.setItem("admin_profile", JSON.stringify(adminProfile));
+      }
 
       return {
         accessToken: backendResponse.data.token,
@@ -116,9 +123,25 @@ export const authService = {
       };
     } catch (error: unknown) {
       console.error("Login error:", error);
-      if (error && typeof error === 'object' && 'response' in error && error.response && typeof error.response === 'object' && 'data' in error.response && error.response.data && typeof error.response.data === 'object' && 'message' in error.response.data) {
-        throw new Error(String(error.response.data.message));
+      
+      // Log detailed error information
+      if (error && typeof error === 'object' && 'response' in error && error.response) {
+        const response = error.response as any;
+        console.error("Error response status:", response.status);
+        console.error("Error response data:", response.data);
+        console.error("Error response headers:", response.headers);
+        
+        if (response.data && typeof response.data === 'object') {
+          if ('message' in response.data) {
+            throw new Error(String(response.data.message));
+          } else if ('errors' in response.data && Array.isArray(response.data.errors)) {
+            throw new Error(`Validation errors: ${response.data.errors.join(', ')}`);
+          } else {
+            throw new Error(`API Error: ${JSON.stringify(response.data)}`);
+          }
+        }
       }
+      
       throw new Error("Login failed. Please check your credentials.");
     }
   },
@@ -149,7 +172,9 @@ export const authService = {
       }
 
       // Store tokens in localStorage
-      localStorage.setItem("student_token", backendResponse.data.token);
+      if (typeof window !== 'undefined') {
+        localStorage.setItem("student_token", backendResponse.data.token);
+      }
 
       // Convert backend user to frontend student profile format
       const studentProfile: StudentProfile = {
@@ -165,7 +190,9 @@ export const authService = {
         updatedAt: new Date().toISOString(),
       };
 
-      localStorage.setItem("student_profile", JSON.stringify(studentProfile));
+      if (typeof window !== 'undefined') {
+        localStorage.setItem("student_profile", JSON.stringify(studentProfile));
+      }
 
       return {
         accessToken: backendResponse.data.token,
@@ -173,9 +200,25 @@ export const authService = {
       };
     } catch (error: unknown) {
       console.error("Student login error:", error);
-      if (error && typeof error === 'object' && 'response' in error && error.response && typeof error.response === 'object' && 'data' in error.response && error.response.data && typeof error.response.data === 'object' && 'message' in error.response.data) {
-        throw new Error(String(error.response.data.message));
+      
+      // Log detailed error information
+      if (error && typeof error === 'object' && 'response' in error && error.response) {
+        const response = error.response as any;
+        console.error("Error response status:", response.status);
+        console.error("Error response data:", response.data);
+        console.error("Error response headers:", response.headers);
+        
+        if (response.data && typeof response.data === 'object') {
+          if ('message' in response.data) {
+            throw new Error(String(response.data.message));
+          } else if ('errors' in response.data && Array.isArray(response.data.errors)) {
+            throw new Error(`Validation errors: ${response.data.errors.join(', ')}`);
+          } else {
+            throw new Error(`API Error: ${JSON.stringify(response.data)}`);
+          }
+        }
       }
+      
       throw new Error("Login failed. Please check your credentials.");
     }
   },
@@ -187,9 +230,11 @@ export const authService = {
     } catch (error) {
       console.error("Logout API error:", error);
     } finally {
-      localStorage.removeItem("auth_token");
-      localStorage.removeItem("refresh_token");
-      localStorage.removeItem("admin_profile");
+      if (typeof window !== 'undefined') {
+        localStorage.removeItem("auth_token");
+        localStorage.removeItem("refresh_token");
+        localStorage.removeItem("admin_profile");
+      }
     }
   },
 
@@ -200,9 +245,11 @@ export const authService = {
     } catch (error) {
       console.error("Student logout API error:", error);
     } finally {
-      localStorage.removeItem("student_token");
-      localStorage.removeItem("refresh_token");
-      localStorage.removeItem("student_profile");
+      if (typeof window !== 'undefined') {
+        localStorage.removeItem("student_token");
+        localStorage.removeItem("refresh_token");
+        localStorage.removeItem("student_profile");
+      }
     }
   },
 
@@ -223,7 +270,9 @@ export const authService = {
     };
 
     // Store the profile in localStorage
-    localStorage.setItem("admin_profile", JSON.stringify(adminProfile));
+    if (typeof window !== 'undefined') {
+      localStorage.setItem("admin_profile", JSON.stringify(adminProfile));
+    }
     return adminProfile;
   },
 
@@ -245,7 +294,9 @@ export const authService = {
     };
 
     // Store the profile in localStorage
-    localStorage.setItem("student_profile", JSON.stringify(studentProfile));
+    if (typeof window !== 'undefined') {
+      localStorage.setItem("student_profile", JSON.stringify(studentProfile));
+    }
     return studentProfile;
   },
 
@@ -270,12 +321,18 @@ export const authService = {
       updatedAt: new Date().toISOString(),
     };
 
-    localStorage.setItem("admin_profile", JSON.stringify(updatedProfile));
+    if (typeof window !== 'undefined') {
+      localStorage.setItem("admin_profile", JSON.stringify(updatedProfile));
+    }
     return updatedProfile;
   },
 
   // Refresh JWT token
   async refreshToken(): Promise<{ accessToken: string }> {
+    if (typeof window === 'undefined') {
+      throw new Error("Cannot refresh token on server side");
+    }
+    
     const refreshToken = localStorage.getItem("refresh_token");
     if (!refreshToken) {
       throw new Error("No refresh token available");
@@ -289,42 +346,50 @@ export const authService = {
     );
 
     const { access_token } = response.data;
-    localStorage.setItem("auth_token", access_token);
+    if (typeof window !== 'undefined') {
+      localStorage.setItem("auth_token", access_token);
+    }
 
     return { accessToken: access_token };
   },
 
   // Check if user is authenticated
   isAuthenticated(): boolean {
+    if (typeof window === 'undefined') return false;
     const token = localStorage.getItem("auth_token");
     return !!token;
   },
 
   // Check if student is authenticated
   isStudentAuthenticated(): boolean {
+    if (typeof window === 'undefined') return false;
     const token = localStorage.getItem("student_token");
     return !!token;
   },
 
   // Get stored admin profile
   getStoredProfile(): AdminProfile | null {
+    if (typeof window === 'undefined') return null;
     const profile = localStorage.getItem("admin_profile");
     return profile ? JSON.parse(profile) : null;
   },
 
   // Get stored student profile
   getStoredStudentProfile(): StudentProfile | null {
+    if (typeof window === 'undefined') return null;
     const profile = localStorage.getItem("student_profile");
     return profile ? JSON.parse(profile) : null;
   },
 
   // Get access token
   getAccessToken(): string | null {
+    if (typeof window === 'undefined') return null;
     return localStorage.getItem("auth_token");
   },
 
   // Get student access token
   getStudentAccessToken(): string | null {
+    if (typeof window === 'undefined') return null;
     return localStorage.getItem("student_token");
   },
 };

@@ -168,7 +168,9 @@ export default function ReviewApplicationPage() {
       // Set initial review form data
       setReviewForm(prev => ({
         ...prev,
-        status: appData.status === 'submitted' ? 'under_review' : appData.status,
+        status: appData.status === 'submitted' ? 'under_review' : 
+               (appData.status === 'approved' || appData.status === 'rejected' || appData.status === 'waitlisted' || appData.status === 'under_review') 
+               ? appData.status : 'under_review',
         reviewNotes: appData.reviewNotes || '',
         notificationMessage: getDefaultNotificationMessage(appData.status)
       }))
