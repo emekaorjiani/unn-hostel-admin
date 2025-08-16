@@ -5,19 +5,10 @@ import { useRouter } from 'next/navigation'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import { 
-  Building2, 
-  FileText, 
-  Calendar, 
-  Plus,
-  CheckCircle,
-  XCircle,
-  Clock,
-  AlertTriangle,
-  ArrowLeft
-} from 'lucide-react'
+import { Plus, Filter, Search, Eye, Clock, CheckCircle, XCircle, AlertTriangle } from 'lucide-react'
 import { studentService, StudentApplication } from '@/lib/studentService'
 import StudentHeader from '@/components/layout/student-header'
+import { QuickActions } from '@/components/ui/quick-actions'
 
 export default function StudentApplicationsPage() {
   const router = useRouter()
@@ -102,7 +93,15 @@ export default function StudentApplicationsPage() {
         onBackClick={() => router.back()}
       />
 
-      <div className="pt-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      {/* Quick Actions */}
+      <QuickActions />
+
+      <div className="pt-16 max-w-7xl mx-auto px-4 py-8">
+        {/* Quick Actions - Fixed at top */}
+        <div className="mb-6">
+          <QuickActions showAllActions={false} />
+        </div>
+        
         <div className="space-y-6">
           {/* Filter Section */}
           <Card>

@@ -25,6 +25,16 @@ export interface StudentProfile {
 }
 }
 
+// Application Window interface for the required field
+export interface ApplicationWindow {
+  id: string;
+  name: string;
+  start_date: string;
+  end_date: string;
+  is_active: boolean;
+  description?: string;
+}
+
 // Hostel interface based on actual API response
 export interface Hostel {
   id: string;
@@ -218,7 +228,12 @@ export const studentService = {
   // Get student applications - using correct endpoint from API docs
   async getApplications(): Promise<StudentApplication[]> {
     try {
-      const response = await apiClient.get<{ success: boolean; data: StudentApplication[] }>('applications');
+      // Get student profile to get the student ID
+      const profile = await this.getProfile();
+      const studentId = profile.user.id;
+      
+      // Use the correct endpoint structure with student ID
+      const response = await apiClient.get<{ success: boolean; data: StudentApplication[] }>(`applications/student/${studentId}`);
       console.log('API Applications response:', response.data);
       return response.data.data;
     } catch (error) {
@@ -230,7 +245,12 @@ export const studentService = {
   // Get student payments - using correct endpoint from API docs
   async getPayments(): Promise<StudentPayment[]> {
     try {
-      const response = await apiClient.get<{ success: boolean; data: StudentPayment[] }>('payments');
+      // Get student profile to get the student ID
+      const profile = await this.getProfile();
+      const studentId = profile.user.id;
+      
+      // Use the correct endpoint structure with student ID
+      const response = await apiClient.get<{ success: boolean; data: StudentPayment[] }>(`payments/student/${studentId}`);
       console.log('API Payments response:', response.data);
       return response.data.data;
     } catch (error) {
@@ -314,15 +334,60 @@ export const studentService = {
     }
   },
 
+  // Get available application windows
+  async getApplicationWindows(): Promise<ApplicationWindow[]> {
+    try {
+      const response = await apiClient.get<{ success: boolean; data: ApplicationWindow[] }>('application-windows');
+      return response.data.data;
+    } catch (error) {
+      console.warn('Application windows endpoint not available, using default window:', error);
+      // Return a default active window if API fails
+      return [{
+        id: 'default-window',
+        name: 'Default Application Window',
+        start_date: new Date().toISOString().split('T')[0],
+        end_date: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], // 30 days from now
+        is_active: true,
+        description: 'Default application period'
+      }];
+    }
+  },
+
   // Create new application - using correct endpoint from API docs
   async createApplication(applicationData: {
     hostel_id: string;
     room_type: string;
     preferred_room_number?: string;
     special_requirements?: string;
+    emergency_contact?: string;
+    emergency_phone?: string;
+    parent_name?: string;
+    parent_phone?: string;
+    parent_email?: string;
+    application_date?: string;
+    status?: string;
+    application_window_id: string; // Required field from API
   }): Promise<StudentApplication> {
-    const response = await apiClient.post<{ success: boolean; data: StudentApplication }>('applications', applicationData);
-    return response.data.data;
+    try {
+      // Get student profile to get the student ID
+      const profile = await this.getProfile();
+      const studentId = profile.user.id;
+      
+      // Use the correct endpoint structure - POST to applications with student_id in body
+      const dataWithStudentId = {
+        ...applicationData,
+        student_id: studentId
+      };
+      
+      const response = await apiClient.post<{ success: boolean; data: StudentApplication }>(
+        'applications', 
+        dataWithStudentId
+      );
+      return response.data.data;
+    } catch (error) {
+      console.error('Failed to create application:', error);
+      throw error;
+    }
   },
 
   // Make payment - using correct endpoint from API docs
@@ -333,8 +398,18 @@ export const studentService = {
     reference?: string;
   }): Promise<StudentPayment> {
     try {
-      const response = await apiClient.post<{ success: boolean; data: StudentPayment }>('payments', paymentData);
-    return response.data.data;
+      // Get student profile to get the student ID
+      const profile = await this.getProfile();
+      const studentId = profile.user.id;
+      
+      // Add student_id to the payment data
+      const dataWithStudentId = {
+        ...paymentData,
+        student_id: studentId
+      };
+      
+      const response = await apiClient.post<{ success: boolean; data: StudentPayment }>('payments', dataWithStudentId);
+      return response.data.data;
     } catch (error) {
       console.error('Failed to make payment via API:', error);
       // Return mock payment
@@ -391,6 +466,17 @@ export const studentService = {
   // Get available hostels for application - using correct endpoint from API docs
   async getAvailableHostels(): Promise<Hostel[]> {
     try {
+      // Check if user is authenticated
+      const adminToken = localStorage.getItem("auth_token");
+      const studentToken = localStorage.getItem("student_token");
+      
+      if (!adminToken && !studentToken) {
+        console.warn('No authentication token found, redirecting to login');
+        // Redirect to student login if no token
+        window.location.href = '/student/auth/login';
+        return [];
+      }
+      
       const response = await apiClient.get<{ success: boolean; data: { hostels: any[] } }>('hostels');
       console.log('API Hostels response:', response.data);
       
@@ -442,7 +528,19 @@ export const studentService = {
       });
       
       return transformedHostels;
-    } catch (error) {
+    } catch (error: any) {
+      console.warn('Hostels endpoint error:', error);
+      
+      // If it's an authentication error, redirect to login
+      if (error.response?.status === 401) {
+        console.warn('Authentication failed, redirecting to login');
+        localStorage.removeItem('auth_token');
+        localStorage.removeItem('student_token');
+        window.location.href = '/student/auth/login';
+        return [];
+      }
+      
+      // For other errors, return mock data
       console.warn('Hostels endpoint not available, using mock data:', error);
       return [
         {

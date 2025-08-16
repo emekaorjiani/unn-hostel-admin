@@ -180,12 +180,60 @@ export const authService = {
     }
   },
 
+  // Comprehensive logout method that tries all possible endpoints
+  async tryLogoutEndpoints(userType: 'admin' | 'student', userId?: string): Promise<void> {
+    const endpoints = [
+      // Try with user ID first
+      ...(userId ? [
+        `POST /auth/logout/${userType}/${userId}`,
+        `GET /auth/logout/${userType}/${userId}`,
+      ] : []),
+      // Try generic endpoints
+      'POST /auth/logout',
+      'GET /auth/logout',
+      // Try v1 endpoints
+      'POST /v1/auth/logout',
+      'GET /v1/auth/logout',
+      // Try user-specific without type
+      ...(userId ? [
+        `POST /auth/logout/${userId}`,
+        `GET /auth/logout/${userId}`,
+      ] : []),
+    ];
+
+    for (const endpoint of endpoints) {
+      try {
+        const [method, path] = endpoint.split(' ');
+        if (method === 'POST') {
+          await apiClient.post(path);
+          console.log(`Logout successful with ${endpoint}`);
+          return; // Success, exit early
+        } else if (method === 'GET') {
+          await apiClient.get(path);
+          console.log(`Logout successful with ${endpoint}`);
+          return; // Success, exit early
+        }
+      } catch (error) {
+        console.warn(`Logout failed with ${endpoint}:`, error);
+        // Continue to next endpoint
+      }
+    }
+    
+    console.warn('All logout endpoints failed, proceeding with local logout');
+  },
+
   // Logout admin user
   async logout(): Promise<void> {
     try {
-      await apiClient.post("/auth/logout");
+      // Get admin profile to get the user ID
+      const adminProfile = this.getStoredProfile();
+      const userId = adminProfile?.id;
+      
+      // Try all possible logout endpoints
+      await this.tryLogoutEndpoints('admin', userId);
     } catch (error) {
       console.error("Logout API error:", error);
+      // Continue with local logout even if API fails
     } finally {
       localStorage.removeItem("auth_token");
       localStorage.removeItem("refresh_token");
@@ -196,9 +244,15 @@ export const authService = {
   // Logout student
   async logoutStudent(): Promise<void> {
     try {
-      await apiClient.post("/auth/logout");
+      // Get student profile to get the user ID
+      const studentProfile = this.getStoredStudentProfile();
+      const userId = studentProfile?.id;
+      
+      // Try all possible logout endpoints
+      await this.tryLogoutEndpoints('student', userId);
     } catch (error) {
       console.error("Student logout API error:", error);
+      // Continue with local logout even if API fails
     } finally {
       localStorage.removeItem("student_token");
       localStorage.removeItem("refresh_token");

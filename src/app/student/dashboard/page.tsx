@@ -7,6 +7,7 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { getStatusColor, formatCurrency, formatDate, getInitials } from '@/lib/utils'
 import { studentService, StudentDashboardData } from '@/lib/studentService'
+import QuickActions  from '@/components/ui/quick-actions'
 import {
   User,
   Building2,
@@ -84,111 +85,27 @@ export default function StudentDashboardPage() {
 
   // Mock student data
   const mockStudentData = {
-    id: 'student-001',
-    matricNumber: '2021/123456',
-    firstName: 'John',
-    lastName: 'Doe',
-    email: 'john.doe@unn.edu.ng',
-    phoneNumber: '+234 801 234 5678',
-    faculty: 'Engineering',
-    department: 'Computer Engineering',
-    level: '300',
-    gender: 'Male',
-    dateOfBirth: '2000-01-15',
-    address: '123 Main Street, Nsukka, Enugu State',
-    stateOfOrigin: 'Enugu',
-    localGovernment: 'Nsukka',
-    tribe: 'Igbo',
-    religion: 'Christianity',
-    emergencyContact: 'Jane Doe',
-    emergencyPhone: '+234 802 345 6789',
-    isPWD: false,
-    pwdDetails: '',
-    isInternationalStudent: false,
-    nationality: 'Nigerian',
-    passportNumber: '',
-    ninNumber: '12345678901',
-    status: 'active',
-    isEmailVerified: true,
-    isPhoneVerified: false,
-    lastLoginAt: '2024-01-20T10:30:00Z',
-    createdAt: '2023-09-01T00:00:00Z',
-    updatedAt: '2024-01-20T10:30:00Z',
-    academicInfo: {
-      cgpa: 4.2,
-      totalCredits: 72,
-      currentSemester: 'Second Semester 2023/2024',
-      expectedGraduation: '2025'
-    },
-    hostelInfo: {
-      hostelName: 'Zik Hall',
-      roomNumber: 'A101',
-      bedNumber: '1',
-      roomType: 'single',
-      checkInDate: '2023-09-15',
-      checkOutDate: '2024-06-30',
-      monthlyRent: 50000,
-      deposit: 25000
-    },
-    applications: [
-      {
-        id: 'app-001',
-        hostelName: 'Zik Hall',
-        roomType: 'single',
-        status: 'approved',
-        applicationDate: '2024-01-15',
-        amount: 50000,
-        paymentStatus: 'paid'
-      }
-    ],
-    payments: [
-      {
-        id: 'pay-001',
-        type: 'rent',
-        amount: 50000,
-        status: 'completed',
-        date: '2024-01-15',
-        method: 'card',
-        reference: 'TXN123456789'
-      },
-      {
-        id: 'pay-002',
-        type: 'deposit',
-        amount: 25000,
-        status: 'completed',
-        date: '2023-09-15',
-        method: 'bank_transfer',
-        reference: 'TXN987654321'
-      }
-    ],
-    maintenanceTickets: [
-      {
-        id: 'ticket-001',
-        issue: 'Electrical problem in room',
-        status: 'resolved',
-        priority: 'medium',
-        createdAt: '2024-01-10',
-        resolvedAt: '2024-01-12'
-      }
-    ],
-    notifications: [
-      {
-        id: 'notif-001',
-        title: 'Payment Due',
-        message: 'Your hostel rent payment is due in 5 days',
-        type: 'warning',
-        read: false,
-        createdAt: '2024-01-20'
-      },
-      {
-        id: 'notif-002',
-        title: 'Maintenance Update',
-        message: 'Your maintenance request has been resolved',
-        type: 'success',
-        read: true,
-        createdAt: '2024-01-12'
-      }
-    ]
+    user: {
+      id: 'student-001',
+      matric_number: '2021/123456',
+      first_name: 'John',
+      last_name: 'Doe',
+      email: 'john.doe@unn.edu.ng',
+      phone_number: '+234 801 234 5678',
+      faculty: 'Engineering',
+      department: 'Computer Engineering',
+      level: '300',
+      gender: 'Male',
+      date_of_birth: '2000-01-15',
+      address: '123 Main Street, Nsukka, Enugu State',
+      state_of_origin: 'Enugu',
+      nationality: 'Nigerian',
+      status: 'active' as const,
+      is_email_verified: true,
+      is_phone_verified: true,
+      created_at: '2021-09-01T00:00:00Z',
+      updated_at: '2024-01-01T00:00:00Z'
+    }
   }
 
   // Fetch dashboard data on component mount
@@ -267,42 +184,6 @@ export default function StudentDashboardPage() {
       icon: Wrench,
       color: 'text-purple-600',
       bgColor: 'bg-purple-100',
-    },
-  ]
-
-  // Quick actions
-  const quickActions = [
-    {
-      title: 'Apply for Hostel',
-      description: 'Submit a new hostel application',
-      icon: Plus,
-      color: 'bg-blue-500',
-      href: '/student/applications/new',
-      available: true,
-    },
-    {
-      title: 'Make Payment',
-      description: 'Pay hostel fees and deposits',
-      icon: CreditCard,
-      color: 'bg-green-500',
-      href: '/student/payments',
-      available: true,
-    },
-    {
-      title: 'Report Issue',
-      description: 'Submit maintenance request',
-      icon: Wrench,
-      color: 'bg-orange-500',
-      href: '/student/maintenance',
-      available: true,
-    },
-    {
-      title: 'View Documents',
-      description: 'Access your hostel documents',
-      icon: FileText,
-      color: 'bg-purple-500',
-      href: '/student/documents',
-      available: true,
     },
   ]
 
@@ -401,7 +282,9 @@ export default function StudentDashboardPage() {
         subtitle="UNN Hostel Management System"
       />
 
-      <div className="pt-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <QuickActions />
+
+      <div className="pt-40 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="space-y-8">
           {/* Welcome Section */}
           <div className="bg-gradient-to-r from-green-600 to-emerald-700 rounded-2xl p-8 text-white">
@@ -416,15 +299,15 @@ export default function StudentDashboardPage() {
                                  <div className="flex items-center space-x-6 text-sm">
                    <div className="flex items-center space-x-2">
                      <Building2 className="h-4 w-4" />
-                     <span>{student.faculty || 'Not Assigned'} - {student.department || 'Not Assigned'}</span>
+                     <span>{student.user?.faculty || 'Not Assigned'} - {student.user?.department || 'Not Assigned'}</span>
                    </div>
-                   <div className="flex items-center space-x-2">
-                     <GraduationCap className="h-4 w-4" />
-                     <span>Level {student.level || 'Not Assigned'}</span>
-                   </div>
+                   <div className="flex items-center">
+                    <BookOpen className="h-4 w-4 mr-2 text-gray-400" />
+                    <span>Level {student.user?.level || 'Not Assigned'}</span>
+                  </div>
                    <div className="flex items-center space-x-2">
                      <User className="h-4 w-4" />
-                     <span>Matric: {student?.user?.matricNumber}</span>
+                     <span>Matric: {student?.user?.matric_number}</span>
                    </div>
                  </div>
               </div>
@@ -471,45 +354,9 @@ export default function StudentDashboardPage() {
           </div>
 
           {/* Main Content Grid */}
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            {/* Quick Actions */}
-            <div className="lg:col-span-1">
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center justify-between">
-                    Quick Actions
-                    <Button variant="ghost" size="sm">
-                      <MoreHorizontal className="h-4 w-4" />
-                    </Button>
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  {quickActions.map((action, index) => (
-                    <div
-                      key={index}
-                      className={`flex items-center p-4 rounded-lg transition-colors cursor-pointer ${
-                        action.available 
-                          ? 'bg-gray-50 hover:bg-gray-100' 
-                          : 'bg-gray-100 opacity-50 cursor-not-allowed'
-                      }`}
-                      onClick={() => action.available && (window.location.href = action.href)}
-                    >
-                      <div className={`h-10 w-10 ${action.color} rounded-lg flex items-center justify-center mr-4`}>
-                        <action.icon className="h-5 w-5 text-white" />
-                      </div>
-                      <div className="flex-1">
-                        <h4 className="font-medium text-gray-900">{action.title}</h4>
-                        <p className="text-sm text-gray-600">{action.description}</p>
-                      </div>
-                      <ChevronRight className="h-4 w-4 text-gray-400 ml-2" />
-                    </div>
-                  ))}
-                </CardContent>
-              </Card>
-            </div>
-
+          <div className="grid grid-cols-1 lg:grid-cols-1 gap-8">
             {/* Recent Activity */}
-            <div className="lg:col-span-2">
+            <div className="lg:col-span-1">
               <Card>
                 <CardHeader>
                   <CardTitle className="flex items-center justify-between">
@@ -682,25 +529,25 @@ export default function StudentDashboardPage() {
                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                  <div className="text-center p-4 bg-orange-50 rounded-lg">
                    <GraduationCap className="h-8 w-8 text-orange-600 mx-auto mb-2" />
-                   <p className="text-lg font-semibold text-gray-900">{student.faculty || 'Not Assigned'}</p>
+                   <p className="text-lg font-semibold text-gray-900">{student.user?.faculty || 'Not Assigned'}</p>
                    <p className="text-sm text-gray-600">Faculty</p>
                  </div>
                  
                  <div className="text-center p-4 bg-yellow-50 rounded-lg">
                    <BookOpen className="h-8 w-8 text-yellow-600 mx-auto mb-2" />
-                   <p className="text-lg font-semibold text-gray-900">{student.department || 'Not Assigned'}</p>
+                   <p className="text-lg font-semibold text-gray-900">{student.user?.department || 'Not Assigned'}</p>
                    <p className="text-sm text-gray-600">Department</p>
                  </div>
                  
                  <div className="text-center p-4 bg-blue-50 rounded-lg">
                    <MapPin className="h-8 w-8 text-blue-600 mx-auto mb-2" />
-                   <p className="text-lg font-semibold text-gray-900">{student.state_of_origin || 'Not Assigned'}</p>
+                   <p className="text-lg font-semibold text-gray-900">{student.user?.state_of_origin || 'Not Assigned'}</p>
                    <p className="text-sm text-gray-600">State of Origin</p>
                  </div>
                  
                  <div className="text-center p-4 bg-purple-50 rounded-lg">
                    <Map className="h-8 w-8 text-purple-600 mx-auto mb-2" />
-                   <p className="text-lg font-semibold text-gray-900">{student.nationality || 'Nigerian'}</p>
+                   <p className="text-lg font-semibold text-gray-900">{student.user?.nationality || 'Nigerian'}</p>
                    <p className="text-sm text-gray-600">Nationality</p>
                  </div>
                </div>

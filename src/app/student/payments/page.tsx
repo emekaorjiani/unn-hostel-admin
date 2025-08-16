@@ -17,11 +17,15 @@ import {
   DollarSign,
   TrendingUp,
   TrendingDown,
-  Plus
+  Plus,
+  Filter,
+  Search,
+  Wallet
 } from 'lucide-react'
 import { studentService, StudentPayment } from '@/lib/studentService'
 import StudentHeader from '@/components/layout/student-header'
 import { Input } from '@/components/ui/input'
+import { QuickActions } from '@/components/ui/quick-actions'
 
 interface PaymentSummary {
   totalPaid: number
@@ -151,9 +155,11 @@ export default function StudentPaymentsPage() {
       <StudentHeader
         title="My Payments"
         subtitle="Payment history and outstanding balances"
+        showBackButton={true}
+        onBackClick={() => router.back()}
       />
 
-      <div className="pt-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="pt-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="space-y-6">
           {/* Payment Summary Cards */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">

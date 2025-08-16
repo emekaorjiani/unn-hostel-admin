@@ -23,6 +23,8 @@ import {
   Filter
 } from 'lucide-react'
 import { studentService } from '@/lib/studentService'
+import StudentHeader from '@/components/layout/student-header'
+import { QuickActions } from '@/components/ui/quick-actions'
 
 interface Document {
   id: string
@@ -231,7 +233,12 @@ export default function StudentDocumentsPage() {
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="pt-16 max-w-7xl mx-auto px-4 py-8">
+        {/* Quick Actions - Fixed at top */}
+        <div className="mb-6">
+          <QuickActions showAllActions={false} />
+        </div>
+        
         <div className="space-y-6">
           {/* Search and Filter */}
           <Card>
