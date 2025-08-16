@@ -377,7 +377,7 @@ export default function HostelDetailPage() {
                     <label className="block text-sm font-medium text-gray-700">Phone Number</label>
                     <div className="flex items-center mt-1">
                       <Phone className="h-4 w-4 text-gray-400 mr-2" />
-                      <p className="text-sm text-gray-900">{hostel.phoneNumber}</p>
+                      <p className="text-sm text-gray-900">{hostel.phone_number}</p>
                     </div>
                   </div>
                   <div className="md:col-span-2">
@@ -403,15 +403,15 @@ export default function HostelDetailPage() {
                 <div className="space-y-4">
                   <div className="flex justify-between text-sm">
                     <span>Occupancy Rate</span>
-                    <span className="font-medium">{(hostel.occupancyRate || 0).toFixed(1)}%</span>
+                    <span className="font-medium">{(hostel.occupancy_rate || 0).toFixed(1)}%</span>
                   </div>
                   <div className="w-full bg-gray-200 rounded-full h-3">
                     <div 
                       className={`h-3 rounded-full transition-all duration-300 ${
-                        (hostel.occupancyRate || 0) >= 90 ? 'bg-red-500' :
-                        (hostel.occupancyRate || 0) >= 75 ? 'bg-yellow-500' : 'bg-green-500'
+                        (hostel.occupancy_rate || 0) >= 90 ? 'bg-red-500' :
+                        (hostel.occupancy_rate || 0) >= 75 ? 'bg-yellow-500' : 'bg-green-500'
                       }`}
-                      style={{ width: `${Math.min(hostel.occupancyRate || 0, 100)}%` }}
+                      style={{ width: `${Math.min(hostel.occupancy_rate || 0, 100)}%` }}
                     ></div>
                   </div>
                   <div className="grid grid-cols-3 gap-4 text-center">
@@ -420,11 +420,11 @@ export default function HostelDetailPage() {
                       <div className="text-xs text-gray-600">Total Beds</div>
                     </div>
                     <div>
-                      <div className="text-lg font-semibold text-green-600">{hostel.occupiedBeds}</div>
+                      <div className="text-lg font-semibold text-green-600">{hostel.occupied_beds}</div>
                       <div className="text-xs text-gray-600">Occupied</div>
                     </div>
                     <div>
-                      <div className="text-lg font-semibold text-purple-600">{hostel.availableBeds}</div>
+                      <div className="text-lg font-semibold text-purple-600">{hostel.available_beds}</div>
                       <div className="text-xs text-gray-600">Available</div>
                     </div>
                   </div>
@@ -476,11 +476,11 @@ export default function HostelDetailPage() {
               <CardContent className="space-y-3">
                 <div className="flex justify-between text-sm">
                   <span className="text-gray-600">Created</span>
-                  <span className="font-medium">{formatDate(hostel.createdAt)}</span>
+                  <span className="font-medium">{formatDate(hostel.created_at)}</span>
                 </div>
                 <div className="flex justify-between text-sm">
                   <span className="text-gray-600">Last Updated</span>
-                  <span className="font-medium">{formatDate(hostel.updatedAt)}</span>
+                  <span className="font-medium">{formatDate(hostel.updated_at)}</span>
                 </div>
                 <div className="flex justify-between text-sm">
                   <span className="text-gray-600">Hostel ID</span>

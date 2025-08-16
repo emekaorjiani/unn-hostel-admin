@@ -22,6 +22,7 @@ import {
 } from 'lucide-react';
 import DashboardLayout from '@/components/layout/dashboard-layout';
 import { apiClient } from '@/lib/api';
+import { safeLocalStorage } from '@/lib/utils';
 
 interface HostelForm {
   name: string;
@@ -73,8 +74,9 @@ export default function EditHostelPage() {
       setFormData({
         name: hostelData.name || '',
         description: hostelData.description || '',
+        type: hostelData.type || 'mixed',
         address: hostelData.address || '',
-        phoneNumber: hostelData.phoneNumber || '',
+        phone_number: hostelData.phone_number || '',
         email: hostelData.email || '',
         capacity: hostelData.capacity || 0,
         status: hostelData.status || 'active'
@@ -375,8 +377,8 @@ export default function EditHostelPage() {
                     <Phone className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
                     <Input
                       type="tel"
-                      value={formData.phoneNumber}
-                      onChange={(e) => handleInputChange('phoneNumber', e.target.value)}
+                      value={formData.phone_number}
+                      onChange={(e) => handleInputChange('phone_number', e.target.value)}
                       placeholder="Enter phone number"
                       className="pl-10"
                     />

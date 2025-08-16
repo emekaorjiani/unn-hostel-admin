@@ -269,28 +269,28 @@ export default function DeleteHostelPage() {
                   <div className="text-sm text-gray-600">Total Capacity</div>
                 </div>
                 <div className="text-center p-3 bg-gray-50 rounded-lg">
-                  <div className="text-2xl font-bold text-green-600">{hostel.occupiedBeds}</div>
+                  <div className="text-2xl font-bold text-green-600">{hostel.occupied_beds}</div>
                   <div className="text-sm text-gray-600">Occupied Beds</div>
                 </div>
                 <div className="text-center p-3 bg-gray-50 rounded-lg">
-                  <div className="text-2xl font-bold text-purple-600">{hostel.availableBeds}</div>
+                  <div className="text-2xl font-bold text-purple-600">{hostel.available_beds}</div>
                   <div className="text-sm text-gray-600">Available Beds</div>
                 </div>
               </div>
 
               <div className="flex items-center space-x-2 text-sm text-gray-600">
                 <Bed className="h-4 w-4" />
-                <span>Occupancy Rate: {hostel.occupancyRate.toFixed(1)}%</span>
+                <span>Occupancy Rate: {hostel.occupancy_rate.toFixed(1)}%</span>
               </div>
 
-              {hostel.occupiedBeds > 0 && (
+              {hostel.occupied_beds > 0 && (
                 <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
                   <div className="flex items-center space-x-2">
                     <AlertTriangle className="h-5 w-5 text-yellow-600" />
                     <div>
                       <p className="text-yellow-800 font-medium">⚠️ Students Currently Assigned</p>
                       <p className="text-yellow-700 text-sm">
-                        This hostel has {hostel.occupiedBeds} occupied beds. Deleting this hostel will affect these students.
+                        This hostel has {hostel.occupied_beds} occupied beds. Deleting this hostel will affect these students.
                       </p>
                     </div>
                   </div>
@@ -328,7 +328,7 @@ export default function DeleteHostelPage() {
                   className="rounded border-gray-300 text-green-600 focus:ring-green-500"
                 />
                 <label htmlFor="confirm-students" className="text-sm text-gray-700">
-                  I understand that deleting this hostel will affect {hostel.occupiedBeds} currently assigned students
+                  I understand that deleting this hostel will affect {hostel.occupied_beds} currently assigned students
                 </label>
               </div>
 
