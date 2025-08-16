@@ -22,55 +22,39 @@ import {
   Calendar
 } from 'lucide-react'
 import DashboardLayout from '../../components/layout/dashboard-layout'
+import { dashboardService } from '@/lib/dashboardService'
 
 interface Student {
   id: string
-  firstName: string
-  lastName: string
+  first_name: string
+  last_name: string
   email: string
-  matricNumber: string
-  phoneNumber: string
-  dateOfBirth: string
-  gender: 'male' | 'female'
-  faculty: string
-  department: string
-  level: string
-  address: string
-  stateOfOrigin: string
-  localGovernment: string
-  emergencyContact: string
-  emergencyPhone: string
+  matric_number: string
+  phone_number?: string
+  faculty?: string
+  department?: string
+  level?: string
+  gender?: string
+  date_of_birth?: string
+  address?: string
+  state_of_origin?: string
+  nationality?: string
   status: 'active' | 'inactive' | 'suspended' | 'pending_verification'
-  isVerified: boolean
-  isInternationalStudent: boolean
-  isPWD: boolean
-  hostelId?: string
-  hostelName?: string
-  roomNumber?: string
-  bedNumber?: string
-  createdAt: string
-  updatedAt: string
+  is_email_verified: boolean
+  is_phone_verified: boolean
+  has_application: boolean
+  has_allocation: boolean
+  created_at: string
+  updated_at: string
 }
 
 interface StudentStats {
-  totalStudents: number
-  activeStudents: number
-  pendingVerification: number
-  verifiedStudents: number
-  internationalStudents: number
-  pwdStudents: number
-  studentsByFaculty: Array<{
-    faculty: string
-    count: number
-  }>
-  studentsByLevel: Array<{
-    level: string
-    count: number
-  }>
-  studentsByStatus: Array<{
-    status: string
-    count: number
-  }>
+  total_students: number
+  active_students: number
+  inactive_students: number
+  students_with_applications: number
+  students_with_allocations: number
+  new_students_this_month: number
 }
 
 export default function StudentsPage() {
@@ -84,151 +68,24 @@ export default function StudentsPage() {
   const [facultyFilter, setFacultyFilter] = useState<string>('all')
   const [levelFilter, setLevelFilter] = useState<string>('all')
 
-  // Generate dummy students data
-  const generateDummyStudents = (): Student[] => {
-    const faculties = [
-      'Faculty of Engineering',
-      'Faculty of Sciences',
-      'Faculty of Arts',
-      'Faculty of Social Sciences',
-      'Faculty of Education',
-      'Faculty of Agriculture',
-      'Faculty of Law',
-      'Faculty of Medicine',
-      'Faculty of Business Administration',
-      'Faculty of Environmental Studies'
-    ]
-
-    const departments = [
-      'Computer Engineering', 'Mechanical Engineering', 'Electrical Engineering',
-      'Physics', 'Chemistry', 'Mathematics', 'Biology',
-      'English', 'History', 'Philosophy',
-      'Economics', 'Political Science', 'Sociology',
-      'Educational Psychology', 'Curriculum Studies',
-      'Crop Science', 'Animal Science', 'Soil Science',
-      'Civil Law', 'Commercial Law', 'Criminal Law',
-      'Anatomy', 'Physiology', 'Biochemistry',
-      'Accounting', 'Marketing', 'Management',
-      'Architecture', 'Urban Planning', 'Landscape Architecture'
-    ]
-
-    const levels = ['100', '200', '300', '400', '500']
-    const statuses: Array<'active' | 'inactive' | 'suspended' | 'pending_verification'> = ['active', 'active', 'active', 'active', 'inactive', 'suspended', 'pending_verification']
-    const genders: Array<'male' | 'female'> = ['male', 'female']
-    const states = ['Lagos', 'Kano', 'Kaduna', 'Katsina', 'Oyo', 'Rivers', 'Bauchi', 'Jigawa', 'Enugu', 'Zamfara']
-
-    const dummyStudents: Student[] = []
-
-    for (let i = 1; i <= 2847; i++) {
-      const faculty = faculties[Math.floor(Math.random() * faculties.length)]
-      const department = departments[Math.floor(Math.random() * departments.length)]
-      const level = levels[Math.floor(Math.random() * levels.length)]
-      const status = statuses[Math.floor(Math.random() * statuses.length)]
-      const gender = genders[Math.floor(Math.random() * genders.length)]
-      const state = states[Math.floor(Math.random() * states.length)]
-      
-      const hasHostel = Math.random() > 0.3 // 70% have hostel allocation
-      const hostelNames = ['Zik Hall', 'Mariere Hall', 'Alvan Ikoku Hall', 'Eni Njoku Hall', 'Mellanby Hall', 'Kuti Hall']
-      
-      dummyStudents.push({
-        id: `STU${String(i).padStart(6, '0')}`,
-        firstName: `Student${i}`,
-        lastName: `Name${i}`,
-        email: `student${i}@unn.edu.ng`,
-        matricNumber: `2021/${String(i).padStart(6, '0')}`,
-        phoneNumber: `+234${Math.floor(Math.random() * 900000000) + 100000000}`,
-        dateOfBirth: new Date(2000 + Math.floor(Math.random() * 10), Math.floor(Math.random() * 12), Math.floor(Math.random() * 28) + 1).toISOString().split('T')[0],
-        gender,
-        faculty,
-        department,
-        level,
-        address: `${Math.floor(Math.random() * 999) + 1} Street, ${state}`,
-        stateOfOrigin: state,
-        localGovernment: `LG${Math.floor(Math.random() * 20) + 1}`,
-        emergencyContact: `Emergency${i}`,
-        emergencyPhone: `+234${Math.floor(Math.random() * 900000000) + 100000000}`,
-        status,
-        isVerified: Math.random() > 0.1, // 90% verified
-        isInternationalStudent: Math.random() > 0.95, // 5% international
-        isPWD: Math.random() > 0.98, // 2% PWD
-        hostelId: hasHostel ? `HOSTEL${Math.floor(Math.random() * 6) + 1}` : undefined,
-        hostelName: hasHostel ? hostelNames[Math.floor(Math.random() * hostelNames.length)] : undefined,
-        roomNumber: hasHostel ? `R${Math.floor(Math.random() * 200) + 1}` : undefined,
-        bedNumber: hasHostel ? `B${Math.floor(Math.random() * 4) + 1}` : undefined,
-        createdAt: new Date(2021, Math.floor(Math.random() * 12), Math.floor(Math.random() * 28) + 1).toISOString(),
-        updatedAt: new Date().toISOString()
-      })
-    }
-
-    return dummyStudents
-  }
-
-  // Generate dummy statistics
-  const generateDummyStats = (studentsData: Student[]): StudentStats => {
-    const activeStudents = studentsData.filter(s => s.status === 'active').length
-    const pendingVerification = studentsData.filter(s => s.status === 'pending_verification').length
-    const verifiedStudents = studentsData.filter(s => s.isVerified).length
-    const internationalStudents = studentsData.filter(s => s.isInternationalStudent).length
-    const pwdStudents = studentsData.filter(s => s.isPWD).length
-
-    // Group by faculty
-    const facultyCounts = studentsData.reduce((acc, student) => {
-      acc[student.faculty] = (acc[student.faculty] || 0) + 1
-      return acc
-    }, {} as Record<string, number>)
-
-    const studentsByFaculty = Object.entries(facultyCounts).map(([faculty, count]) => ({
-      faculty,
-      count
-    })).sort((a, b) => b.count - a.count)
-
-    // Group by level
-    const levelCounts = studentsData.reduce((acc, student) => {
-      acc[student.level] = (acc[student.level] || 0) + 1
-      return acc
-    }, {} as Record<string, number>)
-
-    const studentsByLevel = Object.entries(levelCounts).map(([level, count]) => ({
-      level,
-      count
-    })).sort((a, b) => a.level.localeCompare(b.level))
-
-    // Group by status
-    const statusCounts = studentsData.reduce((acc, student) => {
-      acc[student.status] = (acc[student.status] || 0) + 1
-      return acc
-    }, {} as Record<string, number>)
-
-    const studentsByStatus = Object.entries(statusCounts).map(([status, count]) => ({
-      status,
-      count
-    }))
-
-    return {
-      totalStudents: studentsData.length,
-      activeStudents,
-      pendingVerification,
-      verifiedStudents,
-      internationalStudents,
-      pwdStudents,
-      studentsByFaculty,
-      studentsByLevel,
-      studentsByStatus
-    }
-  }
-
-  // Fetch students data (now using dummy data)
+  // Fetch students data from API
   const fetchStudents = async () => {
     try {
       setError(null)
       setLoading(true)
       
-      // Generate dummy data
-      const studentsData = generateDummyStudents()
-      const statsData = generateDummyStats(studentsData)
+      // Build query parameters
+      const params: any = {}
+      if (statusFilter !== 'all') params.status = statusFilter
+      if (facultyFilter !== 'all') params.faculty = facultyFilter
+      if (levelFilter !== 'all') params.level = levelFilter
+      if (searchQuery) params.search = searchQuery
       
-      setStudents(studentsData)
-      setStats(statsData)
+      // Fetch data from API
+      const response = await dashboardService.getStudents(params)
+      
+      setStudents(response.students)
+      setStats(response.statistics)
     } catch (err: unknown) {
       const errorMessage = err instanceof Error ? err.message : 'Failed to fetch students'
       setError(errorMessage)
@@ -245,14 +102,13 @@ export default function StudentsPage() {
 
   // Filter students
   const filteredStudents = (Array.isArray(students) ? students : []).filter(student => {
-    const matchesSearch = student.firstName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         student.lastName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         student.matricNumber.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         student.email.toLowerCase().includes(searchQuery.toLowerCase())
+    const matchesSearch = student.first_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+     student.last_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+     student.matric_number.toLowerCase().includes(searchQuery.toLowerCase()) ||student.email.toLowerCase().includes(searchQuery.toLowerCase())
     
     const matchesStatus = statusFilter === 'all' || student.status === statusFilter
-    const matchesFaculty = facultyFilter === 'all' || student.faculty === facultyFilter
-    const matchesLevel = levelFilter === 'all' || student.level === levelFilter
+    const matchesFaculty = facultyFilter === 'all' || (student.faculty && student.faculty === facultyFilter)
+    const matchesLevel = levelFilter === 'all' || (student.level && student.level === levelFilter)
 
     return matchesSearch && matchesStatus && matchesFaculty && matchesLevel
   })
@@ -350,7 +206,7 @@ export default function StudentsPage() {
                 <Users className="h-4 w-4 text-gray-600" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">{stats.totalStudents || 0}</div>
+                <div className="text-2xl font-bold">{stats.total_students || 0}</div>
                 <p className="text-xs text-gray-600">
                   All registered students
                 </p>
@@ -363,7 +219,7 @@ export default function StudentsPage() {
                 <Users className="h-4 w-4 text-green-600" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">{stats.activeStudents || 0}</div>
+                <div className="text-2xl font-bold">{stats.active_students || 0}</div>
                 <p className="text-xs text-gray-600">
                   Currently active
                 </p>
@@ -376,7 +232,7 @@ export default function StudentsPage() {
                 <GraduationCap className="h-4 w-4 text-yellow-600" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">{stats.pendingVerification || 0}</div>
+                <div className="text-2xl font-bold">{stats.students_with_applications || 0}</div>
                 <p className="text-xs text-gray-600">
                   Awaiting verification
                 </p>
@@ -390,7 +246,7 @@ export default function StudentsPage() {
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold">
-                  {students.filter(s => s.hostelId).length}
+                                      {students.filter(s => s.has_allocation).length}
                 </div>
                 <p className="text-xs text-gray-600">
                   With hostel allocation
@@ -508,9 +364,9 @@ export default function StudentsPage() {
                         <td className="py-4 px-4">
                           <div>
                             <div className="font-medium text-gray-900">
-                              {student.firstName} {student.lastName}
+                              {student.first_name} {student.last_name}
                             </div>
-                            <div className="text-sm text-gray-600">{student.matricNumber}</div>
+                            <div className="text-sm text-gray-600">{student.matric_number}</div>
                             <div className="text-xs text-gray-500 capitalize">{student.gender}</div>
                           </div>
                         </td>
@@ -529,16 +385,16 @@ export default function StudentsPage() {
                             </div>
                             <div className="flex items-center text-sm text-gray-600">
                               <Phone className="h-3 w-3 mr-1" />
-                              {student.phoneNumber}
+                              {student.phone_number || 'N/A'}
                             </div>
                           </div>
                         </td>
                         <td className="py-4 px-4">
-                          {student.hostelName ? (
+                          {student.has_allocation ? (
                             <div>
-                              <div className="text-sm font-medium text-gray-900">{student.hostelName}</div>
+                              <div className="text-sm font-medium text-gray-900">Allocated</div>
                               <div className="text-xs text-gray-600">
-                                Room {student.roomNumber}, Bed {student.bedNumber}
+                                Hostel allocation active
                               </div>
                             </div>
                           ) : (

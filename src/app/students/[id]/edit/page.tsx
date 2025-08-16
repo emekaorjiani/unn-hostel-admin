@@ -24,37 +24,28 @@ import { apiClient } from '@/lib/api'
 import { safeLocalStorage } from '@/lib/utils'
 
 interface StudentForm {
-  firstName: string
-  lastName: string
+  first_name: string
+  last_name: string
   email: string
-  matricNumber: string
-  phoneNumber: string
-  dateOfBirth: string
+  matric_number: string
+  phone_number: string
+  date_of_birth: string
   gender: 'male' | 'female'
   faculty: string
   department: string
   level: string
   address: string
-  stateOfOrigin: string
-  localGovernment: string
-  emergencyContact: string
-  emergencyPhone: string
+  state_of_origin: string
+  local_government: string
+  emergency_contact: string
+  emergency_phone: string
+  nationality: string
   status: 'active' | 'inactive' | 'suspended' | 'pending_verification'
-  isVerified: boolean
-  isInternationalStudent: boolean
-  isPWD: boolean
-  hostelId?: string
-  roomNumber?: string
-  bedNumber?: string
+  is_international_student: boolean
+  is_pwd: boolean
 }
 
-interface Hostel {
-  id: string
-  name: string
-  type: 'male' | 'female' | 'mixed'
-  capacity: number
-  availableBeds: number
-}
+
 
 export default function EditStudentPage() {
   const params = useParams()
@@ -65,31 +56,27 @@ export default function EditStudentPage() {
   const [fetching, setFetching] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [success, setSuccess] = useState<string | null>(null)
-  const [hostels, setHostels] = useState<Hostel[]>([])
   
   const [formData, setFormData] = useState<StudentForm>({
-    firstName: '',
-    lastName: '',
+    first_name: '',
+    last_name: '',
     email: '',
-    matricNumber: '',
-    phoneNumber: '',
-    dateOfBirth: '',
+    matric_number: '',
+    phone_number: '',
+    date_of_birth: '',
     gender: 'male',
     faculty: '',
     department: '',
     level: '',
     address: '',
-    stateOfOrigin: '',
-    localGovernment: '',
-    emergencyContact: '',
-    emergencyPhone: '',
+    state_of_origin: '',
+    local_government: '',
+    emergency_contact: '',
+    emergency_phone: '',
+    nationality: '',
     status: 'pending_verification',
-    isVerified: false,
-    isInternationalStudent: false,
-    isPWD: false,
-    hostelId: '',
-    roomNumber: '',
-    bedNumber: ''
+    is_international_student: false,
+    is_pwd: false
   })
 
   // Fetch student data and hostels
@@ -104,37 +91,32 @@ export default function EditStudentPage() {
 
       // Fetch student data
       const studentResponse = await apiClient.get(`/students/${studentId}`)
-      const student = studentResponse.data
+      const student = studentResponse.data.data?.student || studentResponse.data
 
       // Pre-populate form with student data
       setFormData({
-        firstName: student.firstName || '',
-        lastName: student.lastName || '',
+        first_name: student.first_name || '',
+        last_name: student.last_name || '',
         email: student.email || '',
-        matricNumber: student.matricNumber || '',
-        phoneNumber: student.phoneNumber || '',
-        dateOfBirth: student.dateOfBirth ? student.dateOfBirth.split('T')[0] : '',
+        matric_number: student.matric_number || '',
+        phone_number: student.phone_number || '',
+        date_of_birth: student.date_of_birth ? student.date_of_birth.split('T')[0] : '',
         gender: student.gender || 'male',
         faculty: student.faculty || '',
         department: student.department || '',
         level: student.level || '',
         address: student.address || '',
-        stateOfOrigin: student.stateOfOrigin || '',
-        localGovernment: student.localGovernment || '',
-        emergencyContact: student.emergencyContact || '',
-        emergencyPhone: student.emergencyPhone || '',
+        state_of_origin: student.state_of_origin || '',
+        local_government: student.local_government || '',
+        emergency_contact: student.emergency_contact || '',
+        emergency_phone: student.emergency_phone || '',
+        nationality: student.nationality || '',
         status: student.status || 'pending_verification',
-        isVerified: student.isVerified || false,
-        isInternationalStudent: student.isInternationalStudent || false,
-        isPWD: student.isPWD || false,
-        hostelId: student.hostelId || '',
-        roomNumber: student.roomNumber || '',
-        bedNumber: student.bedNumber || ''
+        is_international_student: student.is_international_student || false,
+        is_pwd: student.is_pwd || false
       })
 
-      // Fetch available hostels
-      const hostelsResponse = await apiClient.get('/hostels')
-      setHostels(hostelsResponse.data || [])
+
     } catch (err: unknown) {
       const errorMessage = err instanceof Error ? err.message : 'Failed to fetch student data'
       setError(errorMessage)
@@ -169,10 +151,8 @@ export default function EditStudentPage() {
         throw new Error('No authentication token found')
       }
 
-      // Filter out properties that the API doesn't expect
-      const { matricNumber, isVerified, hostelId, roomNumber, bedNumber, ...apiFormData } = formData
-      
-      const response = await apiClient.put(`/students/${studentId}`, apiFormData)
+      // Send the form data directly since all fields match the API
+      const response = await apiClient.put(`/students/${studentId}`, formData)
       
       setSuccess('Student updated successfully!')
       setTimeout(() => {
@@ -290,8 +270,8 @@ export default function EditStudentPage() {
                   </label>
                   <Input
                     type="text"
-                    value={formData.firstName}
-                    onChange={(e) => handleInputChange('firstName', e.target.value)}
+                    value={formData.first_name}
+                    onChange={(e) => handleInputChange('first_name', e.target.value)}
                     required
                     placeholder="Enter first name"
                   />
@@ -302,8 +282,8 @@ export default function EditStudentPage() {
                   </label>
                   <Input
                     type="text"
-                    value={formData.lastName}
-                    onChange={(e) => handleInputChange('lastName', e.target.value)}
+                    value={formData.last_name}
+                    onChange={(e) => handleInputChange('last_name', e.target.value)}
                     required
                     placeholder="Enter last name"
                   />
@@ -329,8 +309,8 @@ export default function EditStudentPage() {
                   </label>
                   <Input
                     type="text"
-                    value={formData.matricNumber}
-                    onChange={(e) => handleInputChange('matricNumber', e.target.value)}
+                    value={formData.matric_number}
+                    onChange={(e) => handleInputChange('matric_number', e.target.value)}
                     required
                     placeholder="Enter matric number"
                   />
@@ -344,8 +324,8 @@ export default function EditStudentPage() {
                   </label>
                   <Input
                     type="tel"
-                    value={formData.phoneNumber}
-                    onChange={(e) => handleInputChange('phoneNumber', e.target.value)}
+                    value={formData.phone_number}
+                    onChange={(e) => handleInputChange('phone_number', e.target.value)}
                     required
                     placeholder="Enter phone number"
                   />
@@ -356,8 +336,8 @@ export default function EditStudentPage() {
                   </label>
                   <Input
                     type="date"
-                    value={formData.dateOfBirth}
-                    onChange={(e) => handleInputChange('dateOfBirth', e.target.value)}
+                    value={formData.date_of_birth}
+                    onChange={(e) => handleInputChange('date_of_birth', e.target.value)}
                     required
                   />
                 </div>
@@ -382,8 +362,8 @@ export default function EditStudentPage() {
                   <label className="flex items-center">
                     <input
                       type="checkbox"
-                      checked={formData.isInternationalStudent}
-                      onChange={(e) => handleInputChange('isInternationalStudent', e.target.checked)}
+                      checked={formData.is_international_student}
+                      onChange={(e) => handleInputChange('is_international_student', e.target.checked)}
                       className="mr-2"
                     />
                     <span className="text-sm font-medium text-gray-700">International Student</span>
@@ -391,8 +371,8 @@ export default function EditStudentPage() {
                   <label className="flex items-center">
                     <input
                       type="checkbox"
-                      checked={formData.isPWD}
-                      onChange={(e) => handleInputChange('isPWD', e.target.checked)}
+                      checked={formData.is_pwd}
+                      onChange={(e) => handleInputChange('is_pwd', e.target.checked)}
                       className="mr-2"
                     />
                     <span className="text-sm font-medium text-gray-700">Person with Disability</span>
@@ -495,8 +475,8 @@ export default function EditStudentPage() {
                   </label>
                   <Input
                     type="text"
-                    value={formData.stateOfOrigin}
-                    onChange={(e) => handleInputChange('stateOfOrigin', e.target.value)}
+                    value={formData.state_of_origin}
+                    onChange={(e) => handleInputChange('state_of_origin', e.target.value)}
                     required
                     placeholder="Enter state of origin"
                   />
@@ -507,8 +487,8 @@ export default function EditStudentPage() {
                   </label>
                   <Input
                     type="text"
-                    value={formData.localGovernment}
-                    onChange={(e) => handleInputChange('localGovernment', e.target.value)}
+                    value={formData.local_government}
+                    onChange={(e) => handleInputChange('local_government', e.target.value)}
                     required
                     placeholder="Enter local government"
                   />
@@ -536,8 +516,8 @@ export default function EditStudentPage() {
                   </label>
                   <Input
                     type="text"
-                    value={formData.emergencyContact}
-                    onChange={(e) => handleInputChange('emergencyContact', e.target.value)}
+                    value={formData.emergency_contact}
+                    onChange={(e) => handleInputChange('emergency_contact', e.target.value)}
                     required
                     placeholder="Enter emergency contact name"
                   />
@@ -548,8 +528,8 @@ export default function EditStudentPage() {
                   </label>
                   <Input
                     type="tel"
-                    value={formData.emergencyPhone}
-                    onChange={(e) => handleInputChange('emergencyPhone', e.target.value)}
+                    value={formData.emergency_phone}
+                    onChange={(e) => handleInputChange('emergency_phone', e.target.value)}
                     required
                     placeholder="Enter emergency contact phone"
                   />
@@ -587,76 +567,22 @@ export default function EditStudentPage() {
                     <option value="pending_verification">Pending Verification</option>
                   </select>
                 </div>
-                <div className="flex items-center">
-                  <label className="flex items-center">
-                    <input
-                      type="checkbox"
-                      checked={formData.isVerified}
-                      onChange={(e) => handleInputChange('isVerified', e.target.checked)}
-                      className="mr-2"
-                    />
-                    <span className="text-sm font-medium text-gray-700">Verified Account</span>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Nationality
                   </label>
+                  <Input
+                    type="text"
+                    value={formData.nationality}
+                    onChange={(e) => handleInputChange('nationality', e.target.value)}
+                    placeholder="Enter nationality"
+                  />
                 </div>
               </div>
             </CardContent>
           </Card>
 
-          {/* Hostel Allocation (Optional) */}
-          <Card className="mb-6">
-            <CardHeader>
-              <CardTitle className="flex items-center space-x-2">
-                <Building className="h-5 w-5" />
-                <span>Hostel Allocation (Optional)</span>
-              </CardTitle>
-              <CardDescription>
-                Assign student to a hostel room if available
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Hostel
-                  </label>
-                  <select
-                    value={formData.hostelId}
-                    onChange={(e) => handleInputChange('hostelId', e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
-                  >
-                    <option value="">Select Hostel</option>
-                    {hostels.map(hostel => (
-                      <option key={hostel.id} value={hostel.id}>
-                        {hostel.name} ({hostel.availableBeds} beds available)
-                      </option>
-                    ))}
-                  </select>
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Room Number
-                  </label>
-                  <Input
-                    type="text"
-                    value={formData.roomNumber}
-                    onChange={(e) => handleInputChange('roomNumber', e.target.value)}
-                    placeholder="Enter room number"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Bed Number
-                  </label>
-                  <Input
-                    type="text"
-                    value={formData.bedNumber}
-                    onChange={(e) => handleInputChange('bedNumber', e.target.value)}
-                    placeholder="Enter bed number"
-                  />
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+
 
           {/* Action Buttons */}
           <div className="flex justify-between items-center">

@@ -617,12 +617,14 @@ export const dashboardService = {
     }
   },
 
-  // Get students with pagination and filters - using student service endpoint
+  // Get students with pagination and filters - using admin dashboard endpoint
   async getStudents(params?: {
     page?: number
     limit?: number
     status?: string
+    faculty?: string
     department?: string
+    level?: string
     search?: string
   }): Promise<{ students: Student[], statistics: StudentStats, pagination: Pagination }> {
     try {
@@ -630,10 +632,12 @@ export const dashboardService = {
       if (params?.page) queryParams.append('page', params.page.toString())
       if (params?.limit) queryParams.append('limit', params.limit.toString())
       if (params?.status) queryParams.append('status', params.status)
+      if (params?.faculty) queryParams.append('faculty', params.faculty)
       if (params?.department) queryParams.append('department', params.department)
+      if (params?.level) queryParams.append('level', params.level)
       if (params?.search) queryParams.append('search', params.search)
 
-      const response = await apiClient.get<StudentsResponse>(`/students?${queryParams.toString()}`)
+      const response = await apiClient.get<StudentsResponse>(`/admin/dashboard/students?${queryParams.toString()}`)
       return response.data.data
     } catch (error) {
       console.error('Error fetching students:', error)
