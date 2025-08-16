@@ -6,7 +6,7 @@
 export const config = {
   // Backend API Configuration
   backend: {
-    baseUrl: process.env.NEXT_PUBLIC_BACKEND_API_URL || 'https://api.unnaccomodation.com',
+    baseUrl: process.env.NEXT_PUBLIC_BACKEND_API_URL || 'https://api.unnaccomodation.com/api/v1',
     timeout: parseInt(process.env.API_TIMEOUT || '30000'),
     retryAttempts: parseInt(process.env.API_RETRY_ATTEMPTS || '3'),
   },

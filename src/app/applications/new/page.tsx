@@ -271,8 +271,8 @@ export default function NewApplicationPage() {
                       </div>
                     </div>
                     <div className="mt-2">
-                      <Badge className={selectedWindow.isPublished ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'}>
-                        {selectedWindow.isPublished ? 'Published' : 'Draft'}
+                      <Badge className={selectedWindow.status === 'active' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'}>
+                        {selectedWindow.status === 'active' ? 'Active' : 'Draft'}
                       </Badge>
                     </div>
                   </div>

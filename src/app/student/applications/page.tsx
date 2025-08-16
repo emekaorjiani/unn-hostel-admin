@@ -2,13 +2,13 @@
 
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import { Plus, Filter, Search, Eye, Clock, CheckCircle, XCircle, AlertTriangle } from 'lucide-react'
+import { Plus, Clock, CheckCircle, XCircle, AlertTriangle, Building2, Calendar, FileText } from 'lucide-react'
 import { studentService, StudentApplication } from '@/lib/studentService'
 import StudentHeader from '@/components/layout/student-header'
-import { QuickActions } from '@/components/ui/quick-actions'
+import QuickActions from '@/components/ui/quick-actions'
 
 export default function StudentApplicationsPage() {
   const router = useRouter()
@@ -99,7 +99,7 @@ export default function StudentApplicationsPage() {
       <div className="pt-16 max-w-7xl mx-auto px-4 py-8">
         {/* Quick Actions - Fixed at top */}
         <div className="mb-6">
-          <QuickActions showAllActions={false} />
+          <QuickActions />
         </div>
         
         <div className="space-y-6">

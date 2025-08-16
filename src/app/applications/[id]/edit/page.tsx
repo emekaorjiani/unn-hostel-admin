@@ -11,14 +11,10 @@ import {
   ArrowLeft, 
   Save, 
   Building, 
-  User, 
   Calendar,
   AlertCircle,
   CheckCircle,
-  Clock,
-  Trash2,
-  Check
-} from 'lucide-react'
+  Clock} from 'lucide-react'
 import DashboardLayout from '@/components/layout/dashboard-layout'
 import { apiClient } from '@/lib/api'
 import { safeLocalStorage } from '@/lib/utils'
@@ -476,8 +472,8 @@ export default function EditApplicationPage() {
                       </div>
                     </div>
                     <div className="mt-2">
-                      <Badge className={selectedWindow.isPublished ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'}>
-                        {selectedWindow.isPublished ? 'Published' : 'Draft'}
+                      <Badge className={selectedWindow.status === 'active' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'}>
+                        {selectedWindow.status === 'active' ? 'Active' : 'Draft'}
                       </Badge>
                     </div>
                   </div>
@@ -512,7 +508,7 @@ export default function EditApplicationPage() {
                     <option value="">Select a hostel</option>
                     {hostels.map((hostel) => (
                       <option key={hostel.id} value={hostel.id}>
-                        {hostel.name} ({hostel.availableBeds} beds available)
+                        {hostel.name} ({(hostel as any).availableBeds || 0} beds available)
                       </option>
                     ))}
                   </select>
@@ -528,11 +524,11 @@ export default function EditApplicationPage() {
                     <div className="grid grid-cols-3 gap-4 text-sm">
                       <div>
                         <span className="text-green-600">Capacity:</span>
-                        <span className="ml-2 text-green-900">{selectedHostel.capacity}</span>
+                        <span className="ml-2 text-green-900">{(selectedHostel as any).capacity || 0}</span>
                       </div>
                       <div>
                         <span className="text-green-600">Available:</span>
-                        <span className="ml-2 text-green-900">{selectedHostel.availableBeds}</span>
+                        <span className="ml-2 text-green-900">{(selectedHostel as any).availableBeds || 0}</span>
                       </div>
                       <div>
                         <span className="text-green-600">Address:</span>
