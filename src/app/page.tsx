@@ -159,7 +159,7 @@ const galleryData = [
     description: 'State-of-the-art amenities',
     height: 'h-56',
     delay: 0.9
-  }
+  },
   {
     id: 11,
     src: '/unn10.webp',
