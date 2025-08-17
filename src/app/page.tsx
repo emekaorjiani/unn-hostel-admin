@@ -69,7 +69,118 @@ const TypewriterText = ({ text, delay = 0, speed = 50 }: { text: string; delay?:
 const libraryImages = [
   '/library-1.jpg',
   '/library2.jpg',
-  
+]
+
+// Gallery data for dynamic rendering
+const galleryData = [
+  {
+    id: 1,
+    src: '/images/mellanby.jpg',
+    alt: 'Mellanby Hall',
+    title: 'Mellanby Hall',
+    description: 'Historic academic building',
+    height: 'h-80',
+    delay: 0
+  },
+  {
+    id: 2,
+    src: '/images/zik-hall.jpg',
+    alt: 'Zik Hall',
+    title: 'Zik Hall',
+    description: 'Student accommodation facility',
+    height: 'h-64',
+    delay: 0.1
+  },
+  {
+    id: 3,
+    src: '/images/kuti-hall.jpg',
+    alt: 'Kuti Hall',
+    title: 'Kuti Hall',
+    description: 'Modern hostel complex',
+    height: 'h-56',
+    delay: 0.2
+  },
+  {
+    id: 4,
+    src: '/images/mariere-hall.jpg',
+    alt: 'Mariere Hall',
+    title: 'Mariere Hall',
+    description: 'Student residential hall',
+    height: 'h-48',
+    delay: 0.3
+  },
+  {
+    id: 5,
+    src: '/images/alvan-ikoku.jpg',
+    alt: 'Alvan Ikoku Hall',
+    title: 'Alvan Ikoku Hall',
+    description: 'Academic excellence center',
+    height: 'h-96',
+    delay: 0.4
+  },
+  {
+    id: 6,
+    src: '/images/eni-njoku.jpg',
+    alt: 'Eni Njoku Hall',
+    title: 'Eni Njoku Hall',
+    description: 'Student living quarters',
+    height: 'h-72',
+    delay: 0.5
+  },
+  {
+    id: 7,
+    src: '/library-1.jpg',
+    alt: 'Library Building',
+    title: 'Main Library',
+    description: 'Knowledge and learning hub',
+    height: 'h-60',
+    delay: 0.6
+  },
+  {
+    id: 8,
+    src: '/library2.jpg',
+    alt: 'Library Interior',
+    title: 'Library Interior',
+    description: 'Study and research space',
+    height: 'h-52',
+    delay: 0.7
+  },
+  {
+    id: 9,
+    src: '/images/hero-1.jpg',
+    alt: 'Campus View',
+    title: 'Campus View',
+    description: 'Beautiful campus landscape',
+    height: 'h-68',
+    delay: 0.8
+  },
+  {
+    id: 10,
+    src: '/images/hero-2.jpg',
+    alt: 'Academic Building',
+    title: 'Academic Building',
+    description: 'Modern learning facilities',
+    height: 'h-64',
+    delay: 0.9
+  },
+  {
+    id: 11,
+    src: '/images/hero-3.jpg',
+    alt: 'Student Life',
+    title: 'Student Life',
+    description: 'Vibrant campus atmosphere',
+    height: 'h-80',
+    delay: 1.0
+  },
+  {
+    id: 12,
+    src: '/placeholder.png',
+    alt: 'Campus Facilities',
+    title: 'Campus Facilities',
+    description: 'State-of-the-art amenities',
+    height: 'h-56',
+    delay: 1.1
+  }
 ]
 
 export default function LandingPage() {
@@ -830,196 +941,33 @@ export default function LandingPage() {
             </motion.p>
           </motion.div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {/* Library Images */}
-            <motion.div 
-              className="group cursor-pointer"
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6, ease: "easeOut" }}
-              whileHover={{ y: -5 }}
-            >
-              <div className="relative overflow-hidden rounded-xl shadow-lg group-hover:shadow-xl transition-all duration-300">
-                <motion.img
-                  src="/images/mellanby.jpg"
-                  alt="Mellanby Hall"
-                  className="w-full h-64 object-cover group-hover:scale-105 transition-transform duration-300"
-                  whileHover={{ scale: 1.05 }}
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent"></div>
-                <div className="absolute bottom-0 left-0 right-0 p-6">
-                  <h3 className="text-xl font-bold text-white mb-2">Mellanby Hall</h3>
-                  <p className="text-gray-200 text-sm">Historic academic building</p>
+          {/* Dynamic Gallery Grid with Varying Sizes */}
+          <div className="columns-1 md:columns-2 lg:columns-3 gap-6 space-y-6">
+            {galleryData.map((item) => (
+              <motion.div 
+                key={item.id}
+                className="group cursor-pointer break-inside-avoid mb-6"
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: item.delay, ease: "easeOut" }}
+                whileHover={{ y: -5 }}
+              >
+                <div className="relative overflow-hidden rounded-xl shadow-lg group-hover:shadow-xl transition-all duration-300">
+                  <motion.img
+                    src={item.src}
+                    alt={item.alt}
+                    className={`w-full ${item.height} object-cover group-hover:scale-105 transition-transform duration-300`}
+                    whileHover={{ scale: 1.05 }}
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent"></div>
+                  <div className="absolute bottom-0 left-0 right-0 p-6">
+                    <h3 className="text-xl font-bold text-white mb-2">{item.title}</h3>
+                    <p className="text-gray-200 text-sm">{item.description}</p>
+                  </div>
                 </div>
-              </div>
-            </motion.div>
-
-            <div className="group cursor-pointer">
-              <div className="relative overflow-hidden rounded-md shadow-lg group-hover:shadow-xl transition-all duration-300">
-                <img
-                  src="/images/zik-hall.jpg"
-                  alt="Zik Hall"
-                  className="w-full h-64 object-cover group-hover:scale-105 transition-transform duration-300"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent"></div>
-                <div className="absolute bottom-0 left-0 right-0 p-6">
-                  <h3 className="text-xl font-bold text-white mb-2">Zik Hall</h3>
-                  <p className="text-gray-200 text-sm">Student accommodation facility</p>
-                </div>
-              </div>
-            </div>
-
-            <div className="group cursor-pointer">
-              <div className="relative overflow-hidden rounded-md shadow-lg group-hover:shadow-xl transition-all duration-300">
-                <img
-                  src="/images/kuti-hall.jpg"
-                  alt="Kuti Hall"
-                  className="w-full h-64 object-cover group-hover:scale-105 transition-transform duration-300"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent"></div>
-                <div className="absolute bottom-0 left-0 right-0 p-6">
-                  <h3 className="text-xl font-bold text-white mb-2">Kuti Hall</h3>
-                  <p className="text-gray-200 text-sm">Modern hostel complex</p>
-                </div>
-              </div>
-            </div>
-
-            <div className="group cursor-pointer">
-              <div className="relative overflow-hidden rounded-md shadow-lg group-hover:shadow-xl transition-all duration-300">
-                <img
-                  src="/images/mariere-hall.jpg"
-                  alt="Mariere Hall"
-                  className="w-full h-64 object-cover group-hover:scale-105 transition-transform duration-300"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent"></div>
-                <div className="absolute bottom-0 left-0 right-0 p-6">
-                  <h3 className="text-xl font-bold text-white mb-2">Mariere Hall</h3>
-                  <p className="text-gray-200 text-sm">Student residential hall</p>
-                </div>
-              </div>
-            </div>
-
-            <div className="group cursor-pointer">
-              <div className="relative overflow-hidden rounded-md shadow-lg group-hover:shadow-xl transition-all duration-300">
-                <img
-                  src="/images/alvan-ikoku.jpg"
-                  alt="Alvan Ikoku Hall"
-                  className="w-full h-64 object-cover group-hover:scale-105 transition-transform duration-300"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent"></div>
-                <div className="absolute bottom-0 left-0 right-0 p-6">
-                  <h3 className="text-xl font-bold text-white mb-2">Alvan Ikoku Hall</h3>
-                  <p className="text-gray-200 text-sm">Academic excellence center</p>
-                </div>
-              </div>
-            </div>
-
-            <div className="group cursor-pointer">
-              <div className="relative overflow-hidden rounded-md shadow-lg group-hover:shadow-xl transition-all duration-300">
-                <img
-                  src="/images/eni-njoku.jpg"
-                  alt="Eni Njoku Hall"
-                  className="w-full h-64 object-cover group-hover:scale-105 transition-transform duration-300"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent"></div>
-                <div className="absolute bottom-0 left-0 right-0 p-6">
-                  <h3 className="text-xl font-bold text-white mb-2">Eni Njoku Hall</h3>
-                  <p className="text-gray-200 text-sm">Student living quarters</p>
-                </div>
-              </div>
-            </div>
-
-            {/* Additional Images from Public Folder */}
-            <div className="group cursor-pointer">
-              <div className="relative overflow-hidden rounded-md shadow-lg group-hover:shadow-xl transition-all duration-300">
-                <img
-                  src="/library-1.jpg"
-                  alt="Library Building"
-                  className="w-full h-64 object-cover group-hover:scale-105 transition-transform duration-300"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent"></div>
-                <div className="absolute bottom-0 left-0 right-0 p-6">
-                  <h3 className="text-xl font-bold text-white mb-2">Main Library</h3>
-                  <p className="text-gray-200 text-sm">Knowledge and learning hub</p>
-                </div>
-              </div>
-            </div>
-
-            <div className="group cursor-pointer">
-              <div className="relative overflow-hidden rounded-md shadow-lg group-hover:shadow-xl transition-all duration-300">
-                <img
-                  src="/library2.jpg"
-                  alt="Library Interior"
-                  className="w-full h-64 object-cover group-hover:scale-105 transition-transform duration-300"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent"></div>
-                <div className="absolute bottom-0 left-0 right-0 p-6">
-                  <h3 className="text-xl font-bold text-white mb-2">Library Interior</h3>
-                  <p className="text-gray-200 text-sm">Study and research space</p>
-                </div>
-              </div>
-            </div>
-
-            <div className="group cursor-pointer">
-              <div className="relative overflow-hidden rounded-md shadow-lg group-hover:shadow-xl transition-all duration-300">
-                <img
-                  src="/images/hero-1.jpg"
-                  alt="Campus View"
-                  className="w-full h-64 object-cover group-hover:scale-105 transition-transform duration-300"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent"></div>
-                <div className="absolute bottom-0 left-0 right-0 p-6">
-                  <h3 className="text-xl font-bold text-white mb-2">Campus View</h3>
-                  <p className="text-gray-200 text-sm">Beautiful campus landscape</p>
-                </div>
-              </div>
-            </div>
-
-            <div className="group cursor-pointer">
-              <div className="relative overflow-hidden rounded-md shadow-lg group-hover:shadow-xl transition-all duration-300">
-                <img
-                  src="/images/hero-2.jpg"
-                  alt="Academic Building"
-                  className="w-full h-64 object-cover group-hover:scale-105 transition-transform duration-300"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent"></div>
-                <div className="absolute bottom-0 left-0 right-0 p-6">
-                  <h3 className="text-xl font-bold text-white mb-2">Academic Building</h3>
-                  <p className="text-gray-200 text-sm">Modern learning facilities</p>
-                </div>
-              </div>
-            </div>
-
-            <div className="group cursor-pointer">
-              <div className="relative overflow-hidden rounded-md shadow-lg group-hover:shadow-xl transition-all duration-300">
-                <img
-                  src="/images/hero-3.jpg"
-                  alt="Student Life"
-                  className="w-full h-64 object-cover group-hover:scale-105 transition-transform duration-300"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent"></div>
-                <div className="absolute bottom-0 left-0 right-0 p-6">
-                  <h3 className="text-xl font-bold text-white mb-2">Student Life</h3>
-                  <p className="text-gray-200 text-sm">Vibrant campus atmosphere</p>
-                </div>
-              </div>
-            </div>
-
-            <div className="group cursor-pointer">
-              <div className="relative overflow-hidden rounded-md shadow-lg group-hover:shadow-xl transition-all duration-300">
-                <img
-                  src="/placeholder.png"
-                  alt="Campus Facilities"
-                  className="w-full h-64 object-cover group-hover:scale-105 transition-transform duration-300"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent"></div>
-                <div className="absolute bottom-0 left-0 right-0 p-6">
-                  <h3 className="text-xl font-bold text-white mb-2">Campus Facilities</h3>
-                  <p className="text-gray-200 text-sm">State-of-the-art amenities</p>
-                </div>
-              </div>
-            </div>
+              </motion.div>
+            ))}
           </div>
         </div>
       </section>
