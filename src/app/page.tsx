@@ -72,111 +72,102 @@ const libraryImages = [
 const galleryData = [
   {
     id: 1,
-    src: '/images/mellanby.jpg',
-    alt: 'Mellanby Hall',
-    title: 'Mellanby Hall',
-    description: 'Historic academic building',
+    src: '/unn1.jpeg',
+    alt: 'UNN Campus View 1',
+    title: 'UNN Campus View 1',
+    description: 'Beautiful campus landscape',
     height: 'h-80',
     delay: 0
   },
   {
     id: 2,
-    src: '/images/zik-hall.jpg',
-    alt: 'Zik Hall',
-    title: 'Zik Hall',
-    description: 'Student accommodation facility',
+    src: '/unn2.jpg',
+    alt: 'UNN Campus View 2',
+    title: 'UNN Campus View 2',
+    description: 'Academic excellence center',
     height: 'h-64',
     delay: 0.1
   },
   {
     id: 3,
-    src: '/images/kuti-hall.jpg',
-    alt: 'Kuti Hall',
-    title: 'Kuti Hall',
-    description: 'Modern hostel complex',
+    src: '/unn3.jpg',
+    alt: 'UNN Campus View 3',
+    title: 'UNN Campus View 3',
+    description: 'Modern learning facilities',
     height: 'h-56',
     delay: 0.2
   },
   {
     id: 4,
-    src: '/images/mariere-hall.jpg',
-    alt: 'Mariere Hall',
-    title: 'Mariere Hall',
-    description: 'Student residential hall',
+    src: '/unn4.jpeg',
+    alt: 'UNN Campus View 4',
+    title: 'UNN Campus View 4',
+    description: 'Student residential area',
     height: 'h-48',
     delay: 0.3
   },
   {
     id: 5,
-    src: '/images/alvan-ikoku.jpg',
-    alt: 'Alvan Ikoku Hall',
-    title: 'Alvan Ikoku Hall',
-    description: 'Academic excellence center',
+    src: '/unn5.jpg',
+    alt: 'UNN Campus View 5',
+    title: 'UNN Campus View 5',
+    description: 'Historic academic building',
     height: 'h-96',
     delay: 0.4
   },
   {
     id: 6,
-    src: '/images/eni-njoku.jpg',
-    alt: 'Eni Njoku Hall',
-    title: 'Eni Njoku Hall',
+    src: '/unn6.jpeg',
+    alt: 'UNN Campus View 6',
+    title: 'UNN Campus View 6',
     description: 'Student living quarters',
     height: 'h-72',
     delay: 0.5
   },
   {
     id: 7,
-    src: '/library-1.jpg',
-    alt: 'Library Building',
-    title: 'Main Library',
+    src: '/unn7.jpg',
+    alt: 'UNN Campus View 7',
+    title: 'UNN Campus View 7',
     description: 'Knowledge and learning hub',
     height: 'h-60',
     delay: 0.6
   },
   {
     id: 8,
-    src: '/library2.jpg',
-    alt: 'Library Interior',
-    title: 'Library Interior',
+    src: '/unn8.jpeg',
+    alt: 'UNN Campus View 8',
+    title: 'UNN Campus View 8',
     description: 'Study and research space',
     height: 'h-52',
     delay: 0.7
   },
   {
     id: 9,
-    src: '/images/hero-1.jpg',
-    alt: 'Campus View',
-    title: 'Campus View',
-    description: 'Beautiful campus landscape',
+    src: '/unn9.jpeg',
+    alt: 'UNN Campus View 9',
+    title: 'UNN Campus View 9',
+    description: 'Vibrant campus atmosphere',
     height: 'h-68',
     delay: 0.8
   },
   {
     id: 10,
-    src: '/images/hero-2.jpg',
-    alt: 'Academic Building',
-    title: 'Academic Building',
-    description: 'Modern learning facilities',
-    height: 'h-64',
-    delay: 0.9
-  },
-  {
-    id: 11,
-    src: '/images/hero-3.jpg',
-    alt: 'Student Life',
-    title: 'Student Life',
-    description: 'Vibrant campus atmosphere',
-    height: 'h-80',
-    delay: 1.0
-  },
-  {
-    id: 12,
-    src: '/placeholder.png',
-    alt: 'Campus Facilities',
-    title: 'Campus Facilities',
+    src: '/unn10.webp',
+    alt: 'UNN Campus View 10',
+    title: 'UNN Campus View 10',
     description: 'State-of-the-art amenities',
     height: 'h-56',
-    delay: 1.1
+    delay: 0.9
+  }
+  {
+    id: 11,
+    src: '/unn10.webp',
+    alt: 'UNN Campus View 10',
+    title: 'UNN Campus View 11',
+    description: 'State-of-the-art amenities',
+    height: 'h-56',
+    delay: 0.9
   }
 ]
 
@@ -469,7 +460,7 @@ export default function LandingPage() {
                   transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
                 >
                   <img
-                    src="/images/mellanby.jpg"
+                    src="/unn1.jpeg"
                     alt="UNN Campus"
                     className="w-full h-96 object-cover"
                     style={{
@@ -571,7 +562,7 @@ export default function LandingPage() {
                   transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
                 >
                   <img
-                    src="/images/zik-hall.jpg"
+                    src="/unn2.jpg"
                     alt="UNN Campus Excellence"
                     className="w-full h-96 object-cover"
                     style={{
