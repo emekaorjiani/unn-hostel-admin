@@ -196,7 +196,7 @@ export default function LandingPage() {
       <LandingNav />
       
       {/* Hero Section with Background Slider */}
-      <section className="relative h-[87svh] flex items-center overflow-hidden">
+      <section id="home" className="relative h-[87svh] flex items-center overflow-hidden">
         {/* Background Images */}
         {libraryImages.map((image, index) => (
           <div
@@ -362,7 +362,7 @@ export default function LandingPage() {
       </section>
 
       {/* About UNN Section */}
-      <section className="py-20 bg-white">
+      <section id="about" className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
             {/* Left Column - Text Content */}
@@ -531,7 +531,7 @@ export default function LandingPage() {
       </section>
 
       {/* Statistics Banner Section */}
-      <section className="py-20 bg-green-800">
+      <section id="statistics" className="py-20 bg-green-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
             {/* Left Column - Image with Clip-path */}
@@ -692,7 +692,7 @@ export default function LandingPage() {
       </section>
 
       {/* Service Categories Section */}
-      <section className="py-20 bg-white">
+      <section id="services" className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Header */}
           <motion.div 
@@ -829,7 +829,8 @@ export default function LandingPage() {
         </div>
       </section>
 
-      <section className="py-20 bg-green-800">
+      {/* Statistics Numbers Section */}
+      <section id="numbers" className="py-20 bg-green-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8 text-center">
             <motion.div
@@ -909,7 +910,7 @@ export default function LandingPage() {
       </section>
 
       {/* Gallery Section */}
-      <section className="py-20 bg-gray-50">
+      <section id="gallery" className="py-20 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div 
             className="text-center mb-16"
@@ -970,7 +971,7 @@ export default function LandingPage() {
       </section>
 
       {/* Features Section */}
-      <section className="py-20 bg-green-900 text-white">
+      <section id="features" className="py-20 bg-green-900 text-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
@@ -1021,7 +1022,7 @@ export default function LandingPage() {
       </section>
 
       {/* News and Blog Section */}
-      <section className="py-20 bg-white">
+      <section id="news" className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Section Header */}
           <motion.div 

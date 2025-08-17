@@ -24,6 +24,26 @@ const LandingNav: React.FC<LandingNavProps> = ({
     setIsMobileMenuOpen(!isMobileMenuOpen);
   };
 
+  const scrollToSection = (sectionId: string) => {
+    const element = document.getElementById(sectionId);
+    if (element) {
+      element.scrollIntoView({ 
+        behavior: 'smooth',
+        block: 'start'
+      });
+    }
+    setIsMobileMenuOpen(false);
+  };
+
+  const navItems = [
+    { id: 'home', label: 'Home' },
+    { id: 'about', label: 'About' },
+    { id: 'services', label: 'Services' },
+    { id: 'gallery', label: 'Gallery' },
+    { id: 'features', label: 'Features' },
+    { id: 'news', label: 'News' }
+  ];
+
   return (
     <header className={`${navClasses} sticky top-0 relative z-50 transition-all duration-300`}>
       <div className="container mx-auto px-4 py-4">
@@ -52,20 +72,33 @@ const LandingNav: React.FC<LandingNavProps> = ({
               </div>
             </div>
           </Link>
+
+          {/* Desktop Navigation Menu */}
+          <nav className="hidden lg:flex items-center space-x-8">
+            {navItems.map((item) => (
+              <button
+                key={item.id}
+                onClick={() => scrollToSection(item.id)}
+                className="text-white hover:text-yellow-300 transition-colors duration-200 font-medium text-sm uppercase tracking-wide"
+              >
+                {item.label}
+              </button>
+            ))}
+          </nav>
           
-          {/* Desktop Navigation */}
+          {/* Desktop Navigation Buttons */}
           {showButtons && (
             <div className="hidden md:flex space-x-4">
               <Button 
                 variant="default" 
-                className="bg-yellow-500 hover:bg-yellow-600 text-white font-semibold px-6 py-2"
+                className="bg-yellow-500 hover:bg-yellow-600 text-black font-semibold px-6 py-2"
                 onClick={() => window.location.href = '/student/auth/login'}
               >
                 Student Login
               </Button>
               <Button 
                 variant="outline" 
-                className="border-white bg-green-500 text-white hover:bg-white hover:text-green-700 font-semibold px-6 py-2"
+                className="bg-green-700 hover:bg-green-800 text-white border-white hover:border-white font-semibold px-6 py-2"
                 onClick={() => window.location.href = '/auth/login'}
               >
                 Admin Login
@@ -77,7 +110,7 @@ const LandingNav: React.FC<LandingNavProps> = ({
           {showButtons && (
             <button
               onClick={toggleMobileMenu}
-              className="md:hidden p-2 rounded-md text-white hover:bg-white/10 transition-colors"
+              className="lg:hidden p-2 rounded-md text-white hover:bg-white/10 transition-colors"
               aria-label="Toggle mobile menu"
             >
               {isMobileMenuOpen ? (
@@ -92,13 +125,27 @@ const LandingNav: React.FC<LandingNavProps> = ({
         {/* Mobile Navigation Menu */}
         {isMobileMenuOpen && showButtons && (
           <motion.div 
-            className="md:hidden mt-4 pb-4 border-t border-white/20"
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: 'auto' }}
-            exit={{ opacity: 0, height: 0 }}
+            className="lg:hidden mt-4 pb-4 border-t border-white/20 h-screen"
+            initial={{ opacity: 0, x: 100 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: 100 }}
             transition={{ duration: 0.3, ease: "easeOut" }}
           >
-            <div className="flex flex-col space-y-3 pt-4">
+            {/* Mobile Navigation Links */}
+            <nav className="flex flex-col space-y-3 pt-4 mb-4">
+              {navItems.map((item) => (
+                <button
+                  key={item.id}
+                  onClick={() => scrollToSection(item.id)}
+                  className="text-left text-white hover:text-yellow-300 transition-colors duration-200 font-medium py-2 px-4 rounded-md hover:bg-white/10"
+                >
+                  {item.label}
+                </button>
+              ))}
+            </nav>
+
+            {/* Mobile Login Buttons */}
+            <div className="flex flex-col space-y-3 pt-4 border-t border-white/20">
               <Button 
                 variant="default" 
                 className="bg-yellow-500 hover:bg-yellow-600 text-black font-semibold w-full py-3"
@@ -111,7 +158,7 @@ const LandingNav: React.FC<LandingNavProps> = ({
               </Button>
               <Button 
                 variant="outline" 
-                className="border-white bg-green-500 text-white hover:bg-white hover:text-green-700 font-semibold w-full py-3"
+                className="bg-green-700 hover:bg-green-800 text-white border-white hover:border-white font-semibold w-full py-3"
                 onClick={() => {
                   window.location.href = '/auth/login';
                   setIsMobileMenuOpen(false);
