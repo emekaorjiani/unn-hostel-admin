@@ -4,6 +4,7 @@ import { Button } from '../ui/button';
 import Link from 'next/link';
 import { Menu, X } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { useRouter, usePathname } from 'next/navigation';
 
 interface LandingNavProps {
   variant?: 'default' | 'transparent';
@@ -15,6 +16,8 @@ const LandingNav: React.FC<LandingNavProps> = ({
   showButtons = true 
 }) => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const router = useRouter();
+  const pathname = usePathname();
   
   const navClasses = variant === 'transparent' 
     ? 'bg-transparent text-white' 
@@ -25,12 +28,18 @@ const LandingNav: React.FC<LandingNavProps> = ({
   };
 
   const scrollToSection = (sectionId: string) => {
-    const element = document.getElementById(sectionId);
-    if (element) {
-      element.scrollIntoView({ 
-        behavior: 'smooth',
-        block: 'start'
-      });
+    // If we're not on the landing page, navigate there first
+    if (pathname !== '/') {
+      router.push(`/#${sectionId}`);
+    } else {
+      // If already on landing page, just scroll to section
+      const element = document.getElementById(sectionId);
+      if (element) {
+        element.scrollIntoView({ 
+          behavior: 'smooth',
+          block: 'start'
+        });
+      }
     }
     setIsMobileMenuOpen(false);
   };
@@ -91,7 +100,7 @@ const LandingNav: React.FC<LandingNavProps> = ({
             <div className="hidden md:flex space-x-4">
               <Button 
                 variant="default" 
-                className="bg-yellow-500 hover:bg-yellow-600 text-black font-semibold px-6 py-2"
+                className="bg-yellow-500 hover:bg-yellow-600 text-white font-semibold px-6 py-2"
                 onClick={() => window.location.href = '/student/auth/login'}
               >
                 Student Login
@@ -148,7 +157,7 @@ const LandingNav: React.FC<LandingNavProps> = ({
             <div className="flex flex-col space-y-3 pt-4 border-t border-white/20">
               <Button 
                 variant="default" 
-                className="bg-yellow-500 hover:bg-yellow-600 text-black font-semibold w-full py-3"
+                className="bg-yellow-500 hover:bg-yellow-600 text-white font-semibold w-full py-3"
                 onClick={() => {
                   window.location.href = '/student/auth/login';
                   setIsMobileMenuOpen(false);

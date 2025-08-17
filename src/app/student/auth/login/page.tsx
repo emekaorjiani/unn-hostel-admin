@@ -10,6 +10,7 @@ import { Input } from '../../../../components/ui/input'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../../../../components/ui/card'
 import LandingNav from '../../../../components/layout/landing-nav'
 import { authService, MatricLoginCredentials } from '../../../../lib/auth'
+import { Loader2 } from 'lucide-react'
 
 // Student login form validation schema
 const studentLoginSchema = z.object({
@@ -54,65 +55,60 @@ export default function StudentLoginPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-50 to-emerald-100">
+    <div className="min-h-screen bg-gradient-to-br from-green-50 via-emerald-50 to-teal-50">
       <LandingNav showButtons={true} />
       
       <div className="flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-md w-full space-y-8">
-          {/* Back to Home Link */}
-          <div className="text-center">
-            <Button
-              variant="ghost"
-              className="text-green-600 hover:text-green-700 hover:bg-green-50"
-              onClick={() => window.location.href = '/'}
-            >
-              ← Back to Home
-            </Button>
-          </div>
-          
-          {/* Header */}
-          <div className="text-center">
-            <div className="mx-auto h-16 w-16 bg-green-600 rounded-full flex items-center justify-center mb-4">
-              <svg className="h-8 w-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z" />
-              </svg>
-            </div>
-            <h1 className="text-3xl font-bold text-gray-900">UNN Student Portal</h1>
-            <p className="mt-2 text-sm text-gray-600">
-              Access your hostel application and student services
-            </p>
-          </div>
+        <div className="max-w-md w-full">
+          {/* Main Login Card - Everything Inside */}
+          <Card className="shadow-2xl border-0 bg-white overflow-hidden">
+            <CardContent className="p-8">
+            <div className="flex justify-center mb-6">
+                <div className="w-16 h-16 bg-green-900 to-emerald-700 rounded-full flex items-center justify-center shadow-lg">
+                  <img 
+                    src="/unn.png" 
+                    alt="UNN Logo" 
+                    className="h-10 w-10 object-contain"
+                  />
+                </div>
+              </div>
+              
+              <div className="text-center mb-8">
+                <h2 className="text-xl font-semibold text-gray-800 mb-2">
+                  Student Sign In
+                </h2>
+                <p className="text-gray-600 text-sm leading-relaxed">
+                  Ready to access your hostel application and student services? 
+                  <br />
+                  <span className="text-green-600 font-medium">Let's get you signed in.</span>
+                </p>
+              </div>
 
-          {/* Login Card */}
-          <Card className="shadow-xl">
-            <CardHeader>
-              <CardTitle>Student Sign In</CardTitle>
-              <CardDescription>
-                Enter your matric number and password to access your account
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+              <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
                 {/* Matric Number Field */}
-                <div>
-                  <label htmlFor="matricNumber" className="block text-sm font-medium text-gray-700 mb-1">
+                <div className="space-y-2">
+                  <label htmlFor="matricNumber" className="block text-sm font-medium text-gray-700">
                     Matric Number
                   </label>
                   <Input
                     id="matricNumber"
                     type="text"
                     {...register('matricNumber')}
-                    placeholder="2021/123456"
+                    placeholder="e.g., 2021/123456"
                     disabled={isLoading}
+                    className="h-12 border-gray-300 focus:border-green-500 focus:ring-green-500 transition-all duration-200"
                   />
                   {errors.matricNumber && (
-                    <p className="mt-1 text-sm text-red-600">{errors.matricNumber.message}</p>
+                    <p className="text-sm text-red-600 flex items-center">
+                      <span className="w-1.5 h-1.5 bg-red-500 rounded-full mr-2"></span>
+                      {errors.matricNumber.message}
+                    </p>
                   )}
                 </div>
 
                 {/* Password Field */}
-                <div>
-                  <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
+                <div className="space-y-2">
+                  <label htmlFor="password" className="block text-sm font-medium text-gray-700">
                     Password
                   </label>
                   <Input
@@ -121,46 +117,55 @@ export default function StudentLoginPage() {
                     {...register('password')}
                     placeholder="Enter your password"
                     disabled={isLoading}
+                    className="h-12 border-gray-300 focus:border-green-500 focus:ring-green-500 transition-all duration-200"
                   />
                   {errors.password && (
-                    <p className="mt-1 text-sm text-red-600">{errors.password.message}</p>
+                    <p className="text-sm text-red-600 flex items-center">
+                      <span className="w-1.5 h-1.5 bg-red-500 rounded-full mr-2"></span>
+                      {errors.password.message}
+                    </p>
                   )}
                 </div>
 
                 {/* Error Message */}
                 {error && (
-                  <div className="bg-red-50 border border-red-200 rounded-md p-3">
-                    <p className="text-sm text-red-600">{error}</p>
+                  <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+                    <div className="flex items-center">
+                      <div className="w-2 h-2 bg-red-500 rounded-full mr-3"></div>
+                      <p className="text-sm text-red-700">{error}</p>
+                    </div>
                   </div>
                 )}
 
                 {/* Submit Button */}
                 <Button
                   type="submit"
-                  className="w-full bg-green-600 hover:bg-green-700"
+                  className="w-full h-12 bg-green-600 hover:green-500 text-white text-lg rounded-lg shadow-lg hover:shadow-xl transition-all duration-300"
                   disabled={isLoading}
                 >
-                  {isLoading ? 'Signing in...' : 'Sign In'}
+                  {isLoading ? (
+                    <div className="flex items-center justify-center">
+                      <Loader2 className="text-white animation-spin" />
+                    </div>
+                  ) : (
+                    'Sign In'
+                  )}
                 </Button>
               </form>
 
-              {/* Demo Credentials */}
-              {/* <div className="mt-6 p-4 bg-green-50 border border-green-200 rounded-md">
-                <h4 className="text-sm font-medium text-green-900 mb-2">Demo Credentials</h4>
-                <p className="text-xs text-green-700">
-                  Matric Number: 2021/123456<br />
-                  Password: password123
-                </p>
-              </div> */}
+              {/* Helpful Note */}
+              <div className="mt-8 pt-6 border-t border-gray-100">
+                <div className="text-center">
+                  <p className="text-xs text-gray-500 mb-2">
+                    Need help? Our support team is here for you
+                  </p>
+                  <button className="text-sm text-green-600 hover:text-green-700 font-medium transition-colors">
+                    Get Support
+                  </button>
+                </div>
+              </div>
             </CardContent>
           </Card>
-
-          {/* Footer */}
-          <div className="text-center">
-            <p className="text-xs text-gray-500">
-              © 2024 University of Nigeria, Nsukka. All rights reserved.
-            </p>
-          </div>
         </div>
       </div>
     </div>

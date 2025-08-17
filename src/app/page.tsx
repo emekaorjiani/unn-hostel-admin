@@ -191,6 +191,25 @@ export default function LandingPage() {
     return () => clearInterval(interval)
   }, [])
 
+  // Handle hash-based navigation for smooth scrolling from other routes
+  useEffect(() => {
+    // Check if there's a hash in the URL
+    if (typeof window !== 'undefined' && window.location.hash) {
+      const hash = window.location.hash.substring(1) // Remove the # symbol
+      const element = document.getElementById(hash)
+      
+      if (element) {
+        // Small delay to ensure the page is fully rendered
+        setTimeout(() => {
+          element.scrollIntoView({ 
+            behavior: 'smooth',
+            block: 'start'
+          })
+        }, 100)
+      }
+    }
+  }, []) // Run only once on component mount
+
   return (
     <div className="min-h-screen bg-black">
       <LandingNav />
