@@ -3,13 +3,11 @@
 import { useState, useEffect } from 'react'
 import { Button } from '../components/ui/button'
 import LandingNav from '../components/layout/landing-nav'
-import { motion, AnimatePresence } from 'motion/react'
+import { motion } from 'motion/react'
 import { 
   Wifi, 
   Shield, 
   Utensils, 
-  ChevronLeft,
-  ChevronRight,
   MapPin,
   Phone,
   Mail,
@@ -17,7 +15,6 @@ import {
   Twitter,
   Instagram,
   Youtube,
-  GraduationCap,
   Users,
   Calendar,
   ArrowRight
@@ -269,7 +266,7 @@ export default function LandingPage() {
                   <Button 
                     size="lg" 
                     variant="outline"
-                    className="bg-green-800 hover:bg-green-900 text-white px-8 py-6 text-lg rounded-lg shadow-lg hover:shadow-xl transition-all duration-300"
+                    className="bg-green-800 hover:bg-green-900 text-white hover:text-white px-8 py-6 text-lg rounded-lg shadow-lg hover:shadow-xl transition-all duration-300"
                     onClick={() => window.location.href = '/student/auth/login'}
                   >
                     Student Portal
