@@ -27,25 +27,32 @@ import {
 const TypewriterText = ({ text, delay = 0, speed = 50 }: { text: string; delay?: number; speed?: number }) => {
   const [displayText, setDisplayText] = useState('')
   const [currentIndex, setCurrentIndex] = useState(0)
+  const [isTyping, setIsTyping] = useState(false)
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      if (currentIndex < text.length) {
-        setDisplayText(prev => prev + text[currentIndex])
-        setCurrentIndex(prev => prev + 1)
-      }
-    }, speed)
+    // Reset state when component mounts or text changes
+    setDisplayText('')
+    setCurrentIndex(0)
+    setIsTyping(false)
 
-    return () => clearTimeout(timer)
-  }, [currentIndex, text, speed])
-
-  useEffect(() => {
+    // Start typing after delay
     const delayTimer = setTimeout(() => {
-      setCurrentIndex(0)
+      setIsTyping(true)
     }, delay * 1000)
 
     return () => clearTimeout(delayTimer)
-  }, [delay])
+  }, [text, delay])
+
+  useEffect(() => {
+    if (!isTyping || currentIndex >= text.length) return
+
+    const timer = setTimeout(() => {
+      setDisplayText(prev => prev + text[currentIndex])
+      setCurrentIndex(prev => prev + 1)
+    }, speed)
+
+    return () => clearTimeout(timer)
+  }, [currentIndex, text, speed, isTyping])
 
   return (
     <span>
@@ -657,10 +664,17 @@ export default function LandingPage() {
               </div>
             </motion.div>
 
-            <div className="bg-yellow-50 rounded-md p-6 hover:shadow-lg transition-all duration-300 cursor-pointer">
-              <h3 className="text-xl font-semibold text-black mb-2">Research & Innovation</h3>
-              <p className="text-gray-600 text-sm">Cutting-edge research across diverse disciplines addressing global challenges</p>
-            </div>
+            <motion.div 
+              className="bg-yellow-50 rounded-md p-6 hover:shadow-lg transition-all duration-300 cursor-pointer"
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: 0.3, ease: "easeOut" }}
+              whileHover={{ y: -5, scale: 1.02 }}
+            >
+              <h3 className="text-xl font-semibold text-black mb-2">Student Life & Culture</h3>
+              <p className="text-gray-600 text-sm">Vibrant campus community with over 100 student organizations and cultural activities</p>
+            </motion.div>
 
             {/* Modern Infrastructure Card */}
             <div className="bg-green-50 rounded-md p-6 hover:shadow-lg transition-all duration-300 cursor-pointer">
