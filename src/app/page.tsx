@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import { Button } from '../components/ui/button'
 import LandingNav from '../components/layout/landing-nav'
+import { motion, AnimatePresence } from 'motion/react'
 import { 
   Wifi, 
   Shield, 
@@ -67,28 +68,57 @@ export default function LandingPage() {
         <div className="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center h-full">
             {/* Left Column - Text and CTA */}
-            <div className="text-white">
-              <div className="mb-6">
-                {/* <GraduationCap className="h-20 w-20 text-yellow-400 mb-4" /> */}
-                <h1 className="text-5xl md:text-7xl font-bold mb-6 bg-gradient-to-r from-yellow-400 to-yellow-300 bg-clip-text text-transparent">
-                  University of Nigeria, Nsukka
-                </h1>
-                <p className="text-xl md:text-2xl text-gray-200 mb-8 max-w-2xl">
-                  Nigeria's first autonomous university, founded in 1955 by Dr. Nnamdi Azikiwe. Experience world-class education across 17 faculties with over 300 academic programs.
-                </p>
-              </div>
-              
-              <div className="flex flex-col sm:flex-row gap-4">
-                <Button 
-                  size="lg" 
-                  variant="outline"
-                  className="bg-green-800 hover:bg-green-900 text-white px-8 py-6 text-lg rounded-lg shadow-lg hover:shadow-xl transition-all duration-300"
-                  onClick={() => window.location.href = '/student/auth/login'}
+            <motion.div 
+              className="text-white"
+              initial={{ opacity: 0, x: -50 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.8, ease: "easeOut" }}
+            >
+              <motion.div 
+                className="mb-6"
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
+              >
+                <motion.h1 
+                  className="text-5xl md:text-7xl font-bold mb-6 bg-gradient-to-r from-yellow-400 to-yellow-300 bg-clip-text text-transparent"
+                  initial={{ opacity: 0, y: 50 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 1, delay: 0.4, ease: "easeOut" }}
                 >
-                  Student Portal
-                </Button>
-              </div>
-            </div>
+                  University of Nigeria, Nsukka
+                </motion.h1>
+                <motion.p 
+                  className="text-xl md:text-2xl text-gray-200 mb-8 max-w-2xl"
+                  initial={{ opacity: 0, y: 30 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.8, delay: 0.6, ease: "easeOut" }}
+                >
+                  Nigeria's first autonomous university, founded in 1955 by Dr. Nnamdi Azikiwe. Experience world-class education across 17 faculties with over 300 academic programs.
+                </motion.p>
+              </motion.div>
+              
+              <motion.div 
+                className="flex flex-col sm:flex-row gap-4"
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, delay: 0.8, ease: "easeOut" }}
+              >
+                <motion.div
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  <Button 
+                    size="lg" 
+                    variant="outline"
+                    className="bg-green-800 hover:bg-green-900 text-white px-8 py-6 text-lg rounded-lg shadow-lg hover:shadow-xl transition-all duration-300"
+                    onClick={() => window.location.href = '/student/auth/login'}
+                  >
+                    Student Portal
+                  </Button>
+                </motion.div>
+              </motion.div>
+            </motion.div>
 
             {/* Right Column - Placeholder Image */}
             {/* <div className="hidden lg:flex justify-center items-center">
@@ -105,9 +135,14 @@ export default function LandingPage() {
         </div>
 
         {/* Image Indicators */}
-        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10 flex space-x-2">
+        <motion.div 
+          className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10 flex space-x-2"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 1, ease: "easeOut" }}
+        >
           {libraryImages.map((_, index) => (
-            <button
+            <motion.button
               key={index}
               onClick={() => setCurrentImageIndex(index)}
               className={`w-3 h-3 rounded-full transition-all duration-300 ${
@@ -115,9 +150,14 @@ export default function LandingPage() {
                   ? 'bg-yellow-400 scale-125' 
                   : 'bg-white/50 hover:bg-white/75'
               }`}
+              whileHover={{ scale: 1.2 }}
+              whileTap={{ scale: 0.9 }}
+              initial={{ opacity: 0, scale: 0 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.3, delay: 1.2 + index * 0.1 }}
             />
           ))}
-        </div>
+        </motion.div>
       </section>
 
       {/* About UNN Section */}
@@ -125,37 +165,89 @@ export default function LandingPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
             {/* Left Column - Text Content */}
-            <div>
-              <div className="mb-6">
-                <h2 className="text-4xl md:text-5xl font-bold text-black mb-6 leading-tight">
+            <motion.div
+              initial={{ opacity: 0, x: -50 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8, ease: "easeOut" }}
+            >
+              <motion.div 
+                className="mb-6"
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
+              >
+                <motion.h2 
+                  className="text-4xl md:text-5xl font-bold text-black mb-6 leading-tight"
+                  initial={{ opacity: 0, y: 30 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.8, delay: 0.4, ease: "easeOut" }}
+                >
                   Restoring the dignity of man through
                   <span className="block relative">
                     excellence
-                    <div className="absolute -bottom-2 left-0 w-full h-3 bg-yellow-400 transform -skew-x-12"></div>
+                    <motion.div 
+                      className="absolute -bottom-2 left-0 w-full h-3 bg-yellow-400 transform -skew-x-12"
+                      initial={{ scaleX: 0 }}
+                      whileInView={{ scaleX: 1 }}
+                      viewport={{ once: true }}
+                      transition={{ duration: 0.8, delay: 0.6, ease: "easeOut" }}
+                    ></motion.div>
                   </span>
-                </h2>
-                <p className="text-xl text-gray-700 leading-relaxed max-w-2xl">
-                  The University of Nigeria, Nsukka is committed to creating a functional, globally competitive, and research-focused university that responds to society's needs while delivering world-class education and knowledge. Our mission is to place UNN at the forefront of research, development, innovative knowledge transfer, and human resources development in the global academic terrain.
-                </p>
-              </div>
-              
-              <div className="flex flex-col sm:flex-row gap-4">
-                <Button 
-                  size="lg" 
-                  variant="outline"
-                  className="bg-green-800 hover:bg-green-900 text-white px-8 py-4 text-lg font-semibold rounded-lg shadow-lg hover:shadow-xl transition-all duration-300"
-                  onClick={() => window.location.href = '/student/auth/login'}
+                </motion.h2>
+                <motion.p 
+                  className="text-xl text-gray-700 leading-relaxed max-w-2xl"
+                  initial={{ opacity: 0, y: 30 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.8, delay: 0.6, ease: "easeOut" }}
                 >
-                  Access Student Portal
-                </Button>
-              </div>
-            </div>
+                  The University of Nigeria, Nsukka is committed to creating a functional, globally competitive, and research-focused university that responds to society's needs while delivering world-class education and knowledge. Our mission is to place UNN at the forefront of research, development, innovative knowledge transfer, and human resources development in the global academic terrain.
+                </motion.p>
+              </motion.div>
+              
+              <motion.div 
+                className="flex flex-col sm:flex-row gap-4"
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.8, delay: 0.8, ease: "easeOut" }}
+              >
+                <motion.div
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  <Button 
+                    size="lg" 
+                    variant="outline"
+                    className="bg-green-800 hover:bg-green-900 text-white px-8 py-4 text-lg font-semibold rounded-lg shadow-lg hover:shadow-xl transition-all duration-300"
+                    onClick={() => window.location.href = '/student/auth/login'}
+                  >
+                    Access Student Portal
+                  </Button>
+                </motion.div>
+              </motion.div>
+            </motion.div>
 
             {/* Right Column - Image with Custom Clip-path */}
-            <div className="relative">
+            <motion.div 
+              className="relative"
+              initial={{ opacity: 0, x: 50 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8, ease: "easeOut" }}
+            >
               <div className="relative">
                 {/* Main Image Container with Custom Clip-path */}
-                <div className="relative overflow-hidden">
+                <motion.div 
+                  className="relative overflow-hidden"
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  whileInView={{ opacity: 1, scale: 1 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
+                >
                   <img
                     src="/images/mellanby.jpg"
                     alt="UNN Campus"
@@ -172,37 +264,67 @@ export default function LandingPage() {
                       clipPath: 'polygon(0% 0%, 100% 0%, 85% 100%, 0% 100%)'
                     }}
                   ></div>
-                </div>
+                </motion.div>
 
                 {/* Abstract Decorative Elements */}
-                <div className="absolute -bottom-8 -left-8 w-32 h-32 bg-green-800 rounded-full opacity-80"></div>
-                <div className="absolute -top-4 -right-4 w-16 h-16 bg-yellow-400 rounded-full opacity-90"></div>
+                <motion.div 
+                  className="absolute -bottom-8 -left-8 w-32 h-32 bg-green-800 rounded-full opacity-80"
+                  initial={{ opacity: 0, scale: 0 }}
+                  whileInView={{ opacity: 0.8, scale: 1 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.6, delay: 0.4, ease: "easeOut" }}
+                ></motion.div>
+                <motion.div 
+                  className="absolute -top-4 -right-4 w-16 h-16 bg-yellow-400 rounded-full opacity-90"
+                  initial={{ opacity: 0, scale: 0 }}
+                  whileInView={{ opacity: 0.9, scale: 1 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.6, delay: 0.6, ease: "easeOut" }}
+                ></motion.div>
                 
                 {/* Dotted Pattern Overlays */}
-                <div className="absolute bottom-0 left-0 w-24 h-24 opacity-30">
+                <motion.div 
+                  className="absolute bottom-0 left-0 w-24 h-24 opacity-30"
+                  initial={{ opacity: 0 }}
+                  whileInView={{ opacity: 0.3 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.8, delay: 0.8, ease: "easeOut" }}
+                >
                   <div className="w-full h-full" style={{
                     backgroundImage: 'radial-gradient(circle, black 1px, transparent 1px)',
                     backgroundSize: '8px 8px'
                   }}></div>
-                </div>
+                </motion.div>
                 
-                <div className="absolute bottom-0 right-0 w-32 h-32 opacity-30">
+                <motion.div 
+                  className="absolute bottom-0 right-0 w-32 h-32 opacity-30"
+                  initial={{ opacity: 0 }}
+                  whileInView={{ opacity: 0.3 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.8, delay: 1, ease: "easeOut" }}
+                >
                   <div className="w-full h-full" style={{
                     backgroundImage: 'radial-gradient(circle, black 1px, transparent 1px)',
                     backgroundSize: '8px 8px'
                   }}></div>
-                </div>
+                </motion.div>
 
                 {/* Diagonal Lines */}
-                <div className="absolute top-0 right-0 w-20 h-20 opacity-40">
+                <motion.div 
+                  className="absolute top-0 right-0 w-20 h-20 opacity-40"
+                  initial={{ opacity: 0, rotate: -45 }}
+                  whileInView={{ opacity: 0.4, rotate: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.8, delay: 1.2, ease: "easeOut" }}
+                >
                   <div className="w-full h-full flex flex-col justify-center items-center space-y-1">
                     <div className="w-16 h-0.5 bg-black transform rotate-45"></div>
                     <div className="w-12 h-0.5 bg-black transform rotate-45"></div>
                     <div className="w-8 h-0.5 bg-black transform rotate-45"></div>
                   </div>
-                </div>
+                </motion.div>
             </div>
-            </div>
+            </motion.div>
           </div>
         </div>
       </section>
@@ -212,10 +334,22 @@ export default function LandingPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
             {/* Left Column - Image with Clip-path */}
-            <div className="relative flex justify-center items-center">
+            <motion.div 
+              className="relative flex justify-center items-center"
+              initial={{ opacity: 0, x: -50 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8, ease: "easeOut" }}
+            >
               <div className="relative">
                 {/* Main Image with Custom Clip-path */}
-                <div className="relative overflow-hidden">
+                <motion.div 
+                  className="relative overflow-hidden"
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  whileInView={{ opacity: 1, scale: 1 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
+                >
                   <img
                     src="/images/zik-hall.jpg"
                     alt="UNN Campus Excellence"
@@ -232,72 +366,126 @@ export default function LandingPage() {
                       clipPath: 'polygon(0% 0%, 100% 0%, 85% 100%, 0% 100%)'
                     }}
                   ></div>
-                </div>
+                </motion.div>
 
                 {/* Decorative Elements */}
-                <div className="absolute -bottom-8 -left-8 w-32 h-32 bg-yellow-400 rounded-full opacity-80"></div>
-                <div className="absolute -top-4 -right-4 w-16 h-16 bg-white rounded-full opacity-90"></div>
+                <motion.div 
+                  className="absolute -bottom-8 -left-8 w-32 h-32 bg-yellow-400 rounded-full opacity-80"
+                  initial={{ opacity: 0, scale: 0 }}
+                  whileInView={{ opacity: 0.8, scale: 1 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.6, delay: 0.4, ease: "easeOut" }}
+                ></motion.div>
+                <motion.div 
+                  className="absolute -top-4 -right-4 w-16 h-16 bg-white rounded-full opacity-90"
+                  initial={{ opacity: 0, scale: 0 }}
+                  whileInView={{ opacity: 0.9, scale: 1 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.6, delay: 0.6, ease: "easeOut" }}
+                ></motion.div>
                 
                 {/* Dotted Pattern Overlays */}
-                <div className="absolute bottom-0 left-0 w-24 h-24 opacity-30">
+                <motion.div 
+                  className="absolute bottom-0 left-0 w-24 h-24 opacity-30"
+                  initial={{ opacity: 0 }}
+                  whileInView={{ opacity: 0.3 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.8, delay: 0.8, ease: "easeOut" }}
+                >
                   <div className="w-full h-full" style={{
                     backgroundImage: 'radial-gradient(circle, white 1px, transparent 1px)',
                     backgroundSize: '8px 8px'
                   }}></div>
-                </div>
+                </motion.div>
                 
-                <div className="absolute bottom-0 right-0 w-32 h-32 opacity-30">
+                <motion.div 
+                  className="absolute bottom-0 right-0 w-32 h-32 opacity-30"
+                  initial={{ opacity: 0 }}
+                  whileInView={{ opacity: 0.3 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.8, delay: 1, ease: "easeOut" }}
+                >
                   <div className="w-full h-full" style={{
                     backgroundImage: 'radial-gradient(circle, white 1px, transparent 1px)',
                     backgroundSize: '8px 8px'
                   }}></div>
-                </div>
+                </motion.div>
 
                 {/* Diagonal Lines */}
-                <div className="absolute top-0 right-0 w-20 h-20 opacity-40">
+                <motion.div 
+                  className="absolute top-0 right-0 w-20 h-20 opacity-40"
+                  initial={{ opacity: 0, rotate: -45 }}
+                  whileInView={{ opacity: 0.4, rotate: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.8, delay: 1.2, ease: "easeOut" }}
+                >
                   <div className="w-full h-full flex flex-col justify-center items-center space-y-1">
                     <div className="w-16 h-0.5 bg-white transform rotate-45"></div>
                     <div className="w-12 h-0.5 bg-white transform rotate-45"></div>
                     <div className="w-8 h-0.5 bg-white transform rotate-45"></div>
                   </div>
-                </div>
+                </motion.div>
               </div>
-            </div>
+            </motion.div>
 
             {/* Right Column - Positive UNN Statistics */}
-            <div className="text-white">
+            <motion.div 
+              className="text-white"
+              initial={{ opacity: 0, x: 50 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8, ease: "easeOut" }}
+            >
               <div className="space-y-8">
                 {/* First Positive Statistics Block */}
-                <div className="border-l-4 border-yellow-400 pl-6">
+                <motion.div 
+                  className="border-l-4 border-yellow-400 pl-6"
+                  initial={{ opacity: 0, x: 30 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.6, delay: 0.2, ease: "easeOut" }}
+                >
                   <p className="text-xl leading-relaxed mb-2">
                     Founded in 1955 by Dr. Nnamdi Azikiwe, UNN became Nigeria's first autonomous university in 1960, establishing the foundation for indigenous higher education excellence in the country.
                   </p>
                   <p className="text-yellow-200 text-sm font-medium">
                     - Source: UNN Historical Records, 1960 Foundation
                   </p>
-                </div>
+                </motion.div>
 
                 {/* Second Positive Statistics Block */}
-                <div className="border-l-4 border-yellow-400 pl-6">
+                <motion.div 
+                  className="border-l-4 border-yellow-400 pl-6"
+                  initial={{ opacity: 0, x: 30 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.6, delay: 0.4, ease: "easeOut" }}
+                >
                   <p className="text-xl leading-relaxed mb-2">
                     With 17 faculties, 102 academic departments, and over 300 academic programs, UNN offers the most comprehensive educational portfolio among Nigerian universities.
                   </p>
                   <p className="text-yellow-200 text-sm font-medium">
                     - Source: UNN Academic Affairs, Current Programs
                   </p>
-                </div>
+                </motion.div>
 
                 {/* Third Positive Statistics Block */}
-                <div className="border-l-4 border-yellow-400 pl-6">
+                <motion.div 
+                  className="border-l-4 border-yellow-400 pl-6"
+                  initial={{ opacity: 0, x: 30 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.6, delay: 0.6, ease: "easeOut" }}
+                >
                   <p className="text-xl leading-relaxed mb-2">
                     UNN's mission to restore the dignity of man through research, innovation, and knowledge transfer has positioned it as a global leader in academic excellence and human development.
                   </p>
                   <p className="text-yellow-200 text-sm font-medium">
                     - Source: UNN Mission Statement, Core Values
                   </p>
-                </div>
+                </motion.div>
               </div>
-            </div>
+            </motion.div>
           </div>
         </div>
       </section>
@@ -306,39 +494,82 @@ export default function LandingPage() {
       <section className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Header */}
-          <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold text-black mb-6">
+          <motion.div 
+            className="text-center mb-16"
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8, ease: "easeOut" }}
+          >
+            <motion.h2 
+              className="text-4xl md:text-5xl font-bold text-black mb-6"
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
+            >
               Academic Excellence & Services
-            </h2>
-            <p className="text-xl text-gray-700 max-w-3xl mx-auto">
+            </motion.h2>
+            <motion.p 
+              className="text-xl text-gray-700 max-w-3xl mx-auto"
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8, delay: 0.4, ease: "easeOut" }}
+            >
               Discover the comprehensive range of academic programs, research opportunities, and student services at Nigeria's premier autonomous university
-            </p>
-          </div>
+            </motion.p>
+          </motion.div>
 
           {/* Service Cards Grid */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {/* Academic Excellence Card */}
-            <div className="bg-green-50 rounded-md p-6 hover:shadow-lg transition-all duration-300 cursor-pointer">
+            <motion.div 
+              className="bg-green-50 rounded-md p-6 hover:shadow-lg transition-all duration-300 cursor-pointer"
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, ease: "easeOut" }}
+              whileHover={{ y: -5, scale: 1.02 }}
+            >
               <h3 className="text-xl font-semibold text-black mb-2">Academic Excellence</h3>
               <p className="text-gray-600 text-sm">108 undergraduate and 211 postgraduate programs across 17 faculties</p>
-            </div>
+            </motion.div>
 
             {/* Research & Innovation Card */}
-            <div className="bg-yellow-50 rounded-md p-6 hover:shadow-lg transition-all duration-300 cursor-pointer">
+            <motion.div 
+              className="bg-yellow-50 rounded-md p-6 hover:shadow-lg transition-all duration-300 cursor-pointer"
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: 0.1, ease: "easeOut" }}
+              whileHover={{ y: -5, scale: 1.02 }}
+            >
               <h3 className="text-xl font-semibold text-black mb-2">Research & Innovation</h3>
               <p className="text-gray-600 text-sm">Cutting-edge research across diverse disciplines addressing global challenges</p>
-            </div>
+            </motion.div>
 
             {/* Global Competitiveness Card - Spans 2 rows */}
-            <div className="bg-gradient-to-br from-green-800 to-green-900 rounded-md p-6 hover:shadow-lg transition-all duration-300 cursor-pointer md:row-span-2">
+            <motion.div 
+              className="bg-gradient-to-br from-green-800 to-green-900 rounded-md p-6 hover:shadow-lg transition-all duration-300 cursor-pointer md:row-span-2"
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: 0.2, ease: "easeOut" }}
+              whileHover={{ y: -5, scale: 1.02 }}
+            >
               <div className="text-white">
                 <h3 className="text-2xl font-bold mb-4">UNN's Mission: Restore the Dignity of Man</h3>
                 <p className="text-green-100 mb-6">Join Nigeria's first autonomous university in its mission to create a globally competitive, research-focused institution that responds to society's needs</p>
-                <button className="bg-white text-green-800 px-6 py-3 rounded-full font-semibold hover:bg-gray-100 transition-colors w-full">
+                <motion.button 
+                  className="bg-white text-green-800 px-6 py-3 rounded-full font-semibold hover:bg-gray-100 transition-colors w-full"
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                >
                   Learn More
-                </button>
+                </motion.button>
               </div>
-            </div>
+            </motion.div>
 
             <div className="bg-yellow-50 rounded-md p-6 hover:shadow-lg transition-all duration-300 cursor-pointer">
               <h3 className="text-xl font-semibold text-black mb-2">Research & Innovation</h3>
@@ -393,22 +624,78 @@ export default function LandingPage() {
       <section className="py-20 bg-green-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8 text-center">
-            <div>
-              <div className="text-4xl font-bold text-white mb-2">5000+</div>
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, ease: "easeOut" }}
+              whileHover={{ scale: 1.05 }}
+            >
+              <motion.div 
+                className="text-4xl font-bold text-white mb-2"
+                initial={{ scale: 0 }}
+                whileInView={{ scale: 1 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: 0.2, ease: "backOut" }}
+              >
+                5000+
+              </motion.div>
               <div className="text-green-100">Happy Students</div>
-            </div>
-            <div>
-              <div className="text-4xl font-bold text-white mb-2">15+</div>
+            </motion.div>
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: 0.1, ease: "easeOut" }}
+              whileHover={{ scale: 1.05 }}
+            >
+              <motion.div 
+                className="text-4xl font-bold text-white mb-2"
+                initial={{ scale: 0 }}
+                whileInView={{ scale: 1 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: 0.3, ease: "backOut" }}
+              >
+                15+
+              </motion.div>
               <div className="text-green-100">Hostel Buildings</div>
-            </div>
-            <div>
-              <div className="text-4xl font-bold text-white mb-2">98%</div>
+            </motion.div>
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: 0.2, ease: "easeOut" }}
+              whileHover={{ scale: 1.05 }}
+            >
+              <motion.div 
+                className="text-4xl font-bold text-white mb-2"
+                initial={{ scale: 0 }}
+                whileInView={{ scale: 1 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: 0.4, ease: "backOut" }}
+              >
+                98%
+              </motion.div>
               <div className="text-green-100">Satisfaction Rate</div>
-            </div>
-            <div>
-              <div className="text-4xl font-bold text-white mb-2">24/7</div>
+            </motion.div>
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: 0.3, ease: "easeOut" }}
+              whileHover={{ scale: 1.05 }}
+            >
+              <motion.div 
+                className="text-4xl font-bold text-white mb-2"
+                initial={{ scale: 0 }}
+                whileInView={{ scale: 1 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: 0.5, ease: "backOut" }}
+              >
+                24/7
+              </motion.div>
               <div className="text-green-100">Support Available</div>
-            </div>
+            </motion.div>
           </div>
         </div>
       </section>
@@ -416,21 +703,49 @@ export default function LandingPage() {
       {/* Gallery Section */}
       <section className="py-20 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-black mb-4">Campus Gallery</h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+          <motion.div 
+            className="text-center mb-16"
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8, ease: "easeOut" }}
+          >
+            <motion.h2 
+              className="text-4xl font-bold text-black mb-4"
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
+            >
+              Campus Gallery
+            </motion.h2>
+            <motion.p 
+              className="text-xl text-gray-600 max-w-3xl mx-auto"
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8, delay: 0.4, ease: "easeOut" }}
+            >
               Explore the beautiful facilities and vibrant campus life at the University of Nigeria, Nsukka
-            </p>
-          </div>
+            </motion.p>
+          </motion.div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {/* Library Images */}
-            <div className="group cursor-pointer">
+            <motion.div 
+              className="group cursor-pointer"
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, ease: "easeOut" }}
+              whileHover={{ y: -5 }}
+            >
               <div className="relative overflow-hidden rounded-xl shadow-lg group-hover:shadow-xl transition-all duration-300">
-                <img
+                <motion.img
                   src="/images/mellanby.jpg"
                   alt="Mellanby Hall"
                   className="w-full h-64 object-cover group-hover:scale-105 transition-transform duration-300"
+                  whileHover={{ scale: 1.05 }}
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent"></div>
                 <div className="absolute bottom-0 left-0 right-0 p-6">
@@ -438,7 +753,7 @@ export default function LandingPage() {
                   <p className="text-gray-200 text-sm">Historic academic building</p>
                 </div>
               </div>
-            </div>
+            </motion.div>
 
             <div className="group cursor-pointer">
               <div className="relative overflow-hidden rounded-md shadow-lg group-hover:shadow-xl transition-all duration-300">
@@ -614,13 +929,24 @@ export default function LandingPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            <div className="text-center p-6">
-              <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <motion.div 
+              className="text-center p-6"
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, ease: "easeOut" }}
+              whileHover={{ y: -5 }}
+            >
+              <motion.div 
+                className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4"
+                whileHover={{ scale: 1.1, rotate: 5 }}
+                transition={{ duration: 0.3 }}
+              >
                 <Shield className="h-8 w-8 text-green-800" />
-              </div>
+              </motion.div>
               <h3 className="text-xl font-semibold mb-2">24/7 Security</h3>
               <p className="text-gray-200">Round-the-clock security personnel and CCTV monitoring</p>
-            </div>
+            </motion.div>
 
             <div className="text-center p-6">
               <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
@@ -653,14 +979,32 @@ export default function LandingPage() {
       <section className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Section Header */}
-          <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold text-black mb-6">
+          <motion.div 
+            className="text-center mb-16"
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8, ease: "easeOut" }}
+          >
+            <motion.h2 
+              className="text-4xl md:text-5xl font-bold text-black mb-6"
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
+            >
               UNN News & Announcements
-            </h2>
-            <p className="text-xl text-gray-700 max-w-3xl mx-auto">
+            </motion.h2>
+            <motion.p 
+              className="text-xl text-gray-700 max-w-3xl mx-auto"
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8, delay: 0.4, ease: "easeOut" }}
+            >
               Stay informed about the latest academic developments, research breakthroughs, and official announcements from the University of Nigeria, Nsukka
-            </p>
-          </div>
+            </motion.p>
+          </motion.div>
 
           {/* Blog Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
