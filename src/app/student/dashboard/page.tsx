@@ -238,13 +238,13 @@ export default function StudentDashboardPage() {
       <div className="pt-40 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="space-y-8">
           {/* Welcome Section */}
-          <div className="bg-gradient-to-r from-green-600 to-emerald-700 rounded-2xl p-8 text-white">
+          <div className="bg-unn-primary rounded-2xl p-8 text-white">
             <div className="flex items-center justify-between">
               <div>
                   <h2 className="text-3xl font-bold mb-2">
                     Welcome back, {student?.user?.first_name}
                   </h2>
-                  <p className="text-unn-primary text-lg mb-4">
+                  <p className="text-white text-lg mb-4">
                     Here&apos;s what&apos;s happening with your hostel accommodation
                   </p>
                   <div className="flex items-center space-x-6 text-sm">

@@ -8,11 +8,13 @@ import {
   Bell,
   User,
   Settings,
-  HelpCircle
+  HelpCircle,
+  LayoutDashboard
 } from 'lucide-react';
 
 const QuickActions = () => {
   const actions = [
+    { title: 'My Dashboard', href: '/student/dashboard', icon: <LayoutDashboard className="h-4 w-4" /> },
     { title: 'New Application', href: '/student/applications/new', icon: <Plus className="h-4 w-4" /> },
     { title: 'My Applications', href: '/student/applications', icon: <FileText className="h-4 w-4" /> },
     { title: 'Payments', href: '/student/payments', icon: <DollarSign className="h-4 w-4" /> },

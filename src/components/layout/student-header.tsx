@@ -75,8 +75,8 @@ export default function StudentHeader({
                 </Button>
               )}
               
-              <div className="h-10 w-10 bg-gradient-to-br from-green-600 to-emerald-700 rounded-xl flex items-center justify-center shadow-lg">
-                <GraduationCap className="h-6 w-6 text-white" />
+              <div className="h-10 w-10 rounded-xl flex items-center justify-center shadow-lg">
+                <img src={'/unn.png'} />
               </div>
               <div>
                 <h1 className="text-xl font-bold bg-gradient-to-r from-green-600 to-emerald-700 bg-clip-text text-transparent">

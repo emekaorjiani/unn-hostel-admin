@@ -10,6 +10,7 @@ import { Input } from '../../../components/ui/input'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../../../components/ui/card'
 import LandingNav from '../../../components/layout/landing-nav'
 import { authService, LoginCredentials } from '../../../lib/auth'
+import { Loader2 } from 'lucide-react'
 
 // Login form validation schema
 const loginSchema = z.object({
@@ -133,10 +134,11 @@ export default function LoginPage() {
                 {/* Submit Button */}
                 <Button
                   type="submit"
+                  style={{ backgroundColor: '#275b1c' }}
                   className="w-full bg-unn-700 hover:bg-unn-800"
                   disabled={isLoading}
                 >
-                  {isLoading ? 'Signing in...' : 'Sign In'}
+                  {isLoading ? (<Loader2 className='animation-spin text-white' />) : 'Sign In'}
                 </Button>
               </form>
 

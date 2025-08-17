@@ -140,7 +140,8 @@ export default function StudentLoginPage() {
                 {/* Submit Button */}
                 <Button
                   type="submit"
-                  className="w-full h-12 bg-unn-700 hover:bg-unn-800 text-white text-lg rounded-lg shadow-lg hover:shadow-xl transition-all duration-300"
+                  style={{ backgroundColor: '#275b1c' }}
+                  className="w-full h-12 bg-primary hover:bg-unn-800 text-white text-lg rounded-lg shadow-lg hover:shadow-xl transition-all duration-300"
                   disabled={isLoading}
                 >
                   {isLoading ? (
