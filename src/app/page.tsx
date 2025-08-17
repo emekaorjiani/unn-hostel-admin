@@ -1212,9 +1212,9 @@ export default function LandingPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             <div>
-              <h3 className="text-lg font-semibold mb-4">UNN Hostel Portal</h3>
+              <h3 className="text-lg font-semibold mb-4">UNN School Portal</h3>
               <p className="text-gray-200">
-                Providing quality accommodation for students at the University of Nigeria, Nsukka - Nigeria's first autonomous university since 1960.
+                The University of Nigeria, Nsukka - Nigeria's first autonomous university since 1960.
               </p>
             </div>
             
@@ -1265,7 +1265,7 @@ export default function LandingPage() {
           </div>
           
           <div className="border-t border-gray-200 mt-8 pt-8 text-center text-gray-200">
-            <p>&copy; 2024 UNN Hostel Portal. All rights reserved.</p>
+            <p>&copy; 2024 UNN School Portal. All rights reserved.</p>
           </div>
         </div>
       </footer>
