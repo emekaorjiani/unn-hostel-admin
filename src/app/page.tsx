@@ -207,7 +207,7 @@ export default function LandingPage() {
       <LandingNav />
       
       {/* Hero Section with Background Slider */}
-      <section id="home" className="relative h-[87svh] flex items-center overflow-hidden">
+      <section id="home" className="relative h-[90svh] flex items-center overflow-hidden">
         {/* Background Images */}
         {libraryImages.map((image, index) => (
           <div
@@ -219,7 +219,7 @@ export default function LandingPage() {
             <img
               src={image}
               alt={`Library ${index + 1}`}
-              className="w-full h-[87svh] object-cover"
+              className="w-full h-[90svh] object-cover"
             />
             {/* Darker Overlay */}
             <div className="absolute inset-0 bg-black/70"></div>
@@ -547,7 +547,7 @@ export default function LandingPage() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
             {/* Left Column - Image with Clip-path */}
             <motion.div 
-              className="relative flex justify-center items-center"
+              className="relative flex justify-center items-center order-last md:order-first"
               initial={{ opacity: 0, x: -50 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
@@ -642,7 +642,7 @@ export default function LandingPage() {
 
             {/* Right Column - Positive UNN Statistics */}
             <motion.div 
-              className="text-white"
+              className="text-white order-first md:order-last"
               initial={{ opacity: 0, x: 50 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
