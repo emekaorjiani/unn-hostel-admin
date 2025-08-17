@@ -113,7 +113,7 @@ export default function DashboardPage() {
         <div className="max-w-7xl mx-auto">
           <div className="flex items-center justify-center h-64">
             <div className="text-center">
-              <RefreshCw className="h-8 w-8 animate-spin text-green-600 mx-auto mb-4" />
+              <RefreshCw className="h-8 w-8 animate-spin text-unn-primary mx-auto mb-4" />
               <p className="text-gray-600">Loading dashboard data...</p>
             </div>
           </div>
@@ -285,7 +285,7 @@ export default function DashboardPage() {
         <Card className="hover:shadow-lg transition-shadow">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Total Students</CardTitle>
-            <Users className="h-4 w-4 text-green-600" />
+            <Users className="h-4 w-4 text-unn-primary" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{overview?.total_students?.toLocaleString() || '0'}</div>
@@ -324,7 +324,7 @@ export default function DashboardPage() {
         <Card className="hover:shadow-lg transition-shadow">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Total Revenue</CardTitle>
-            <DollarSign className="h-4 w-4 text-green-600" />
+            <DollarSign className="h-4 w-4 text-unn-primary" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{formatCurrency(parseFloat(overview?.total_revenue || '0'))}</div>

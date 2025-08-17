@@ -64,7 +64,7 @@ export default function StudentLoginPage() {
           <Card className="shadow-2xl border-0 bg-white overflow-hidden">
             <CardContent className="p-8">
             <div className="flex justify-center mb-6">
-                <div className="w-16 h-16 bg-green-900 to-emerald-700 rounded-full flex items-center justify-center shadow-lg">
+                <div className="w-16 h-16 bg-unn-700 rounded-full flex items-center justify-center shadow-lg">
                   <img 
                     src="/unn.png" 
                     alt="UNN Logo" 
@@ -140,7 +140,7 @@ export default function StudentLoginPage() {
                 {/* Submit Button */}
                 <Button
                   type="submit"
-                  className="w-full h-12 bg-green-600 hover:green-500 text-white text-lg rounded-lg shadow-lg hover:shadow-xl transition-all duration-300"
+                  className="w-full h-12 bg-unn-700 hover:bg-unn-800 text-white text-lg rounded-lg shadow-lg hover:shadow-xl transition-all duration-300"
                   disabled={isLoading}
                 >
                   {isLoading ? (

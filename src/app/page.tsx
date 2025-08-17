@@ -277,7 +277,8 @@ export default function LandingPage() {
                   <Button 
                     size="lg" 
                     variant="outline"
-                    className="bg-green-800 hover:bg-green-900 text-white hover:text-white px-8 py-6 text-lg rounded-lg shadow-lg hover:shadow-xl transition-all duration-300"
+                    className="text-white hover:text-white px-8 py-6 text-lg rounded-lg shadow-lg hover:shadow-xl transition-all duration-300"
+                    style={{ backgroundColor: '#275b1c' }}
                     onClick={() => window.location.href = '/student/auth/login'}
                   >
                     Student Portal
@@ -434,11 +435,12 @@ export default function LandingPage() {
                   <Button 
                     size="lg" 
                     variant="outline"
-                    className="bg-green-800 hover:bg-green-900 text-white hover:text-white px-8 py-6 text-lg font-semibold rounded-lg shadow-lg hover:shadow-xl transition-all duration-300"
-                    onClick={() => window.location.href = '/student/auth/login'}
-                  >
-                    Access Student Portal
-                  </Button>
+                    className="text-white px-8 py-4 text-lg font-semibold rounded-lg shadow-lg hover:shadow-xl transition-all duration-300"
+                    style={{ backgroundColor: '#275b1c' }}
+                  onClick={() => window.location.href = '/student/auth/login'}
+                >
+                  Access Student Portal
+                </Button>
                 </motion.div>
               </motion.div>
             </motion.div>
@@ -471,8 +473,9 @@ export default function LandingPage() {
                   
                   {/* Dark Green Overlay with Custom Shape */}
                   <div 
-                    className="absolute inset-0 bg-green-800 opacity-20"
-                    style={{
+                    className="absolute inset-0 opacity-20"
+                    style={{ 
+                      backgroundColor: '#275b1c',
                       clipPath: 'polygon(0% 0%, 100% 0%, 85% 100%, 0% 100%)'
                     }}
                   ></div>
@@ -480,7 +483,8 @@ export default function LandingPage() {
 
                 {/* Abstract Decorative Elements */}
                 <motion.div 
-                  className="absolute -bottom-8 -left-8 w-32 h-32 bg-green-800 rounded-full opacity-80"
+                  className="absolute -bottom-8 -left-8 w-32 h-32 rounded-full opacity-80"
+                  style={{ backgroundColor: '#275b1c' }}
                   initial={{ opacity: 0, scale: 0 }}
                   whileInView={{ opacity: 0.8, scale: 1 }}
                   viewport={{ once: true }}
@@ -542,7 +546,7 @@ export default function LandingPage() {
       </section>
 
       {/* Statistics Banner Section */}
-      <section id="statistics" className="py-20 bg-green-800">
+      <section id="statistics" className="py-20" style={{ backgroundColor: '#275b1c' }}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
             {/* Left Column - Image with Clip-path */}
@@ -573,7 +577,7 @@ export default function LandingPage() {
                   
                   {/* Dark Green Overlay with Custom Shape */}
                   <div 
-                    className="absolute inset-0 bg-green-900 opacity-30"
+                    className="absolute inset-0 bg-unn-700 opacity-30"
                     style={{
                       clipPath: 'polygon(0% 0%, 100% 0%, 85% 100%, 0% 100%)'
                     }}
@@ -737,7 +741,8 @@ export default function LandingPage() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {/* Academic Excellence Card */}
             <motion.div 
-              className="bg-green-50 rounded-md p-6 hover:shadow-lg transition-all duration-300 cursor-pointer"
+              className="rounded-md p-6 hover:shadow-lg transition-all duration-300 cursor-pointer"
+              style={{ backgroundColor: '#f0f9f0' }}
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
@@ -763,7 +768,8 @@ export default function LandingPage() {
 
             {/* Global Competitiveness Card - Spans 2 rows */}
             <motion.div 
-              className="bg-gradient-to-br from-green-800 to-green-900 rounded-md p-6 hover:shadow-lg transition-all duration-300 cursor-pointer md:row-span-2"
+              className="rounded-md p-6 hover:shadow-lg transition-all duration-300 cursor-pointer md:row-span-2"
+              style={{ background: 'linear-gradient(135deg, #275b1c 0%, #1f4716 100%)' }}
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
@@ -772,9 +778,10 @@ export default function LandingPage() {
             >
               <div className="text-white">
                 <h3 className="text-2xl font-bold mb-4">UNN's Mission: Restore the Dignity of Man</h3>
-                <p className="text-green-100 mb-6">Join Nigeria's first autonomous university in its mission to create a globally competitive, research-focused institution that responds to society's needs</p>
+                <p className="text-white mb-6" style={{ color: '#dcf2dc' }}>Join Nigeria's first autonomous university in its mission to create a globally competitive, research-focused institution that responds to society's needs</p>
                 <motion.button 
-                  className="bg-white text-green-800 px-6 py-3 rounded-full font-semibold hover:bg-gray-100 transition-colors w-full"
+                  className="bg-white px-6 py-3 rounded-full font-semibold hover:bg-gray-100 transition-colors w-full"
+                  style={{ color: '#275b1c' }}
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                 >
@@ -796,13 +803,13 @@ export default function LandingPage() {
             </motion.div>
 
             {/* Modern Infrastructure Card */}
-            <div className="bg-green-50 rounded-md p-6 hover:shadow-lg transition-all duration-300 cursor-pointer">
+            <div className="rounded-md p-6 hover:shadow-lg transition-all duration-300 cursor-pointer" style={{ backgroundColor: '#f0f9f0' }}>
               <h3 className="text-xl font-semibold text-black mb-2">Modern Infrastructure</h3>
               <p className="text-gray-600 text-sm">State-of-the-art facilities across three campuses in Nsukka, Enugu, and Ituku-Ozalla</p>
             </div>
 
             {/* Human Resource Development Card - Spans 2 columns */}
-            <div className="bg-gradient-to-r from-green-800 to-green-900 rounded-md p-6 hover:shadow-lg transition-all duration-300 cursor-pointer md:col-span-2">
+            <div className="rounded-md p-6 hover:shadow-lg transition-all duration-300 cursor-pointer md:col-span-2" style={{ background: 'linear-gradient(90deg, #275b1c 0%, #1f4716 100%)' }}>
               <div className="text-white">
                 <h3 className="text-2xl font-bold mb-4">Comprehensive Academic Portfolio</h3>
                 <p className="text-xl font-semibold mb-4">17 Faculties / 102 Departments / 300+ Academic Programs</p>
@@ -824,7 +831,7 @@ export default function LandingPage() {
                       </svg>
                     </div>
                   </div>
-                  <button className="bg-white text-green-800 px-6 py-2 rounded-full font-semibold hover:bg-gray-100 transition-colors">
+                  <button className="bg-white px-6 py-2 rounded-full font-semibold hover:bg-gray-100 transition-colors" style={{ color: '#275b1c' }}>
                     Explore Programs
                   </button>
                 </div>
@@ -841,7 +848,7 @@ export default function LandingPage() {
       </section>
 
       {/* Statistics Numbers Section */}
-      <section id="numbers" className="py-20 bg-green-800">
+      <section id="numbers" className="py-20" style={{ backgroundColor: '#275b1c' }}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8 text-center">
             <motion.div
@@ -860,7 +867,7 @@ export default function LandingPage() {
               >
                 5000+
               </motion.div>
-              <div className="text-green-100">Happy Students</div>
+              <div className="text-white">Happy Students</div>
             </motion.div>
             <motion.div
               initial={{ opacity: 0, y: 30 }}
@@ -878,7 +885,7 @@ export default function LandingPage() {
               >
                 15+
               </motion.div>
-              <div className="text-green-100">Hostel Buildings</div>
+              <div className="text-white">Hostel Buildings</div>
             </motion.div>
             <motion.div
               initial={{ opacity: 0, y: 30 }}
@@ -896,7 +903,7 @@ export default function LandingPage() {
               >
                 98%
               </motion.div>
-              <div className="text-green-100">Satisfaction Rate</div>
+              <div className="text-white">Satisfaction Rate</div>
             </motion.div>
             <motion.div
               initial={{ opacity: 0, y: 30 }}
@@ -914,7 +921,7 @@ export default function LandingPage() {
               >
                 24/7
               </motion.div>
-              <div className="text-green-100">Support Available</div>
+              <div className="text-white">Support Available</div>
             </motion.div>
           </div>
         </div>
@@ -982,7 +989,7 @@ export default function LandingPage() {
       </section>
 
       {/* Features Section */}
-      <section id="features" className="py-20 bg-green-900 text-white">
+      <section id="features" className="py-20 text-white" style={{ backgroundColor: '#275b1c' }}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
@@ -995,35 +1002,36 @@ export default function LandingPage() {
               whileHover={{ y: -5 }}
             >
               <motion.div 
-                className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4"
+                className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4"
+                style={{ backgroundColor: '#f0f9f0' }}
                 whileHover={{ scale: 1.1, rotate: 5 }}
                 transition={{ duration: 0.3 }}
               >
-                <Shield className="h-8 w-8 text-green-800" />
+                <Shield className="h-8 w-8" style={{ color: '#275b1c' }} />
               </motion.div>
               <h3 className="text-xl font-semibold mb-2">24/7 Security</h3>
               <p className="text-gray-200">Round-the-clock security personnel and CCTV monitoring</p>
             </motion.div>
 
             <div className="text-center p-6">
-              <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Wifi className="h-8 w-8 text-green-800" />
+              <div className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4" style={{ backgroundColor: '#f0f9f0' }}>
+                <Wifi className="h-8 w-8" style={{ color: '#275b1c' }} />
               </div>
               <h3 className="text-xl font-semibold mb-2">High-Speed WiFi</h3>
               <p className="text-gray-200">Reliable internet connectivity for your studies</p>
             </div>
 
             <div className="text-center p-6">
-              <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Utensils className="h-8 w-8 text-green-800" />
+              <div className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4" style={{ backgroundColor: '#f0f9f0' }}>
+                <Utensils className="h-8 w-8" style={{ color: '#275b1c' }} />
               </div>
               <h3 className="text-xl font-semibold mb-2">Modern Facilities</h3>
               <p className="text-gray-200">Well-equipped common areas and study spaces</p>
             </div>
 
             <div className="text-center p-6">
-              <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Users className="h-8 w-8 text-green-800" />
+              <div className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4" style={{ backgroundColor: '#f0f9f0' }}>
+                <Users className="h-8 w-8" style={{ color: '#275b1c' }} />
               </div>
               <h3 className="text-xl font-semibold mb-2">Community Living</h3>
               <p className="text-gray-200">Build lasting friendships in a supportive environment</p>
@@ -1074,7 +1082,7 @@ export default function LandingPage() {
                   className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
                 />
                 <div className="absolute top-4 left-4">
-                  <span className="bg-green-800 text-white text-xs font-semibold px-3 py-1 rounded-full">
+                  <span className="text-white text-xs font-semibold px-3 py-1 rounded-full" style={{ backgroundColor: '#275b1c' }}>
                     Academic
                   </span>
                 </div>
@@ -1084,13 +1092,13 @@ export default function LandingPage() {
                   <Calendar className="h-4 w-4 mr-2" />
                   <span>December 15, 2024</span>
                 </div>
-                <h3 className="text-xl font-bold text-black mb-3 group-hover:text-green-800 transition-colors">
+                <h3 className="text-xl font-bold text-black mb-3 transition-colors" onMouseEnter={(e) => e.currentTarget.style.color = '#275b1c'} onMouseLeave={(e) => e.currentTarget.style.color = 'black'}>
                   UNN Celebrates 64 Years of Academic Excellence
                 </h3>
                 <p className="text-gray-600 mb-4 line-clamp-3">
                   The University of Nigeria, Nsukka marks another milestone in its journey as Nigeria's first autonomous university, continuing its legacy of innovation and academic leadership.
                 </p>
-                <a href="#" className="inline-flex items-center text-green-800 font-semibold hover:text-green-900 transition-colors">
+                <a href="#" className="inline-flex items-center font-semibold transition-colors" style={{ color: '#275b1c' }} onMouseEnter={(e) => e.currentTarget.style.color = '#1f4716'}>
                   Read More
                   <ArrowRight className="h-4 w-4 ml-2" />
                 </a>
@@ -1106,7 +1114,7 @@ export default function LandingPage() {
                   className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
                 />
                 <div className="absolute top-4 left-4">
-                  <span className="bg-yellow-400 text-black text-xs font-semibold px-3 py-1 rounded-full">
+                  <span className="text-white text-xs font-semibold px-3 py-1 rounded-full" style={{ backgroundColor: '#275b1c' }}>
                     Research
                   </span>
                 </div>
@@ -1116,13 +1124,13 @@ export default function LandingPage() {
                   <Calendar className="h-4 w-4 mr-2" />
                   <span>December 12, 2024</span>
                 </div>
-                <h3 className="text-xl font-bold text-black mb-3 group-hover:text-green-800 transition-colors">
+                <h3 className="text-xl font-bold text-black mb-3 group-hover:text-unn-primary transition-colors">
                   Groundbreaking Research Initiatives at UNN
                 </h3>
                 <p className="text-gray-600 mb-4 line-clamp-3">
                   UNN researchers are leading innovative projects across 17 faculties, addressing global challenges and advancing knowledge in diverse academic disciplines.
                 </p>
-                <a href="#" className="inline-flex items-center text-green-800 font-semibold hover:text-green-900 transition-colors">
+                <a href="#" className="inline-flex items-center text-unn-primary font-semibold hover:text-unn-primary-hover transition-colors">
                   Read More
                   <ArrowRight className="h-4 w-4 ml-2" />
                 </a>
@@ -1138,7 +1146,7 @@ export default function LandingPage() {
                   className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
                 />
                 <div className="absolute top-4 left-4">
-                  <span className="bg-green-800 text-white text-xs font-semibold px-3 py-1 rounded-full">
+                  <span className="text-white text-xs font-semibold px-3 py-1 rounded-full" style={{ backgroundColor: '#275b1c' }}>
                     Students
                   </span>
                 </div>
@@ -1148,13 +1156,13 @@ export default function LandingPage() {
                   <Calendar className="h-4 w-4 mr-2" />
                   <span>December 10, 2024</span>
                 </div>
-                <h3 className="text-xl font-bold text-black mb-3 group-hover:text-green-800 transition-colors">
+                <h3 className="text-xl font-bold text-black mb-3 group-hover:text-unn-primary transition-colors">
                   Student Success Stories: UNN Alumni Achievements
                 </h3>
                 <p className="text-gray-600 mb-4 line-clamp-3">
                   Discover how UNN graduates are making significant contributions across various sectors, embodying the university's mission to restore the dignity of man.
                 </p>
-                <a href="#" className="inline-flex items-center text-green-800 font-semibold hover:text-green-900 transition-colors">
+                <a href="#" className="inline-flex items-center text-unn-primary font-semibold hover:text-unn-primary-hover transition-colors">
                   Read More
                   <ArrowRight className="h-4 w-4 ml-2" />
                 </a>
@@ -1170,7 +1178,7 @@ export default function LandingPage() {
                   className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
                 />
                 <div className="absolute top-4 left-4">
-                  <span className="bg-yellow-400 text-black text-xs font-semibold px-3 py-1 rounded-full">
+                  <span className="text-white text-xs font-semibold px-3 py-1 rounded-full" style={{ backgroundColor: '#275b1c' }}>
                     Global
                   </span>
                 </div>
@@ -1180,13 +1188,13 @@ export default function LandingPage() {
                   <Calendar className="h-4 w-4 mr-2" />
                   <span>December 8, 2024</span>
                 </div>
-                <h3 className="text-xl font-bold text-black mb-3 group-hover:text-green-800 transition-colors">
+                <h3 className="text-xl font-bold text-black mb-3 group-hover:text-unn-primary transition-colors">
                   UNN's Global Academic Partnerships
                 </h3>
                 <p className="text-gray-600 mb-4 line-clamp-3">
                   The university continues to strengthen international collaborations, positioning itself as a globally competitive institution in research and education.
                 </p>
-                <a href="#" className="inline-flex items-center text-green-800 font-semibold hover:text-green-900 transition-colors">
+                <a href="#" className="inline-flex items-center font-semibold transition-colors" style={{ color: '#275b1c' }} onMouseEnter={(e) => e.currentTarget.style.color = '#1f4716'}>
                   Read More
                   <ArrowRight className="h-4 w-4 ml-2" />
                 </a>
@@ -1198,7 +1206,8 @@ export default function LandingPage() {
           <div className="text-center mt-12">
             <Button 
               size="lg" 
-              className="bg-green-800 hover:bg-green-900 text-white px-8 py-4 text-lg font-semibold rounded-lg shadow-lg hover:shadow-xl transition-all duration-300"
+              className="text-white px-8 py-4 text-lg font-semibold rounded-lg shadow-lg hover:shadow-xl transition-all duration-300"
+              style={{ backgroundColor: '#275b1c' }}
               onClick={() => window.location.href = '/news'}
             >
               View All News
@@ -1208,7 +1217,7 @@ export default function LandingPage() {
       </section>
 
       {/* Footer */}
-      <footer className="bg-green-900 text-white py-12">
+      <footer className="text-white py-12" style={{ backgroundColor: '#275b1c' }}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             <div>

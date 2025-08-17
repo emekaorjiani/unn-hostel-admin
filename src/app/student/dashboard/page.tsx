@@ -106,8 +106,8 @@ export default function StudentDashboardPage() {
       change: '0',
       changeType: 'neutral' as const,
       icon: FileText,
-      color: 'text-blue-600',
-      bgColor: 'bg-blue-100',
+      color: 'text-unn-primary',
+      bgColor: 'bg-unn-primary-light',
     },
     {
       title: 'Approved Applications',
@@ -200,7 +200,7 @@ export default function StudentDashboardPage() {
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50 flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600 mx-auto mb-4"></div>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-unn-primary mx-auto mb-4"></div>
           <p className="text-gray-600">Loading dashboard...</p>
         </div>
       </div>
@@ -244,7 +244,7 @@ export default function StudentDashboardPage() {
                   <h2 className="text-3xl font-bold mb-2">
                     Welcome back, {student?.user?.first_name}
                   </h2>
-                  <p className="text-green-100 text-lg mb-4">
+                  <p className="text-unn-primary text-lg mb-4">
                     Here&apos;s what&apos;s happening with your hostel accommodation
                   </p>
                   <div className="flex items-center space-x-6 text-sm">
@@ -283,7 +283,7 @@ export default function StudentDashboardPage() {
                     </div>
                     <div className="flex items-center">
                       {stat.changeType === 'positive' ? (
-                        <ArrowUpRight className="h-4 w-4 text-green-600" />
+                        <ArrowUpRight className="h-4 w-4 text-unn-primary" />
                       ) : stat.changeType === 'negative' ? (
                         <ArrowDownRight className="h-4 w-4 text-red-600" />
                       ) : (
@@ -294,7 +294,7 @@ export default function StudentDashboardPage() {
                   <h3 className="text-sm font-medium text-gray-600 mb-1">{stat.title}</h3>
                   <p className="text-2xl font-bold text-gray-900 mb-2">{stat.value}</p>
                   <p className={`text-sm ${
-                    stat.changeType === 'positive' ? 'text-green-600' : 
+                    stat.changeType === 'positive' ? 'text-unn-primary' : 
                     stat.changeType === 'negative' ? 'text-red-600' : 'text-gray-500'
                   }`}>
                     {stat.change} from last month
@@ -324,7 +324,7 @@ export default function StudentDashboardPage() {
                         <div className="flex-shrink-0">
                           <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center">
                             {activity.type === 'payment' && <CreditCard className="h-4 w-4 text-blue-600" />}
-                            {activity.type === 'application' && <FileText className="h-4 w-4 text-green-600" />}
+                            {activity.type === 'application' && <FileText className="h-4 w-4 text-unn-primary" />}
                             {activity.type === 'maintenance' && <Wrench className="h-4 w-4 text-orange-600" />}
                           </div>
                         </div>
@@ -367,7 +367,7 @@ export default function StudentDashboardPage() {
                     <div key={event.id} className="flex items-start space-x-3 p-3 bg-gray-50 rounded-lg">
                       <div className={`w-2 h-2 rounded-full mt-2 ${
                         event.priority === 'high' ? 'bg-red-500' :
-                        event.priority === 'medium' ? 'bg-yellow-500' : 'bg-green-500'
+                        event.priority === 'medium' ? 'bg-yellow-500' : 'bg-unn-primary'
                       }`}></div>
                       <div className="flex-1">
                         <p className="text-sm font-medium text-gray-900">{event.title}</p>
@@ -400,8 +400,7 @@ export default function StudentDashboardPage() {
                       notification.read ? 'bg-gray-50' : 'bg-blue-50'
                     }`}>
                       <div className={`w-2 h-2 rounded-full mt-2 ${
-                        notification.type === 'warning' ? 'bg-yellow-500' :
-                        notification.type === 'success' ? 'bg-green-500' : 'bg-blue-500'
+                        notification.type === 'success' ? 'bg-unn-primary' : 'bg-blue-500'
                       }`}></div>
                       <div className="flex-1">
                         <p className="text-sm font-medium text-gray-900">{notification.title}</p>

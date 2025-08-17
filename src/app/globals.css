@@ -3,6 +3,10 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
+  --unn-primary: #275b1c;
+  --unn-primary-hover: #1f4716;
+  --unn-primary-light: #f0f9f0;
+  --unn-primary-lighter: #dcf2dc;
 }
 
 @theme inline {
@@ -79,4 +83,41 @@ body {
 .amenity-item:hover {
   transform: scale(1.05);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* UNN Brand Colors */
+.bg-unn-primary {
+  background-color: var(--unn-primary);
+}
+
+.bg-unn-primary-hover {
+  background-color: var(--unn-primary-hover);
+}
+
+.bg-unn-primary-light {
+  background-color: var(--unn-primary-light);
+}
+
+.bg-unn-primary-lighter {
+  background-color: var(--unn-primary-lighter);
+}
+
+.text-unn-primary {
+  color: var(--unn-primary);
+}
+
+.border-unn-primary {
+  border-color: var(--unn-primary);
+}
+
+.border-unn-primary-light {
+  border-color: var(--unn-primary-light);
+}
+
+.hover\:bg-unn-primary-hover:hover {
+  background-color: var(--unn-primary-hover);
+}
+
+.hover\:text-unn-primary:hover {
+  color: var(--unn-primary);
 }

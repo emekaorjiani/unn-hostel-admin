@@ -192,7 +192,7 @@ export default function StudentSettingsPage() {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600 mx-auto mb-4"></div>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-unn-primary mx-auto mb-4"></div>
           <p className="text-gray-600">Loading settings...</p>
         </div>
       </div>
@@ -243,7 +243,7 @@ export default function StudentSettingsPage() {
                   onClick={() => setActiveTab(tab.id)}
                   className={`flex items-center space-x-2 px-4 py-2 rounded-md text-sm font-medium transition-colors ${
                     activeTab === tab.id
-                      ? 'bg-green-600 text-white shadow-sm'
+                      ? 'bg-unn-primary hover:bg-unn-primary-hover text-white shadow-sm'
                       : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
                   }`}
                 >
@@ -364,7 +364,7 @@ export default function StudentSettingsPage() {
                 <Button 
                   onClick={handleProfileUpdate}
                   disabled={saving}
-                  className="bg-green-600 hover:bg-green-700"
+                  className="bg-unn-primary hover:bg-unn-primary-hover text-white shadow-sm"
                 >
                   {saving ? (
                     <>
@@ -656,7 +656,7 @@ export default function StudentSettingsPage() {
               <Button 
                 onClick={handleNotificationUpdate}
                 disabled={saving}
-                className="bg-green-600 hover:bg-green-700"
+                className="bg-unn-primary hover:bg-unn-primary-hover text-white shadow-sm"
               >
                 {saving ? (
                   <>
@@ -765,7 +765,7 @@ export default function StudentSettingsPage() {
               <Button 
                 onClick={handleSecurityUpdate}
                 disabled={saving}
-                className="bg-green-600 hover:bg-green-700"
+                className="bg-unn-primary hover:bg-unn-primary-hover text-white shadow-sm"
               >
                 {saving ? (
                   <>
@@ -828,7 +828,7 @@ export default function StudentSettingsPage() {
                   </select>
                 </div>
 
-                <Button className="bg-green-600 hover:bg-green-700">
+                <Button className="bg-unn-primary hover:bg-unn-primary-hover text-white shadow-sm">
                   <Save className="h-4 w-4 mr-2" />
                   Save Preferences
                 </Button>
@@ -880,7 +880,7 @@ export default function StudentSettingsPage() {
                     <div className="flex items-center space-x-2">
                       <CheckCircle className="h-4 w-4 text-green-400" />
                       <span className="text-sm text-gray-600">Status:</span>
-                      <Badge className="bg-green-100 text-green-800 capitalize">{student.user.status}</Badge>
+                      <Badge className="bg-unn-primary-light text-unn-primary capitalize">{student.user.status}</Badge>
                     </div>
                     <div className="flex items-center space-x-2">
                       <CreditCard className="h-4 w-4 text-gray-400" />

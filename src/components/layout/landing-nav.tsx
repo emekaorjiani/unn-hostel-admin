@@ -21,7 +21,7 @@ const LandingNav: React.FC<LandingNavProps> = ({
   
   const navClasses = variant === 'transparent' 
     ? 'bg-transparent text-white' 
-    : 'bg-green-700 text-white shadow-lg';
+    : 'bg-unn-primary text-white shadow-lg';
 
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
