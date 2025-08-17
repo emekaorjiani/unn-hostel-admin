@@ -65,6 +65,7 @@ const TypewriterText = ({ text, delay = 0, speed = 50 }: { text: string; delay?:
 
 const libraryImages = [
   '/library-1.jpg',
+  '/unn10.webp',
   '/library2.jpg',
 ]
 
@@ -74,7 +75,7 @@ const galleryData = [
     id: 1,
     src: '/unn1.jpeg',
     alt: 'UNN Campus View 1',
-    title: 'UNN Campus View 1',
+    title: 'UNN Campus View',
     description: 'Beautiful campus landscape',
     height: 'h-80',
     delay: 0
@@ -83,7 +84,7 @@ const galleryData = [
     id: 2,
     src: '/unn2.jpg',
     alt: 'UNN Campus View 2',
-    title: 'UNN Campus View 2',
+    title: 'UNN Campus View',
     description: 'Academic excellence center',
     height: 'h-64',
     delay: 0.1
@@ -92,7 +93,7 @@ const galleryData = [
     id: 3,
     src: '/unn3.jpg',
     alt: 'UNN Campus View 3',
-    title: 'UNN Campus View 3',
+    title: 'UNN Campus View',
     description: 'Modern learning facilities',
     height: 'h-56',
     delay: 0.2
@@ -101,7 +102,7 @@ const galleryData = [
     id: 4,
     src: '/unn4.jpeg',
     alt: 'UNN Campus View 4',
-    title: 'UNN Campus View 4',
+    title: 'UNN Campus View',
     description: 'Student residential area',
     height: 'h-48',
     delay: 0.3
@@ -110,7 +111,7 @@ const galleryData = [
     id: 5,
     src: '/unn5.jpg',
     alt: 'UNN Campus View 5',
-    title: 'UNN Campus View 5',
+    title: 'UNN Campus View',
     description: 'Historic academic building',
     height: 'h-96',
     delay: 0.4
@@ -119,7 +120,7 @@ const galleryData = [
     id: 6,
     src: '/unn6.jpeg',
     alt: 'UNN Campus View 6',
-    title: 'UNN Campus View 6',
+    title: 'UNN Campus View',
     description: 'Student living quarters',
     height: 'h-72',
     delay: 0.5
@@ -128,7 +129,7 @@ const galleryData = [
     id: 7,
     src: '/unn7.jpg',
     alt: 'UNN Campus View 7',
-    title: 'UNN Campus View 7',
+    title: 'UNN Campus View',
     description: 'Knowledge and learning hub',
     height: 'h-60',
     delay: 0.6
@@ -137,7 +138,7 @@ const galleryData = [
     id: 8,
     src: '/unn8.jpeg',
     alt: 'UNN Campus View 8',
-    title: 'UNN Campus View 8',
+    title: 'UNN Campus View',
     description: 'Study and research space',
     height: 'h-52',
     delay: 0.7
@@ -146,7 +147,7 @@ const galleryData = [
     id: 9,
     src: '/unn9.jpeg',
     alt: 'UNN Campus View 9',
-    title: 'UNN Campus View 9',
+    title: 'UNN Campus View',
     description: 'Vibrant campus atmosphere',
     height: 'h-68',
     delay: 0.8
@@ -155,16 +156,16 @@ const galleryData = [
     id: 10,
     src: '/unn10.webp',
     alt: 'UNN Campus View 10',
-    title: 'UNN Campus View 10',
+    title: 'UNN Campus View',
     description: 'State-of-the-art amenities',
     height: 'h-56',
     delay: 0.9
   },
   {
     id: 11,
-    src: '/unn10.webp',
-    alt: 'UNN Campus View 10',
-    title: 'UNN Campus View 11',
+    src: '/library2.jpg',
+    alt: 'UNN Campus View 11',
+    title: 'UNN Campus View1',
     description: 'State-of-the-art amenities',
     height: 'h-56',
     delay: 0.9
