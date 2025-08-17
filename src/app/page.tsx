@@ -23,6 +23,42 @@ import {
   ArrowRight
 } from 'lucide-react'
 
+// Typewriter effect component
+const TypewriterText = ({ text, delay = 0, speed = 50 }: { text: string; delay?: number; speed?: number }) => {
+  const [displayText, setDisplayText] = useState('')
+  const [currentIndex, setCurrentIndex] = useState(0)
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (currentIndex < text.length) {
+        setDisplayText(prev => prev + text[currentIndex])
+        setCurrentIndex(prev => prev + 1)
+      }
+    }, speed)
+
+    return () => clearTimeout(timer)
+  }, [currentIndex, text, speed])
+
+  useEffect(() => {
+    const delayTimer = setTimeout(() => {
+      setCurrentIndex(0)
+    }, delay * 1000)
+
+    return () => clearTimeout(delayTimer)
+  }, [delay])
+
+  return (
+    <span>
+      {displayText}
+      <motion.span
+        className="inline-block w-0.5 h-6 bg-yellow-400 ml-1"
+        animate={{ opacity: [1, 0, 1] }}
+        transition={{ duration: 0.8, repeat: Infinity }}
+      />
+    </span>
+  )
+}
+
 const libraryImages = [
   '/library-1.jpg',
   '/library2.jpg',
@@ -94,7 +130,11 @@ export default function LandingPage() {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.8, delay: 0.6, ease: "easeOut" }}
                 >
-                  Nigeria's first autonomous university, founded in 1955 by Dr. Nnamdi Azikiwe. Experience world-class education across 17 faculties with over 300 academic programs.
+                  <TypewriterText 
+                    text="Nigeria's first autonomous university, founded in 1955 by Dr. Nnamdi Azikiwe. Experience world-class education across 17 faculties with over 300 academic programs."
+                    delay={0.8}
+                    speed={50}
+                  />
                 </motion.p>
               </motion.div>
               
@@ -121,16 +161,62 @@ export default function LandingPage() {
             </motion.div>
 
             {/* Right Column - Placeholder Image */}
-            {/* <div className="hidden lg:flex justify-center items-center">
-              <div className="relative">
-                <img
-                  src="/placeholder.png"
+            <motion.div 
+              className="hidden lg:flex justify-center items-center"
+              initial={{ opacity: 0, x: 50 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.8, delay: 0.5, ease: "easeOut" }}
+            >
+              <motion.div 
+                className="relative overflow-hidden rounded-lg perspective-1000"
+                style={{ perspective: '1000px' }}
+              >
+                <motion.img
+                  src="/unn.png"
                   alt="UNN Hostel"
-                  className="w-[100%] h-[200px]"
+                  className="w-[200%] h-full object-cover transition-transform duration-300 ease-out"
+                  style={{
+                    transformStyle: 'preserve-3d',
+                    filter: 'brightness(0.9) contrast(1.1) saturate(0.8)',
+                    transform: 'perspective(1000px) rotateX(0deg) rotateY(0deg) translateZ(0px)',
+                  }}
+                  onMouseMove={(e) => {
+                    const rect = e.currentTarget.getBoundingClientRect();
+                    const centerX = rect.left + rect.width / 2;
+                    const centerY = rect.top + rect.height / 2;
+                    const mouseX = e.clientX;
+                    const mouseY = e.clientY;
+                    
+                    const rotateX = (mouseY - centerY) / (rect.height / 2) * -20;
+                    const rotateY = (mouseX - centerX) / (rect.width / 2) * 20;
+                    
+                    e.currentTarget.style.transform = `
+                      perspective(1000px) 
+                      rotateX(${rotateX}deg) 
+                      rotateY(${rotateY}deg) 
+                      translateZ(30px)
+                    `;
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.transform = `
+                      perspective(1000px) 
+                      rotateX(0deg) 
+                      rotateY(0deg) 
+                      translateZ(0px)
+                    `;
+                  }}
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent rounded-md"></div>
-              </div>
-            </div> */}
+                {/* Enhanced shadow for 3D depth */}
+                <motion.div 
+                  className="absolute inset-0 rounded-lg pointer-events-none"
+                  style={{
+                    background: 'linear-gradient(135deg, rgba(0,0,0,0.15) 0%, transparent 40%, rgba(0,0,0,0.1) 100%)',
+                    transform: 'translateZ(-2px)',
+                    filter: 'blur(1px)'
+                  }}
+                />
+              </motion.div>
+            </motion.div>
           </div>
         </div>
 
