@@ -62,13 +62,13 @@ const LandingNav: React.FC<LandingNavProps> = ({
             <div className="flex items-center space-x-3">
               <div className="h-10 w-10 md:h-12 md:w-12 rounded-full flex items-center justify-center bg-white/10">
                 <img 
-                  src={'./unn.png'} 
+                  src={'/unn.png'} 
                   alt="UNN Logo"
                   className="h-8 w-8 md:h-10 md:w-10 object-contain"
                 />
               </div>
               <div className="hidden sm:block">
-                <h1 className="text-lg md:text-2xl font-bold">UNN Hostel Portal</h1>
+                <h1 className="text-lg md:text-2xl font-bold font-[Federant]">UNN</h1>
                 <p className={`text-xs md:text-sm ${variant === 'transparent' ? 'text-green-100' : 'text-green-100'}`}>
                   University of Nigeria, Nsukka
                 </p>
@@ -104,13 +104,6 @@ const LandingNav: React.FC<LandingNavProps> = ({
                 onClick={() => window.location.href = '/student/auth/login'}
               >
                 Student Login
-              </Button>
-              <Button 
-                variant="outline" 
-                className="bg-green-700 hover:bg-green-800 text-white border-white hover:border-white font-semibold px-6 py-2"
-                onClick={() => window.location.href = '/auth/login'}
-              >
-                Admin Login
               </Button>
             </div>
           )}
@@ -164,16 +157,6 @@ const LandingNav: React.FC<LandingNavProps> = ({
                 }}
               >
                 Student Login
-              </Button>
-              <Button 
-                variant="outline" 
-                className="bg-green-700 hover:bg-green-800 text-white border-white hover:border-white font-semibold w-full py-3"
-                onClick={() => {
-                  window.location.href = '/auth/login';
-                  setIsMobileMenuOpen(false);
-                }}
-              >
-                Admin Login
               </Button>
             </div>
           </motion.div>

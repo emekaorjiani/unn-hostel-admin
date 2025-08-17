@@ -442,7 +442,7 @@ export default function LandingPage() {
                   <Button 
                     size="lg" 
                     variant="outline"
-                    className="bg-green-800 hover:bg-green-900 text-white px-8 py-4 text-lg font-semibold rounded-lg shadow-lg hover:shadow-xl transition-all duration-300"
+                    className="bg-green-800 hover:bg-green-900 text-white hover:text-white px-8 py-6 text-lg font-semibold rounded-lg shadow-lg hover:shadow-xl transition-all duration-300"
                     onClick={() => window.location.href = '/student/auth/login'}
                   >
                     Access Student Portal
@@ -970,7 +970,7 @@ export default function LandingPage() {
                 transition={{ duration: 0.6, delay: item.delay, ease: "easeOut" }}
                 whileHover={{ y: -5 }}
               >
-                <div className="relative overflow-hidden rounded-xl shadow-lg group-hover:shadow-xl transition-all duration-300">
+                <div className="relative overflow-hidden rounded shadow-lg group-hover:shadow-xl transition-all duration-300">
                   <motion.img
                     src={item.src}
                     alt={item.alt}
