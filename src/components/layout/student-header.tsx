@@ -95,27 +95,6 @@ export default function StudentHeader({
                 </span>
               </Button>
 
-              {/* Settings */}
-              <Button 
-                variant="outline" 
-                size="sm"
-                onClick={() => router.push('/student/settings')}
-                className='cursor-pointer'
-              >
-                <Settings className="h-4 w-4 mr-2" />
-                Settings
-              </Button>
-
-              {/* Help */}
-              <Button 
-                variant="outline" 
-                size="sm"
-                onClick={() => router.push('/student/help')}
-                className='cursor-pointer'
-              >
-                <HelpCircle className="h-4 w-4 mr-2" />
-                Help
-              </Button>
 
               {/* Profile dropdown */}
               <div className="relative">

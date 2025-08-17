@@ -11,6 +11,7 @@ import {
   HelpCircle,
   LayoutDashboard
 } from 'lucide-react';
+import Link from 'next/link';
 
 const QuickActions = () => {
   const actions = [
@@ -28,16 +29,14 @@ const QuickActions = () => {
     <nav className="fixed top-16 left-0 right-0 bg-white border-b border-gray-200 px-4 py-3 z-40">
       <div className="flex items-center justify-center space-x-4">
         {actions.map((action) => (
-          <Button
+          <Link
             key={action.href}
-            variant="ghost"
-            size="sm"
             className="flex items-center space-x-2 px-4 py-2 hover:bg-gray-100 rounded-lg"
-            onClick={() => window.location.href = action.href}
+            href={action.href}
           >
             {action.icon}
             <span className="text-sm font-medium text-gray-700">{action.title}</span>
-          </Button>
+          </Link>
         ))}
       </div>
     </nav>
