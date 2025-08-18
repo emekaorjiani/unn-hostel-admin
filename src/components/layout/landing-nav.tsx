@@ -68,7 +68,7 @@ const LandingNav: React.FC<LandingNavProps> = ({
                 />
               </div>
               <div className="hidden sm:block">
-                <h1 className="text-lg md:text-2xl font-bold font-[Federant]">UNN</h1>
+                <h1 className="text-lg md:text-2xl font-bold">UNN</h1>
                 <p className={`text-xs md:text-sm ${variant === 'transparent' ? 'text-green-100' : 'text-green-100'}`}>
                   University of Nigeria, Nsukka
                 </p>

@@ -392,17 +392,16 @@ export default function LandingPage() {
                 transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
               >
                 <motion.h2 
-                  className="text-4xl md:text-5xl font-bold text-black mb-6 leading-tight"
+                  className="text-2xl md:text-4xl font-bold text-black mb-6 leading-tight"
                   initial={{ opacity: 0, y: 30 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ duration: 0.8, delay: 0.4, ease: "easeOut" }}
                 >
-                  Restoring the dignity of man through
+                  Restoring the dignity of man through excellence
                   <span className="block relative">
-                    excellence
                     <motion.div 
-                      className="absolute -bottom-2 left-0 w-full h-3 bg-yellow-400 transform -skew-x-12"
+                      className="absolute -bottom-2 left-0 w-full h-2 bg-yellow-400 transform -skew-x-12"
                       initial={{ scaleX: 0 }}
                       whileInView={{ scaleX: 1 }}
                       viewport={{ once: true }}
@@ -411,7 +410,7 @@ export default function LandingPage() {
                   </span>
                 </motion.h2>
                 <motion.p 
-                  className="text-xl text-gray-700 leading-relaxed max-w-2xl"
+                  className="text-md text-gray-700 leading-relaxed max-w-2xl"
                   initial={{ opacity: 0, y: 30 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
@@ -435,7 +434,7 @@ export default function LandingPage() {
                   <Button 
                     size="lg" 
                     variant="outline"
-                    className="text-white px-8 py-4 text-lg font-semibold rounded-lg shadow-lg hover:shadow-xl transition-all duration-300"
+                    className="text-white px-8 py-4 text-sm font-semibold rounded-lg shadow-lg hover:shadow-xl transition-all duration-300"
                     style={{ backgroundColor: '#275b1c' }}
                   onClick={() => window.location.href = '/student/auth/login'}
                 >
@@ -463,7 +462,7 @@ export default function LandingPage() {
                   transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
                 >
                   <img
-                    src="/unn1.jpeg"
+                    src="/unn3.jpg"
                     alt="UNN Campus"
                     className="w-full h-96 object-cover"
                     // style={{
@@ -501,7 +500,7 @@ export default function LandingPage() {
                   transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
                 >
                   <img
-                    src="/unn2.jpg"
+                    src="/unn10.webp"
                     alt="UNN Campus Excellence"
                     className="w-full h-96 object-cover"
                     // style={{
@@ -530,7 +529,7 @@ export default function LandingPage() {
                   viewport={{ once: true }}
                   transition={{ duration: 0.6, delay: 0.2, ease: "easeOut" }}
                 >
-                  <p className="text-xl leading-relaxed mb-2">
+                  <p className="text-md leading-relaxed mb-2">
                     Founded in 1955 by Dr. Nnamdi Azikiwe, UNN became Nigeria's first autonomous university in 1960, establishing the foundation for indigenous higher education excellence in the country.
                   </p>
                   <p className="text-yellow-200 text-sm font-medium">
@@ -546,7 +545,7 @@ export default function LandingPage() {
                   viewport={{ once: true }}
                   transition={{ duration: 0.6, delay: 0.4, ease: "easeOut" }}
                 >
-                  <p className="text-xl leading-relaxed mb-2">
+                  <p className="text-md leading-relaxed mb-2">
                     With 17 faculties, 102 academic departments, and over 300 academic programs, UNN offers the most comprehensive educational portfolio among Nigerian universities.
                   </p>
                   <p className="text-yellow-200 text-sm font-medium">
@@ -562,7 +561,7 @@ export default function LandingPage() {
                   viewport={{ once: true }}
                   transition={{ duration: 0.6, delay: 0.6, ease: "easeOut" }}
                 >
-                  <p className="text-xl leading-relaxed mb-2">
+                  <p className="text-md leading-relaxed mb-2">
                     UNN's mission to restore the dignity of man through research, innovation, and knowledge transfer has positioned it as a global leader in academic excellence and human development.
                   </p>
                   <p className="text-yellow-200 text-sm font-medium">
@@ -587,7 +586,7 @@ export default function LandingPage() {
             transition={{ duration: 0.8, ease: "easeOut" }}
           >
             <motion.h2 
-              className="text-4xl md:text-5xl font-bold text-black mb-6"
+              className="text-2xl md:text-4xl font-bold text-black mb-6"
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
@@ -596,7 +595,7 @@ export default function LandingPage() {
               Academic Excellence & Services
             </motion.h2>
             <motion.p 
-              className="text-xl text-gray-700 max-w-3xl mx-auto"
+              className="text-md text-gray-700 max-w-3xl mx-auto"
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
@@ -807,7 +806,7 @@ export default function LandingPage() {
             transition={{ duration: 0.8, ease: "easeOut" }}
           >
             <motion.h2 
-              className="text-4xl font-bold text-black mb-4"
+              className="text-2xl md:text-4xl font-bold text-black mb-4"
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
@@ -816,7 +815,7 @@ export default function LandingPage() {
               Campus Gallery
             </motion.h2>
             <motion.p 
-              className="text-xl text-gray-600 max-w-3xl mx-auto"
+              className="text-md text-gray-600 max-w-3xl mx-auto"
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
@@ -847,7 +846,7 @@ export default function LandingPage() {
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent"></div>
                   <div className="absolute bottom-0 left-0 right-0 p-6">
-                    <h3 className="text-xl font-bold text-white mb-2">{item.title}</h3>
+                    <h3 className="text-md font-bold text-white mb-2">{item.title}</h3>
                     <p className="text-gray-200 text-sm">{item.description}</p>
                   </div>
                 </div>
@@ -921,7 +920,7 @@ export default function LandingPage() {
             transition={{ duration: 0.8, ease: "easeOut" }}
           >
             <motion.h2 
-              className="text-4xl md:text-5xl font-bold text-black mb-6"
+              className="text-2xl md:text-4xl font-bold text-black mb-6"
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
@@ -930,7 +929,7 @@ export default function LandingPage() {
               UNN News & Announcements
             </motion.h2>
             <motion.p 
-              className="text-xl text-gray-700 max-w-3xl mx-auto"
+              className="text-md text-gray-700 max-w-3xl mx-auto"
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
