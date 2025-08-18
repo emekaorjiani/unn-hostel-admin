@@ -295,7 +295,7 @@ export default function LandingPage() {
               transition={{ duration: 0.8, delay: 0.5, ease: "easeOut" }}
             >
               <motion.div 
-                className="relative overflow-hidden rounded-lg perspective-1000"
+                className="relative  rounded-lg perspective-1000"
                 style={{ perspective: '1000px' }}
               >
                 <motion.img
@@ -337,7 +337,7 @@ export default function LandingPage() {
                 <motion.div 
                   className="absolute inset-0 rounded-lg pointer-events-none"
                   style={{
-                    background: 'linear-gradient(135deg, rgba(0,0,0,0.15) 0%, transparent 40%, rgba(0,0,0,0.1) 100%)',
+                    background: '',
                     transform: 'translateZ(-2px)',
                     filter: 'blur(1px)'
                   }}
@@ -466,79 +466,13 @@ export default function LandingPage() {
                     src="/unn1.jpeg"
                     alt="UNN Campus"
                     className="w-full h-96 object-cover"
-                    style={{
-                      clipPath: 'polygon(0% 0%, 100% 0%, 85% 100%, 0% 100%)'
-                    }}
+                    // style={{
+                    //   clipPath: 'polygon(0% 0%, 100% 0%, 85% 100%, 0% 100%)'
+                    // }}
                   />
                   
-                  {/* Dark Green Overlay with Custom Shape */}
-                  <div 
-                    className="absolute inset-0 opacity-20"
-                    style={{ 
-                      backgroundColor: '#275b1c',
-                      clipPath: 'polygon(0% 0%, 100% 0%, 85% 100%, 0% 100%)'
-                    }}
-                  ></div>
                 </motion.div>
 
-                {/* Abstract Decorative Elements */}
-                <motion.div 
-                  className="absolute -bottom-8 -left-8 w-32 h-32 rounded-full opacity-80"
-                  style={{ backgroundColor: '#275b1c' }}
-                  initial={{ opacity: 0, scale: 0 }}
-                  whileInView={{ opacity: 0.8, scale: 1 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.6, delay: 0.4, ease: "easeOut" }}
-                ></motion.div>
-                <motion.div 
-                  className="absolute -top-4 -right-4 w-16 h-16 bg-yellow-400 rounded-full opacity-90"
-                  initial={{ opacity: 0, scale: 0 }}
-                  whileInView={{ opacity: 0.9, scale: 1 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.6, delay: 0.6, ease: "easeOut" }}
-                ></motion.div>
-                
-                {/* Dotted Pattern Overlays */}
-                <motion.div 
-                  className="absolute bottom-0 left-0 w-24 h-24 opacity-30"
-                  initial={{ opacity: 0 }}
-                  whileInView={{ opacity: 0.3 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.8, delay: 0.8, ease: "easeOut" }}
-                >
-                  <div className="w-full h-full" style={{
-                    backgroundImage: 'radial-gradient(circle, black 1px, transparent 1px)',
-                    backgroundSize: '8px 8px'
-                  }}></div>
-                </motion.div>
-                
-                <motion.div 
-                  className="absolute bottom-0 right-0 w-32 h-32 opacity-30"
-                  initial={{ opacity: 0 }}
-                  whileInView={{ opacity: 0.3 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.8, delay: 1, ease: "easeOut" }}
-                >
-                  <div className="w-full h-full" style={{
-                    backgroundImage: 'radial-gradient(circle, black 1px, transparent 1px)',
-                    backgroundSize: '8px 8px'
-                  }}></div>
-                </motion.div>
-
-                {/* Diagonal Lines */}
-                <motion.div 
-                  className="absolute top-0 right-0 w-20 h-20 opacity-40"
-                  initial={{ opacity: 0, rotate: -45 }}
-                  whileInView={{ opacity: 0.4, rotate: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.8, delay: 1.2, ease: "easeOut" }}
-                >
-                  <div className="w-full h-full flex flex-col justify-center items-center space-y-1">
-                    <div className="w-16 h-0.5 bg-black transform rotate-45"></div>
-                    <div className="w-12 h-0.5 bg-black transform rotate-45"></div>
-                    <div className="w-8 h-0.5 bg-black transform rotate-45"></div>
-                  </div>
-                </motion.div>
             </div>
             </motion.div>
           </div>
@@ -570,77 +504,12 @@ export default function LandingPage() {
                     src="/unn2.jpg"
                     alt="UNN Campus Excellence"
                     className="w-full h-96 object-cover"
-                    style={{
-                      clipPath: 'polygon(0% 0%, 100% 0%, 85% 100%, 0% 100%)'
-                    }}
+                    // style={{
+                    //   clipPath: 'polygon(0% 0%, 100% 0%, 85% 100%, 0% 100%)'
+                    // }}
                   />
-                  
-                  {/* Dark Green Overlay with Custom Shape */}
-                  <div 
-                    className="absolute inset-0 bg-unn-700 opacity-30"
-                    style={{
-                      clipPath: 'polygon(0% 0%, 100% 0%, 85% 100%, 0% 100%)'
-                    }}
-                  ></div>
                 </motion.div>
 
-                {/* Decorative Elements */}
-                <motion.div 
-                  className="absolute -bottom-8 -left-8 w-32 h-32 bg-yellow-400 rounded-full opacity-80"
-                  initial={{ opacity: 0, scale: 0 }}
-                  whileInView={{ opacity: 0.8, scale: 1 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.6, delay: 0.4, ease: "easeOut" }}
-                ></motion.div>
-                <motion.div 
-                  className="absolute -top-4 -right-4 w-16 h-16 bg-white rounded-full opacity-90"
-                  initial={{ opacity: 0, scale: 0 }}
-                  whileInView={{ opacity: 0.9, scale: 1 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.6, delay: 0.6, ease: "easeOut" }}
-                ></motion.div>
-                
-                {/* Dotted Pattern Overlays */}
-                <motion.div 
-                  className="absolute bottom-0 left-0 w-24 h-24 opacity-30"
-                  initial={{ opacity: 0 }}
-                  whileInView={{ opacity: 0.3 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.8, delay: 0.8, ease: "easeOut" }}
-                >
-                  <div className="w-full h-full" style={{
-                    backgroundImage: 'radial-gradient(circle, white 1px, transparent 1px)',
-                    backgroundSize: '8px 8px'
-                  }}></div>
-                </motion.div>
-                
-                <motion.div 
-                  className="absolute bottom-0 right-0 w-32 h-32 opacity-30"
-                  initial={{ opacity: 0 }}
-                  whileInView={{ opacity: 0.3 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.8, delay: 1, ease: "easeOut" }}
-                >
-                  <div className="w-full h-full" style={{
-                    backgroundImage: 'radial-gradient(circle, white 1px, transparent 1px)',
-                    backgroundSize: '8px 8px'
-                  }}></div>
-                </motion.div>
-
-                {/* Diagonal Lines */}
-                <motion.div 
-                  className="absolute top-0 right-0 w-20 h-20 opacity-40"
-                  initial={{ opacity: 0, rotate: -45 }}
-                  whileInView={{ opacity: 0.4, rotate: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.8, delay: 1.2, ease: "easeOut" }}
-                >
-                  <div className="w-full h-full flex flex-col justify-center items-center space-y-1">
-                    <div className="w-16 h-0.5 bg-white transform rotate-45"></div>
-                    <div className="w-12 h-0.5 bg-white transform rotate-45"></div>
-                    <div className="w-8 h-0.5 bg-white transform rotate-45"></div>
-                  </div>
-                </motion.div>
               </div>
             </motion.div>
 

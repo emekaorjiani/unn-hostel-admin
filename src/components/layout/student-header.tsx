@@ -1,11 +1,15 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { Button } from '../ui/button'
-import { GraduationCap, Settings, HelpCircle, LogOut, User, Bell } from 'lucide-react'
+import { Settings, LogOut, User, Bell } from 'lucide-react'
 import { ConfirmationModal } from '../ui/confirmation-modal'
 import { authService } from '@/lib/auth'
+import { studentService } from '@/lib/studentService'
+
+
+
 
 interface StudentHeaderProps {
   title?: string
@@ -25,6 +29,47 @@ export default function StudentHeader({
   const router = useRouter()
   const [showLogoutModal, setShowLogoutModal] = useState(false)
   const [isProfileOpen, setIsProfileOpen] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+  const [dashboardData, setDashboardData] = useState<any>(null)
+
+  const studentProfile = dashboardData?.profile
+
+  useEffect(() => {
+    const fetchDashboardData = async () => {
+      try {
+        setIsLoading(true)
+        setError(null)
+        const data = await studentService.getDashboardData()
+        setDashboardData(data)
+        console.log("student: ", data)
+      } catch (err) {
+        console.error('Error fetching dashboard data:', err)
+        setError(err instanceof Error ? err.message : 'Failed to load dashboard data')
+        // Fallback to mock data for development
+        setDashboardData({
+          profile: studentProfile,
+          applications: [],
+          payments: [],
+          maintenanceTickets: [],
+          notifications: [],
+          quickStats: {
+            totalApplications: 0,
+            approvedApplications: 0,
+            pendingPayments: 0,
+            activeTickets: 0,
+            unreadNotifications: 0,
+          }
+        })
+      } finally {
+        setIsLoading(false)
+      }
+    }
+
+    fetchDashboardData()
+  }, [])
+
+  // console.log("studentProfile: ", studentProfile)
 
   const handleLogout = async () => {
     try {
@@ -53,7 +98,7 @@ export default function StudentHeader({
     }
   }
 
-  const studentProfile = authService.getStoredStudentProfile()
+
 
   return (
     <>
@@ -128,7 +173,7 @@ export default function StudentHeader({
                       <p className="text-sm font-medium text-gray-900">
                         {(studentProfile as any)?.user?.first_name || (studentProfile as any)?.first_name || 'Student'} {(studentProfile as any)?.user?.last_name || (studentProfile as any)?.last_name || 'User'}
                       </p>
-                                              <p className="text-xs text-gray-500">{(studentProfile as any)?.user?.email || (studentProfile as any)?.email || 'student@unn.edu.ng'}</p>
+                        <p className="text-xs text-gray-500">{(studentProfile as any)?.user?.email || (studentProfile as any)?.email || 'student@unn.edu.ng'}</p>
                     </div>
                     <Button
                       variant="ghost"

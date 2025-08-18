@@ -8,19 +8,13 @@ import { Badge } from '../../../components/ui/badge'
 import { Input } from '../../../components/ui/input'
 import { 
   Wrench, 
-  AlertTriangle,
   Clock,
   CheckCircle,
   XCircle,
   Plus,
   Eye,
-  ArrowLeft,
   FileText,
-  Phone,
-  MessageSquare,
   Calendar,
-  MapPin,
-  Settings
 } from 'lucide-react'
 import { studentService, MaintenanceTicket } from '@/lib/studentService'
 import StudentHeader from '@/components/layout/student-header'

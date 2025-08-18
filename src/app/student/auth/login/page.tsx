@@ -146,7 +146,7 @@ export default function StudentLoginPage() {
                 >
                   {isLoading ? (
                     <div className="flex items-center justify-center">
-                      <Loader2 className="text-white animation-spin" />
+                      <Loader2 className="text-white animate-spin" />
                     </div>
                   ) : (
                     'Sign In'
