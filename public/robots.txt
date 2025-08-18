@@ -1,0 +1,20 @@
+User-agent: *
+Allow: /
+
+# Disallow admin and sensitive areas
+Disallow: /admin/
+Disallow: /api/
+Disallow: /_next/
+Disallow: /static/
+
+# Allow important pages
+Allow: /student/
+Allow: /hostels/
+Allow: /applications/
+Allow: /payments/
+
+# Sitemap location
+Sitemap: https://unnaccomodation.com/sitemap.xml
+
+# Crawl delay (optional - be respectful to servers)
+Crawl-delay: 1

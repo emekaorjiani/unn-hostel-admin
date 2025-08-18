@@ -10,6 +10,7 @@ import { studentService } from '@/lib/studentService'
 import StudentHeader from '@/components/layout/student-header'
 import { Edit3, Save, X, User, Phone, GraduationCap, Building2, Shield, CheckCircle, AlertCircle } from 'lucide-react'
 import QuickActions from '@/components/ui/quick-actions'
+import Head from 'next/head'
 
 interface StudentProfileData {
   user: {
@@ -247,432 +248,476 @@ export default function StudentProfilePage() {
   console.log("currentProfile: ", currentProfile)
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <StudentHeader title="Profile" subtitle="Manage your student profile" />
-      <QuickActions />
+    <>
+      <Head>
+        <title>Student Profile | University of Nigeria, Nsukka</title>
+        <meta name="description" content="View and manage your student profile information including academic details, personal information, and contact details at University of Nigeria, Nsukka." />
+        <meta name="keywords" content="student profile, UNN student, academic information, personal details, University of Nigeria Nsukka" />
+        
+        {/* Open Graph */}
+        <meta property="og:title" content="Student Profile | University of Nigeria, Nsukka" />
+        <meta property="og:description" content="View and manage your student profile information including academic details, personal information, and contact details." />
+        <meta property="og:type" content="profile" />
+        <meta property="og:url" content="https://unnaccomodation.com/student/profile" />
+        
+        {/* Twitter Card */}
+        <meta name="twitter:card" content="summary" />
+        <meta name="twitter:title" content="Student Profile | University of Nigeria, Nsukka" />
+        <meta name="twitter:description" content="View and manage your student profile information." />
+        
+        {/* Structured Data for Student Profile */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "Person",
+              "name": profile?.user ? `${profile.user.first_name} ${profile.user.last_name}` : "Student",
+              "email": profile?.user?.email || "student@unn.edu.ng",
+              "affiliation": {
+                "@type": "Organization",
+                "name": "University of Nigeria, Nsukka",
+                "url": "https://unnaccomodation.com"
+              },
+              "jobTitle": "Student",
+              "address": {
+                "@type": "PostalAddress",
+                "addressLocality": "Nsukka",
+                "addressRegion": "Enugu State",
+                "addressCountry": "Nigeria"
+              }
+            })
+          }}
+        />
+      </Head>
       
-      <div className="pt-40 px-4 sm:px-6 lg:px-8 pb-4">
-        <div className="max-w-4xl mx-auto">
-          {/* Header */}
-          <div className="flex items-center justify-between mb-6">
-            <div>
-              <h1 className="text-2xl font-bold text-gray-900">Student Profile</h1>
-              <p className="text-gray-600">View and manage your personal information</p>
-            </div>
-            <div className="flex space-x-3">
-              {isEditing ? (
-                <>
-                  <Button onClick={handleSave} className="bg-green-600 hover:bg-green-700">
-                    <Save className="h-4 w-4 mr-2" />
-                    Save Changes
+      <div className="min-h-screen bg-gray-50">
+        <StudentHeader title="Profile" subtitle="Manage your student profile" />
+        <QuickActions />
+        
+        <div className="pt-40 px-4 sm:px-6 lg:px-8 pb-4">
+          <div className="max-w-4xl mx-auto">
+            {/* Header */}
+            <div className="flex items-center justify-between mb-6">
+              <div>
+                <h1 className="text-2xl font-bold text-gray-900">Student Profile</h1>
+                <p className="text-gray-600">View and manage your personal information</p>
+              </div>
+              <div className="flex space-x-3">
+                {isEditing ? (
+                  <>
+                    <Button onClick={handleSave} className="bg-green-600 hover:bg-green-700">
+                      <Save className="h-4 w-4 mr-2" />
+                      Save Changes
+                    </Button>
+                    <Button variant="outline" onClick={handleCancel}>
+                      <X className="h-4 w-4 mr-2" />
+                      Cancel
+                    </Button>
+                  </>
+                ) : (
+                  <Button onClick={handleEdit} variant="outline">
+                    <Edit3 className="h-4 w-4 mr-2" />
+                    Edit Profile
                   </Button>
-                  <Button variant="outline" onClick={handleCancel}>
-                    <X className="h-4 w-4 mr-2" />
-                    Cancel
-                  </Button>
-                </>
-              ) : (
-                <Button onClick={handleEdit} variant="outline">
-                  <Edit3 className="h-4 w-4 mr-2" />
-                  Edit Profile
-                </Button>
-              )}
+                )}
+              </div>
             </div>
-          </div>
 
-          {/* Profile Overview */}
-          <Card className="mb-6">
-            <CardHeader>
-              <CardTitle className="flex items-center">
-                <User className="h-5 w-5 mr-2" />
-                Basic Information
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
-                  {isEditing ? (
-                    <div className="grid grid-cols-2 gap-2">
-                      <Input
-                        value={currentProfile?.user.first_name || ''}
-                        onChange={(e) => handleInputChange('first_name', e.target.value)}
-                        placeholder="First Name"
-                      />
-                      <Input
-                        value={currentProfile?.user.last_name || ''}
-                        onChange={(e) => handleInputChange('last_name', e.target.value)}
-                        placeholder="Last Name"
-                      />
-                    </div>
-                  ) : (
-                    <p className="text-gray-900">{profile.user.first_name} {profile.user.last_name}</p>
-                  )}
-                </div>
-                
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Matric Number</label>
-                  <p className="text-gray-900 font-mono">{profile.user.matric_number}</p>
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
-                  <div className="flex items-center space-x-2">
-                    <p className="text-gray-900">{profile.user.email}</p>
-                    {profile.user.is_email_verified ? (
-                      <CheckCircle className="h-4 w-4 text-green-500" />
+            {/* Profile Overview */}
+            <Card className="mb-6">
+              <CardHeader>
+                <CardTitle className="flex items-center">
+                  <User className="h-5 w-5 mr-2" />
+                  Basic Information
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
+                    {isEditing ? (
+                      <div className="grid grid-cols-2 gap-2">
+                        <Input
+                          value={currentProfile?.user.first_name || ''}
+                          onChange={(e) => handleInputChange('first_name', e.target.value)}
+                          placeholder="First Name"
+                        />
+                        <Input
+                          value={currentProfile?.user.last_name || ''}
+                          onChange={(e) => handleInputChange('last_name', e.target.value)}
+                          placeholder="Last Name"
+                        />
+                      </div>
                     ) : (
-                      <AlertCircle className="h-4 w-4 text-yellow-500" />
+                      <p className="text-gray-900">{profile.user.first_name} {profile.user.last_name}</p>
+                    )}
+                  </div>
+                  
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Matric Number</label>
+                    <p className="text-gray-900 font-mono">{profile.user.matric_number}</p>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                    <div className="flex items-center space-x-2">
+                      <p className="text-gray-900">{profile.user.email}</p>
+                      {profile.user.is_email_verified ? (
+                        <CheckCircle className="h-4 w-4 text-green-500" />
+                      ) : (
+                        <AlertCircle className="h-4 w-4 text-yellow-500" />
+                      )}
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Phone Number</label>
+                    {isEditing ? (
+                      <Input
+                        value={currentProfile?.user.phone_number || ''}
+                        onChange={(e) => handleInputChange('phone_number', e.target.value)}
+                        placeholder="Phone Number"
+                      />
+                    ) : (
+                      <div className="flex items-center space-x-2">
+                        <p className="text-gray-900">{profile.user.phone_number || 'Not specified'}</p>
+                        {profile.user.is_phone_verified && (
+                          <CheckCircle className="h-4 w-4 text-green-500" />
+                        )}
+                      </div>
+                    )}
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Status</label>
+                    <Badge className={getStatusColor(profile.user.status)}>
+                      {profile.user.status.replace('_', ' ').toUpperCase()}
+                    </Badge>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Date of Birth</label>
+                    {isEditing ? (
+                      <Input
+                        type="date"
+                        value={currentProfile?.user.date_of_birth || ''}
+                        onChange={(e) => handleInputChange('date_of_birth', e.target.value)}
+                      />
+                    ) : (
+                      <p className="text-gray-900">{formatDate(profile.user.date_of_birth || '')}</p>
                     )}
                   </div>
                 </div>
+              </CardContent>
+            </Card>
 
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Phone Number</label>
-                  {isEditing ? (
-                    <Input
-                      value={currentProfile?.user.phone_number || ''}
-                      onChange={(e) => handleInputChange('phone_number', e.target.value)}
-                      placeholder="Phone Number"
-                    />
-                  ) : (
+            {/* Academic Information */}
+            <Card className="mb-6">
+              <CardHeader>
+                <CardTitle className="flex items-center">
+                  <GraduationCap className="h-5 w-5 mr-2" />
+                  Academic Information
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Faculty</label>
+                    {isEditing ? (
+                      <Input
+                        value={currentProfile?.user.faculty || ''}
+                        onChange={(e) => handleInputChange('faculty', e.target.value)}
+                        placeholder="Faculty"
+                      />
+                    ) : (
+                      <p className="text-gray-900">{profile.user.faculty || 'Not specified'}</p>
+                    )}
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Department</label>
+                    {isEditing ? (
+                      <Input
+                        value={currentProfile?.user.department || ''}
+                        onChange={(e) => handleInputChange('department', e.target.value)}
+                        placeholder="Department"
+                      />
+                    ) : (
+                      <p className="text-gray-900">{profile.user.department || 'Not specified'}</p>
+                    )}
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Level</label>
+                    {isEditing ? (
+                      <Input
+                        value={currentProfile?.user.level || ''}
+                        onChange={(e) => handleInputChange('level', e.target.value)}
+                        placeholder="Level"
+                      />
+                    ) : (
+                      <p className="text-gray-900">{profile.user.level || 'Not specified'}</p>
+                    )}
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Gender</label>
+                    {isEditing ? (
+                      <select
+                        value={currentProfile?.user.gender || ''}
+                        onChange={(e) => handleInputChange('gender', e.target.value)}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                      >
+                        <option value="">Select Gender</option>
+                        <option value="Male">Male</option>
+                        <option value="Female">Female</option>
+                        <option value="Other">Other</option>
+                      </select>
+                    ) : (
+                      <p className="text-gray-900">{profile.user.gender || 'Not specified'}</p>
+                    )}
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Personal Information */}
+            <Card className="mb-6">
+              <CardHeader>
+                <CardTitle className="flex items-center">
+                  <User className="h-5 w-5 mr-2" />
+                  Personal Information
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Address</label>
+                    {isEditing ? (
+                      <Input
+                        value={currentProfile?.user.address || ''}
+                        onChange={(e) => handleInputChange('address', e.target.value)}
+                        placeholder="Address"
+                      />
+                    ) : (
+                      <p className="text-gray-900">{profile.user.address || 'Not specified'}</p>
+                    )}
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">State of Origin</label>
+                    {isEditing ? (
+                      <Input
+                        value={currentProfile?.user.state_of_origin || ''}
+                        onChange={(e) => handleInputChange('state_of_origin', e.target.value)}
+                        placeholder="State of Origin"
+                      />
+                    ) : (
+                      <p className="text-gray-900">{profile.user.state_of_origin || 'Not specified'}</p>
+                    )}
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Local Government</label>
+                    {isEditing ? (
+                      <Input
+                        value={currentProfile?.user.local_government || ''}
+                        onChange={(e) => handleInputChange('local_government', e.target.value)}
+                        placeholder="Local Government"
+                      />
+                    ) : (
+                      <p className="text-gray-900">{profile.user.local_government || 'Not specified'}</p>
+                    )}
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Nationality</label>
+                    {isEditing ? (
+                      <Input
+                        value={currentProfile?.user.nationality || ''}
+                        onChange={(e) => handleInputChange('nationality', e.target.value)}
+                        placeholder="Nationality"
+                      />
+                    ) : (
+                      <p className="text-gray-900">{profile.user.nationality || 'Not specified'}</p>
+                    )}
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Tribe</label>
+                    {isEditing ? (
+                      <Input
+                        value={currentProfile?.user.tribe || ''}
+                        onChange={(e) => handleInputChange('tribe', e.target.value)}
+                        placeholder="Tribe"
+                      />
+                    ) : (
+                      <p className="text-gray-900">{profile.user.tribe || 'Not specified'}</p>
+                    )}
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Religion</label>
+                    {isEditing ? (
+                      <Input
+                        value={currentProfile?.user.religion || ''}
+                        onChange={(e) => handleInputChange('religion', e.target.value)}
+                        placeholder="Religion"
+                      />
+                    ) : (
+                      <p className="text-gray-900">{profile.user.religion || 'Not specified'}</p>
+                    )}
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Emergency Contact */}
+            <Card className="mb-6">
+              <CardHeader>
+                <CardTitle className="flex items-center">
+                  <Phone className="h-5 w-5 mr-2" />
+                  Emergency Contact
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Emergency Contact Name</label>
+                    {isEditing ? (
+                      <Input
+                        value={currentProfile?.user.emergency_contact || ''}
+                        onChange={(e) => handleInputChange('emergency_contact', e.target.value)}
+                        placeholder="Emergency Contact Name"
+                      />
+                    ) : (
+                      <p className="text-gray-900">{profile.user.emergency_contact || 'Not specified'}</p>
+                    )}
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Emergency Contact Phone</label>
+                    {isEditing ? (
+                      <Input
+                        value={currentProfile?.user.emergency_phone || ''}
+                        onChange={(e) => handleInputChange('emergency_phone', e.target.value)}
+                        placeholder="Emergency Contact Phone"
+                      />
+                    ) : (
+                      <p className="text-gray-900">{profile.user.emergency_phone || 'Not specified'}</p>
+                    )}
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Additional Information */}
+            <Card className="mb-6">
+              <CardHeader>
+                <CardTitle className="flex items-center">
+                  <Shield className="h-5 w-5 mr-2" />
+                  Additional Information
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Person with Disability</label>
                     <div className="flex items-center space-x-2">
-                      <p className="text-gray-900">{profile.user.phone_number || 'Not specified'}</p>
-                      {profile.user.is_phone_verified && (
-                        <CheckCircle className="h-4 w-4 text-green-500" />
+                      {isEditing ? (
+                        <select
+                          value={currentProfile?.user.is_pwd ? 'true' : 'false'}
+                          onChange={(e) => handleInputChange('is_pwd', e.target.value)}
+                          className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                        >
+                          <option value="false">No</option>
+                          <option value="true">Yes</option>
+                        </select>
+                      ) : (
+                        <Badge variant={profile.user.is_pwd ? 'default' : 'secondary'}>
+                          {profile.user.is_pwd ? 'Yes' : 'No'}
+                        </Badge>
+                      )}
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">International Student</label>
+                    <div className="flex items-center space-x-2">
+                      {isEditing ? (
+                        <select
+                          value={currentProfile?.user.is_international_student ? 'true' : 'false'}
+                          onChange={(e) => handleInputChange('is_international_student', e.target.value)}
+                          className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                        >
+                          <option value="false">No</option>
+                          <option value="true">Yes</option>
+                        </select>
+                      ) : (
+                        <Badge variant={profile.user.is_international_student ? 'default' : 'secondary'}>
+                          {profile.user.is_international_student ? 'Yes' : 'No'}
+                        </Badge>
+                      )}
+                    </div>
+                  </div>
+
+                  {profile.user.is_international_student && (
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Passport Number</label>
+                      {isEditing ? (
+                        <Input
+                          value={currentProfile?.user.passport_number || ''}
+                          onChange={(e) => handleInputChange('passport_number', e.target.value)}
+                          placeholder="Passport Number"
+                        />
+                      ) : (
+                        <p className="text-gray-900">{profile.user.passport_number || 'Not specified'}</p>
                       )}
                     </div>
                   )}
-                </div>
 
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Status</label>
-                  <Badge className={getStatusColor(profile.user.status)}>
-                    {profile.user.status.replace('_', ' ').toUpperCase()}
-                  </Badge>
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Date of Birth</label>
-                  {isEditing ? (
-                    <Input
-                      type="date"
-                      value={currentProfile?.user.date_of_birth || ''}
-                      onChange={(e) => handleInputChange('date_of_birth', e.target.value)}
-                    />
-                  ) : (
-                    <p className="text-gray-900">{formatDate(profile.user.date_of_birth || '')}</p>
-                  )}
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Academic Information */}
-          <Card className="mb-6">
-            <CardHeader>
-              <CardTitle className="flex items-center">
-                <GraduationCap className="h-5 w-5 mr-2" />
-                Academic Information
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Faculty</label>
-                  {isEditing ? (
-                    <Input
-                      value={currentProfile?.user.faculty || ''}
-                      onChange={(e) => handleInputChange('faculty', e.target.value)}
-                      placeholder="Faculty"
-                    />
-                  ) : (
-                    <p className="text-gray-900">{profile.user.faculty || 'Not specified'}</p>
-                  )}
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Department</label>
-                  {isEditing ? (
-                    <Input
-                      value={currentProfile?.user.department || ''}
-                      onChange={(e) => handleInputChange('department', e.target.value)}
-                      placeholder="Department"
-                    />
-                  ) : (
-                    <p className="text-gray-900">{profile.user.department || 'Not specified'}</p>
-                  )}
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Level</label>
-                  {isEditing ? (
-                    <Input
-                      value={currentProfile?.user.level || ''}
-                      onChange={(e) => handleInputChange('level', e.target.value)}
-                      placeholder="Level"
-                    />
-                  ) : (
-                    <p className="text-gray-900">{profile.user.level || 'Not specified'}</p>
-                  )}
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Gender</label>
-                  {isEditing ? (
-                    <select
-                      value={currentProfile?.user.gender || ''}
-                      onChange={(e) => handleInputChange('gender', e.target.value)}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
-                    >
-                      <option value="">Select Gender</option>
-                      <option value="Male">Male</option>
-                      <option value="Female">Female</option>
-                      <option value="Other">Other</option>
-                    </select>
-                  ) : (
-                    <p className="text-gray-900">{profile.user.gender || 'Not specified'}</p>
-                  )}
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Personal Information */}
-          <Card className="mb-6">
-            <CardHeader>
-              <CardTitle className="flex items-center">
-                <User className="h-5 w-5 mr-2" />
-                Personal Information
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Address</label>
-                  {isEditing ? (
-                    <Input
-                      value={currentProfile?.user.address || ''}
-                      onChange={(e) => handleInputChange('address', e.target.value)}
-                      placeholder="Address"
-                    />
-                  ) : (
-                    <p className="text-gray-900">{profile.user.address || 'Not specified'}</p>
-                  )}
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">State of Origin</label>
-                  {isEditing ? (
-                    <Input
-                      value={currentProfile?.user.state_of_origin || ''}
-                      onChange={(e) => handleInputChange('state_of_origin', e.target.value)}
-                      placeholder="State of Origin"
-                    />
-                  ) : (
-                    <p className="text-gray-900">{profile.user.state_of_origin || 'Not specified'}</p>
-                  )}
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Local Government</label>
-                  {isEditing ? (
-                    <Input
-                      value={currentProfile?.user.local_government || ''}
-                      onChange={(e) => handleInputChange('local_government', e.target.value)}
-                      placeholder="Local Government"
-                    />
-                  ) : (
-                    <p className="text-gray-900">{profile.user.local_government || 'Not specified'}</p>
-                  )}
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Nationality</label>
-                  {isEditing ? (
-                    <Input
-                      value={currentProfile?.user.nationality || ''}
-                      onChange={(e) => handleInputChange('nationality', e.target.value)}
-                      placeholder="Nationality"
-                    />
-                  ) : (
-                    <p className="text-gray-900">{profile.user.nationality || 'Not specified'}</p>
-                  )}
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Tribe</label>
-                  {isEditing ? (
-                    <Input
-                      value={currentProfile?.user.tribe || ''}
-                      onChange={(e) => handleInputChange('tribe', e.target.value)}
-                      placeholder="Tribe"
-                    />
-                  ) : (
-                    <p className="text-gray-900">{profile.user.tribe || 'Not specified'}</p>
-                  )}
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Religion</label>
-                  {isEditing ? (
-                    <Input
-                      value={currentProfile?.user.religion || ''}
-                      onChange={(e) => handleInputChange('religion', e.target.value)}
-                      placeholder="Religion"
-                    />
-                  ) : (
-                    <p className="text-gray-900">{profile.user.religion || 'Not specified'}</p>
-                  )}
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Emergency Contact */}
-          <Card className="mb-6">
-            <CardHeader>
-              <CardTitle className="flex items-center">
-                <Phone className="h-5 w-5 mr-2" />
-                Emergency Contact
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Emergency Contact Name</label>
-                  {isEditing ? (
-                    <Input
-                      value={currentProfile?.user.emergency_contact || ''}
-                      onChange={(e) => handleInputChange('emergency_contact', e.target.value)}
-                      placeholder="Emergency Contact Name"
-                    />
-                  ) : (
-                    <p className="text-gray-900">{profile.user.emergency_contact || 'Not specified'}</p>
-                  )}
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Emergency Contact Phone</label>
-                  {isEditing ? (
-                    <Input
-                      value={currentProfile?.user.emergency_phone || ''}
-                      onChange={(e) => handleInputChange('emergency_phone', e.target.value)}
-                      placeholder="Emergency Contact Phone"
-                    />
-                  ) : (
-                    <p className="text-gray-900">{profile.user.emergency_phone || 'Not specified'}</p>
-                  )}
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Additional Information */}
-          <Card className="mb-6">
-            <CardHeader>
-              <CardTitle className="flex items-center">
-                <Shield className="h-5 w-5 mr-2" />
-                Additional Information
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Person with Disability</label>
-                  <div className="flex items-center space-x-2">
-                    {isEditing ? (
-                      <select
-                        value={currentProfile?.user.is_pwd ? 'true' : 'false'}
-                        onChange={(e) => handleInputChange('is_pwd', e.target.value)}
-                        className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
-                      >
-                        <option value="false">No</option>
-                        <option value="true">Yes</option>
-                      </select>
-                    ) : (
-                      <Badge variant={profile.user.is_pwd ? 'default' : 'secondary'}>
-                        {profile.user.is_pwd ? 'Yes' : 'No'}
-                      </Badge>
-                    )}
-                  </div>
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">International Student</label>
-                  <div className="flex items-center space-x-2">
-                    {isEditing ? (
-                      <select
-                        value={currentProfile?.user.is_international_student ? 'true' : 'false'}
-                        onChange={(e) => handleInputChange('is_international_student', e.target.value)}
-                        className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
-                      >
-                        <option value="false">No</option>
-                        <option value="true">Yes</option>
-                      </select>
-                    ) : (
-                      <Badge variant={profile.user.is_international_student ? 'default' : 'secondary'}>
-                        {profile.user.is_international_student ? 'Yes' : 'No'}
-                      </Badge>
-                    )}
-                  </div>
-                </div>
-
-                {profile.user.is_international_student && (
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Passport Number</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">NIN Number</label>
                     {isEditing ? (
                       <Input
-                        value={currentProfile?.user.passport_number || ''}
-                        onChange={(e) => handleInputChange('passport_number', e.target.value)}
-                        placeholder="Passport Number"
+                        value={currentProfile?.user.nin_number || ''}
+                        onChange={(e) => handleInputChange('nin_number', e.target.value)}
+                        placeholder="NIN Number"
                       />
                     ) : (
-                      <p className="text-gray-900">{profile.user.passport_number || 'Not specified'}</p>
+                      <p className="text-gray-900">{profile.user.nin_number || 'Not specified'}</p>
                     )}
                   </div>
-                )}
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">NIN Number</label>
-                  {isEditing ? (
-                    <Input
-                      value={currentProfile?.user.nin_number || ''}
-                      onChange={(e) => handleInputChange('nin_number', e.target.value)}
-                      placeholder="NIN Number"
-                    />
-                  ) : (
-                    <p className="text-gray-900">{profile.user.nin_number || 'Not specified'}</p>
-                  )}
                 </div>
-              </div>
-            </CardContent>
-          </Card>
+              </CardContent>
+            </Card>
 
-          {/* Account Information */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center">
-                <Building2 className="h-5 w-5 mr-2" />
-                Account Information
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Account Created</label>
-                  <p className="text-gray-900">{formatDate(profile.user.created_at)}</p>
-                </div>
+            {/* Account Information */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center">
+                  <Building2 className="h-5 w-5 mr-2" />
+                  Account Information
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Account Created</label>
+                    <p className="text-gray-900">{formatDate(profile.user.created_at)}</p>
+                  </div>
 
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Last Updated</label>
-                  <p className="text-gray-900">{formatDate(profile.user.updated_at)}</p>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Last Updated</label>
+                    <p className="text-gray-900">{formatDate(profile.user.updated_at)}</p>
+                  </div>
                 </div>
-              </div>
-            </CardContent>
-          </Card>
+              </CardContent>
+            </Card>
+          </div>
         </div>
       </div>
-    </div>
+    </>
   )
 }
