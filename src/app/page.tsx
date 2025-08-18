@@ -65,7 +65,8 @@ const TypewriterText = ({ text, delay = 0, speed = 50 }: { text: string; delay?:
 
 const libraryImages = [
   '/library-1.jpg',
-  '/unn10.webp',
+  '/unn11.jpg',
+  '/unn13.png',
   '/library2.jpg',
 ]
 
@@ -73,7 +74,7 @@ const libraryImages = [
 const galleryData = [
   {
     id: 1,
-    src: '/unn1.jpeg',
+    src: '/unn12.jpeg',
     alt: 'UNN Campus View 1',
     title: 'UNN Campus View',
     description: 'Beautiful campus landscape',
@@ -82,7 +83,7 @@ const galleryData = [
   },
   {
     id: 2,
-    src: '/unn2.jpg',
+    src: '/unn13.png',
     alt: 'UNN Campus View 2',
     title: 'UNN Campus View',
     description: 'Academic excellence center',
@@ -154,7 +155,7 @@ const galleryData = [
   },
   {
     id: 10,
-    src: '/unn10.webp',
+    src: '/unn11.jpg',
     alt: 'UNN Campus View 10',
     title: 'UNN Campus View',
     description: 'State-of-the-art amenities',
@@ -500,7 +501,7 @@ export default function LandingPage() {
                   transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
                 >
                   <img
-                    src="/unn10.webp"
+                    src="/unn13.png"
                     alt="UNN Campus Excellence"
                     className="w-full h-96 object-cover"
                     // style={{
