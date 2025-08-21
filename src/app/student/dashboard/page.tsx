@@ -241,13 +241,13 @@ export default function StudentDashboardPage() {
           <div className="bg-unn-primary rounded-2xl p-8 text-white">
             <div className="flex items-center justify-between">
               <div>
-                  <h2 className="text-3xl font-bold mb-2">
+                  <h2 className="text-xl font-bold mb-2">
                     Welcome back, {student?.user?.first_name}
                   </h2>
-                  <p className="text-white text-lg mb-4">
+                  <p className="text-white text-sm mb-4">
                     Here&apos;s what&apos;s happening with your hostel accommodation
                   </p>
-                  <div className="flex items-center space-x-6 text-sm">
+                  <div className="flex items-center space-x-6 text-xs">
                     <div className="flex items-center space-x-2">
                       <Building2 className="h-4 w-4" />
                       <span>{student?.user?.faculty || 'Not Assigned'} - {student?.user?.department || 'Not Assigned'}</span>
@@ -264,7 +264,7 @@ export default function StudentDashboardPage() {
               </div>
               <div className="hidden lg:block">
                 <div className="h-24 w-24 bg-white/20 rounded-full flex items-center justify-center">
-                  <span className="text-2xl font-bold">
+                  <span className="text-xl font-bold">
                     {getInitials(student?.user?.first_name, student?.user?.last_name)}
                   </span>
                 </div>

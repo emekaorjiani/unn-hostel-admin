@@ -27,15 +27,15 @@ const QuickActions = () => {
 
   return (
     <nav className="fixed top-16 left-0 right-0 bg-white border-b border-gray-200 px-4 py-3 z-40">
-      <div className="flex items-center justify-center space-x-4">
+      <div className="flex items-center justify-center space-2 md:space-x-4">
         {actions.map((action) => (
           <Link
             key={action.href}
-            className="flex items-center space-x-2 px-4 py-2 hover:bg-gray-100 rounded-lg"
+            className="flex items-center space-x-2 px-4 py-2 hover:bg-gray-100 rounded-lg font-bold lg:font-base"
             href={action.href}
           >
             {action.icon}
-            <span className="text-sm font-medium text-gray-700">{action.title}</span>
+            <span className="text-xs font-medium text-gray-700 hidden lg:block">{action.title}</span>
           </Link>
         ))}
       </div>
