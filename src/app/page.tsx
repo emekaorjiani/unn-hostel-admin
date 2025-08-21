@@ -17,7 +17,8 @@ import {
   Youtube,
   Users,
   Calendar,
-  ArrowRight
+  ArrowRight,
+  DraftingCompass
 } from 'lucide-react'
 
 // Typewriter effect component
@@ -402,7 +403,7 @@ export default function LandingPage() {
                   Restoring the dignity of man through excellence
                   <span className="block relative">
                     <motion.div 
-                      className="absolute -bottom-2 left-0 w-full h-2 bg-yellow-400 transform -skew-x-12"
+                      className="absolute -bottom-2 left-0 h-1 bg-yellow-400 transform -skew-x-12 w-full lg:w-89"
                       initial={{ scaleX: 0 }}
                       whileInView={{ scaleX: 1 }}
                       viewport={{ once: true }}
@@ -445,7 +446,6 @@ export default function LandingPage() {
               </motion.div>
             </motion.div>
 
-            {/* Right Column - Image with Custom Clip-path */}
             <motion.div 
               className="relative"
               initial={{ opacity: 0, x: 50 }}
@@ -454,7 +454,6 @@ export default function LandingPage() {
               transition={{ duration: 0.8, ease: "easeOut" }}
             >
               <div className="relative">
-                {/* Main Image Container with Custom Clip-path */}
                 <motion.div 
                   className="relative overflow-hidden"
                   initial={{ opacity: 0, scale: 0.8 }}
@@ -892,7 +891,7 @@ export default function LandingPage() {
 
             <div className="text-center p-6">
               <div className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4" style={{ backgroundColor: '#f0f9f0' }}>
-                <Utensils className="h-8 w-8" style={{ color: '#275b1c' }} />
+                <DraftingCompass className="h-8 w-8" style={{ color: '#275b1c' }} />
               </div>
               <h3 className="text-xl font-semibold mb-2">Modern Facilities</h3>
               <p className="text-gray-200">Well-equipped common areas and study spaces</p>
