@@ -463,7 +463,7 @@ export default function LandingPage() {
                   transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
                 >
                   <img
-                    src="/unn3.jpg"
+                    src="/VC.jpg"
                     alt="UNN Campus"
                     className="w-full h-96 object-cover"
                     // style={{
