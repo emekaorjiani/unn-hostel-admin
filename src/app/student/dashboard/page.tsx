@@ -230,11 +230,14 @@ export default function StudentDashboardPage() {
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50">
       <StudentHeader 
         title="Student Portal"
-        subtitle="UNN Hostel Management System"
+        subtitle="UNN Student Portal"
       />
 
       <QuickActions />
 
+      <div className='bg-unn-primary p-28 md:p-40 rounded-full w-20 shadow-3xl shadow-green-500 fixed ml-2 md:ml-20' />
+      <div className='bg-unn-primary p-10 md:p-24 rounded-full w-40 shadow-3xl shadow-green-500 fixed mr-2 md:mr-20 bottom-0 right-0' />
+      <div className='backdrop-blur-lg w-full'>
       <div className="pt-40 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="space-y-8">
           {/* Welcome Section */}
@@ -505,6 +508,7 @@ export default function StudentDashboardPage() {
 
 
         </div>
+      </div>
       </div>
     </div>
   )

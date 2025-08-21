@@ -19,6 +19,7 @@ import {
   AlertCircle,
   FolderOpen} from 'lucide-react'
 import QuickActions from '@/components/ui/quick-actions'
+import StudentHeader from '@/components/layout/student-header'
 
 interface Document {
   id: string
@@ -193,47 +194,42 @@ export default function StudentDocumentsPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50">
-      {/* Header */}
-      <div className="bg-white shadow-sm border-b border-gray-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
-          <div className="flex items-center space-x-4">
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => router.back()}
-                className="flex items-center space-x-2"
-              >
-                <ArrowLeft className="h-4 w-4" />
-                <span>Back</span>
-              </Button>
-              <div className="h-10 w-10 bg-gradient-to-br from-green-600 to-emerald-700 rounded-xl flex items-center justify-center shadow-lg">
-                <FileText className="h-6 w-6 text-white" />
-              </div>
-              <div>
-                <h1 className="text-xl font-bold bg-gradient-to-r from-green-600 to-emerald-700 bg-clip-text text-transparent">
-                  My Documents
-                </h1>
-                <p className="text-xs text-gray-600">Document management and verification</p>
-              </div>
-            </div>
-            
-            <Button 
-              onClick={() => setShowUploadModal(true)}
-              className="bg-gradient-to-r from-green-600 to-emerald-700 hover:from-green-700 hover:to-emerald-800"
-            >
-              <Plus className="h-4 w-4 mr-2" />
-              Upload Document
-            </Button>
-          </div>
-        </div>
-      </div>
+      <StudentHeader
+        title="My Documents"
+        subtitle="Document management and verification"
+        showBackButton={true}
+        onBackClick={() => router.back()}
+      />
 
-      <div className="pt-16 max-w-7xl mx-auto px-4 py-8">
-        {/* Quick Actions - Fixed at top */}
-        <div className="mb-6">
           <QuickActions />
-        </div>
+      <div className="pt-40 max-w-7xl mx-auto px-4 py-8">
+
+        <CardContent>
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <div className="text-center p-4 bg-blue-50 rounded-lg">
+                  <div className="text-2xl font-bold text-blue-600">{documents.length}</div>
+                  <div className="text-sm text-blue-600">Total Documents</div>
+                </div>
+                <div className="text-center p-4 bg-yellow-50 rounded-lg">
+                  <div className="text-2xl font-bold text-yellow-600">
+                    {documents.filter(doc => doc.status === 'pending').length}
+                  </div>
+                  <div className="text-sm text-yellow-600">Pending Review</div>
+                </div>
+                <div className="text-center p-4 bg-green-50 rounded-lg">
+                  <div className="text-2xl font-bold text-green-600">
+                    {documents.filter(doc => doc.status === 'approved').length}
+                  </div>
+                  <div className="text-sm text-green-600">Approved</div>
+                </div>
+                <div className="text-center p-4 bg-red-50 rounded-lg">
+                  <div className="text-2xl font-bold text-red-600">
+                    {documents.filter(doc => doc.status === 'rejected').length}
+                  </div>
+                  <div className="text-sm text-red-600">Rejected</div>
+                </div>
+              </div>
+            </CardContent>
         
         <div className="space-y-6">
           {/* Search and Filter */}
@@ -248,19 +244,6 @@ export default function StudentDocumentsPage() {
                     className="w-full"
                   />
                 </div>
-                <div className="flex gap-2">
-                  {['all', 'id_card', 'academic_record', 'medical_certificate', 'parent_consent', 'payment_receipt', 'hostel_agreement', 'other'].map((type) => (
-                    <Button
-                      key={type}
-                      variant={filterType === type ? 'default' : 'outline'}
-                      size="sm"
-                      onClick={() => setFilterType(type)}
-                      className="capitalize"
-                    >
-                      {type.replace('_', ' ')}
-                    </Button>
-                  ))}
-              </div>
                 <div className="flex gap-2">
                   {['all', 'pending', 'approved', 'rejected', 'expired'].map((status) => (
                     <Button
@@ -384,39 +367,6 @@ export default function StudentDocumentsPage() {
               </CardContent>
             </Card>
           )}
-
-          {/* Document Statistics */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Document Statistics</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                <div className="text-center p-4 bg-blue-50 rounded-lg">
-                  <div className="text-2xl font-bold text-blue-600">{documents.length}</div>
-                  <div className="text-sm text-blue-600">Total Documents</div>
-                </div>
-                <div className="text-center p-4 bg-yellow-50 rounded-lg">
-                  <div className="text-2xl font-bold text-yellow-600">
-                    {documents.filter(doc => doc.status === 'pending').length}
-                  </div>
-                  <div className="text-sm text-yellow-600">Pending Review</div>
-                </div>
-                <div className="text-center p-4 bg-green-50 rounded-lg">
-                  <div className="text-2xl font-bold text-green-600">
-                    {documents.filter(doc => doc.status === 'approved').length}
-                  </div>
-                  <div className="text-sm text-green-600">Approved</div>
-                </div>
-                <div className="text-center p-4 bg-red-50 rounded-lg">
-                  <div className="text-2xl font-bold text-red-600">
-                    {documents.filter(doc => doc.status === 'rejected').length}
-                  </div>
-                  <div className="text-sm text-red-600">Rejected</div>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
         </div>
       </div>
 

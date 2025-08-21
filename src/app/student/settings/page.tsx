@@ -272,21 +272,21 @@ export default function StudentSettingsPage() {
               <CardContent className="space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">First Name</label>
+                    <label className="block text-xs font-medium text-gray-700 mb-2">First Name</label>
                     <Input
                       value={student.user.first_name}
                       onChange={(e) => setStudent(prev => ({ ...prev, user: { ...prev.user, first_name: e.target.value } }))}
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Last Name</label>
+                    <label className="block text-xs font-medium text-gray-700 mb-2">Last Name</label>
                     <Input
                       value={student.user.last_name}
                       onChange={(e) => setStudent(prev => ({ ...prev, user: { ...prev.user, last_name: e.target.value } }))}
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Email</label>
+                    <label className="block text-xs font-medium text-gray-700 mb-2">Email</label>
                     <Input
                       type="email"
                       value={student.user.email}
@@ -294,14 +294,14 @@ export default function StudentSettingsPage() {
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Phone Number</label>
+                    <label className="block text-xs font-medium text-gray-700 mb-2">Phone Number</label>
                     <Input
                       value={student.user.phone_number}
                       onChange={(e) => setStudent(prev => ({ ...prev, user: { ...prev.user, phone_number: e.target.value } }))}
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Date of Birth</label>
+                    <label className="block text-xs font-medium text-gray-700 mb-2">Date of Birth</label>
                     <Input
                       type="date"
                       value={student.user.date_of_birth}
@@ -309,7 +309,7 @@ export default function StudentSettingsPage() {
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Gender</label>
+                    <label className="block text-xs font-medium text-gray-700 mb-2">Gender</label>
                     <select
                       value={student.user.gender}
                       onChange={(e) => setStudent(prev => ({ ...prev, user: { ...prev.user, gender: e.target.value as 'male' | 'female' } }))}
@@ -322,7 +322,7 @@ export default function StudentSettingsPage() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Address</label>
+                  <label className="block text-xs font-medium text-gray-700 mb-2">Address</label>
                   <Input
                     value={student.user.address}
                     onChange={(e) => setStudent(prev => ({ ...prev, user: { ...prev.user, address: e.target.value } }))}
@@ -331,21 +331,21 @@ export default function StudentSettingsPage() {
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">State of Origin</label>
+                    <label className="block text-xs font-medium text-gray-700 mb-2">State of Origin</label>
                     <Input
                       value={student.user.state_of_origin}
                       onChange={(e) => setStudent(prev => ({ ...prev, user: { ...prev.user, state_of_origin: e.target.value } }))}
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Local Government</label>
+                    <label className="block text-xs font-medium text-gray-700 mb-2">Local Government</label>
                     <Input
                       value={student.user.local_government}
                       onChange={(e) => setStudent(prev => ({ ...prev, user: { ...prev.user, local_government: e.target.value } }))}
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Tribe</label>
+                    <label className="block text-xs font-medium text-gray-700 mb-2">Tribe</label>
                     <Input
                       value={student.user.tribe}
                       onChange={(e) => setStudent(prev => ({ ...prev, user: { ...prev.user, tribe: e.target.value } }))}
@@ -354,7 +354,7 @@ export default function StudentSettingsPage() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Religion</label>
+                  <label className="block text-xs font-medium text-gray-700 mb-2">Religion</label>
                   <Input
                     value={student.user.religion}
                     onChange={(e) => setStudent(prev => ({ ...prev, user: { ...prev.user, religion: e.target.value } }))}

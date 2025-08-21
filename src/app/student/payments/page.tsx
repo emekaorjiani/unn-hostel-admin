@@ -163,7 +163,7 @@ export default function StudentPaymentsPage() {
           <QuickActions />
       </div>
 
-      <div className="pt-26 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="pt-40 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="space-y-6">
           {/* Payment Summary Cards */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -335,7 +335,7 @@ export default function StudentPaymentsPage() {
               <CardContent className="p-12 text-center">
                 <CreditCard className="h-16 w-16 text-gray-400 mx-auto mb-4" />
                 <h3 className="text-lg font-medium text-gray-900 mb-2">No payments found</h3>
-                <p className="text-gray-600 mb-6">
+                <p className="text-gray-600 text-xs mb-6">
                   {searchQuery || filterStatus !== 'all'
                     ? `No payments match your search criteria.`
                     : "You haven't made any payments yet."
@@ -343,7 +343,7 @@ export default function StudentPaymentsPage() {
                 </p>
                 <Button 
                   onClick={() => setShowPaymentModal(true)}
-                  className="bg-gradient-to-r from-green-600 to-emerald-700 hover:from-green-700 hover:to-emerald-800"
+                  className="bg-gradient-to-r from-green-600 to-emerald-700 hover:from-green-700 hover:to-emerald-800 text-xs"
                 >
                   <Plus className="h-4 w-4 mr-2" />
                   Make Your First Payment

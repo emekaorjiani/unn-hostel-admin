@@ -6,8 +6,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../..
 import { Button } from '../../../components/ui/button'
 import { Badge } from '../../../components/ui/badge'
 import { Input } from '../../../components/ui/input'
-import { 
-  Wrench, 
+import {
+  Wrench,
   Clock,
   CheckCircle,
   XCircle,
@@ -41,7 +41,7 @@ export default function StudentMaintenancePage() {
         // Fallback to empty array if API fails
         setMaintenanceRequests([])
       } finally {
-      setLoading(false)
+        setLoading(false)
       }
     }
 
@@ -52,7 +52,7 @@ export default function StudentMaintenancePage() {
   const filteredRequests = maintenanceRequests.filter(request => {
     const matchesStatus = filterStatus === 'all' || request.status === filterStatus
     const matchesCategory = filterCategory === 'all' || request.category === filterCategory
-    const matchesSearch = searchQuery === '' || 
+    const matchesSearch = searchQuery === '' ||
       request.issue.toLowerCase().includes(searchQuery.toLowerCase()) ||
       (request.description && request.description.toLowerCase().includes(searchQuery.toLowerCase()))
     return matchesStatus && matchesCategory && matchesSearch
@@ -127,24 +127,50 @@ export default function StudentMaintenancePage() {
         onBackClick={() => router.back()}
       />
 
-      <div className="mb-6">
-          <QuickActions />
-        </div>
+      <QuickActions />
 
-      <div className="mt-26 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="mt-40 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+
+        <CardContent>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div className="text-center p-4 bg-blue-50 rounded-lg">
+              <div className="text-xl font-bold text-blue-600">{maintenanceRequests.length}</div>
+              <div className="text-xs text-blue-600">Total Requests</div>
+            </div>
+            <div className="text-center p-4 bg-yellow-50 rounded-lg">
+              <div className="text-xl font-bold text-yellow-600">
+                {maintenanceRequests.filter(req => req.status === 'pending').length}
+              </div>
+              <div className="text-xs text-yellow-600">Pending</div>
+            </div>
+            <div className="text-center p-4 bg-blue-50 rounded-lg">
+              <div className="text-xl font-bold text-blue-600">
+                {maintenanceRequests.filter(req => req.status === 'in_progress').length}
+              </div>
+              <div className="text-xs text-blue-600">In Progress</div>
+            </div>
+            <div className="text-center p-4 bg-green-50 rounded-lg">
+              <div className="text-xl font-bold text-green-600">
+                {maintenanceRequests.filter(req => req.status === 'resolved').length}
+              </div>
+              <div className="text-xs text-green-600">Resolved</div>
+            </div>
+          </div>
+        </CardContent>
+
         <div className="space-y-6">
           {/* Search and Filter */}
           <Card>
             <CardContent className="p-6">
               <div className="flex flex-col md:flex-row gap-4">
                 <div className="flex-1">
-                <Input
+                  <Input
                     placeholder="Search maintenance requests..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
                     className="w-full"
-                />
-              </div>
+                  />
+                </div>
                 <div className="flex gap-2">
                   {['all', 'pending', 'in_progress', 'resolved', 'closed'].map((status) => (
                     <Button
@@ -157,32 +183,19 @@ export default function StudentMaintenancePage() {
                       {status.replace('_', ' ')}
                     </Button>
                   ))}
+                </div>
               </div>
-                <div className="flex gap-2">
-                  {['all', 'electrical', 'plumbing', 'structural', 'furniture', 'appliance', 'security', 'other'].map((category) => (
-                    <Button
-                      key={category}
-                      variant={filterCategory === category ? 'default' : 'outline'}
-                      size="sm"
-                      onClick={() => setFilterCategory(category)}
-                      className="capitalize"
-                    >
-                      {category}
-                    </Button>
-                  ))}
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+            </CardContent>
+          </Card>
 
-        {/* Maintenance Requests List */}
+          {/* Maintenance Requests List */}
           {filteredRequests.length > 0 ? (
             <div className="grid gap-6">
               {filteredRequests.map((request) => (
                 <Card key={request.id} className="hover:shadow-lg transition-shadow">
-                <CardContent className="p-6">
+                  <CardContent className="p-6">
                     <div className="flex items-start justify-between">
-                    <div className="flex-1">
+                      <div className="flex-1">
                         <div className="flex items-center space-x-3 mb-3">
                           <Wrench className="h-5 w-5 text-gray-500" />
                           <h3 className="text-lg font-semibold text-gray-900">
@@ -197,7 +210,7 @@ export default function StudentMaintenancePage() {
                           <Badge className={getPriorityColor(request.priority)}>
                             <span className="capitalize">{request.priority}</span>
                           </Badge>
-                      </div>
+                        </div>
 
                         {request.description && (
                           <p className="text-gray-600 mb-3">{request.description}</p>
@@ -227,104 +240,36 @@ export default function StudentMaintenancePage() {
                           size="sm"
                           onClick={() => router.push(`/student/maintenance/${request.id}`)}
                         >
-                        <Eye className="h-4 w-4 mr-2" />
-                        View Details
+                          <Eye className="h-4 w-4 mr-2" />
+                          View Details
                         </Button>
                       </div>
                     </div>
                   </CardContent>
                 </Card>
               ))}
-                  </div>
+            </div>
           ) : (
             <Card>
               <CardContent className="p-12 text-center">
                 <Wrench className="h-16 w-16 text-gray-400 mx-auto mb-4" />
                 <h3 className="text-lg font-medium text-gray-900 mb-2">No maintenance requests found</h3>
-                <p className="text-gray-600 mb-6">
+                <p className="text-gray-600 mb-6 text-xs">
                   {searchQuery || filterStatus !== 'all' || filterCategory !== 'all'
                     ? `No maintenance requests match your search criteria.`
                     : "You haven't submitted any maintenance requests yet."
                   }
                 </p>
-                <Button 
+                <Button
                   onClick={() => setShowNewRequestModal(true)}
-                  className="bg-gradient-to-r from-green-600 to-emerald-700 hover:from-green-700 hover:to-emerald-800"
+                  className="bg-gradient-to-r from-green-600 to-emerald-700 hover:from-green-700 hover:to-emerald-800 text-xs"
                 >
                   <Plus className="h-4 w-4 mr-2" />
                   Submit Your First Request
                 </Button>
-                </CardContent>
-              </Card>
+              </CardContent>
+            </Card>
           )}
-
-          {/* Summary Stats */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Maintenance Summary</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <div className="text-center p-4 bg-blue-50 rounded-lg">
-                  <div className="text-2xl font-bold text-blue-600">{maintenanceRequests.length}</div>
-                  <div className="text-sm text-blue-600">Total Requests</div>
-                </div>
-                <div className="text-center p-4 bg-yellow-50 rounded-lg">
-                  <div className="text-2xl font-bold text-yellow-600">
-                    {maintenanceRequests.filter(req => req.status === 'pending').length}
-                  </div>
-                  <div className="text-sm text-yellow-600">Pending</div>
-                </div>
-                <div className="text-center p-4 bg-blue-50 rounded-lg">
-                  <div className="text-2xl font-bold text-blue-600">
-                    {maintenanceRequests.filter(req => req.status === 'in_progress').length}
-                  </div>
-                  <div className="text-sm text-blue-600">In Progress</div>
-                </div>
-                <div className="text-center p-4 bg-green-50 rounded-lg">
-                  <div className="text-2xl font-bold text-green-600">
-                    {maintenanceRequests.filter(req => req.status === 'resolved').length}
-                  </div>
-                  <div className="text-sm text-green-600">Resolved</div>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Priority Distribution */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Priority Distribution</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <div className="text-center p-4 bg-red-50 rounded-lg">
-                  <div className="text-2xl font-bold text-red-600">
-                    {maintenanceRequests.filter(req => req.priority === 'urgent').length}
-      </div>
-                  <div className="text-sm text-red-600">Urgent</div>
-              </div>
-                <div className="text-center p-4 bg-orange-50 rounded-lg">
-                  <div className="text-2xl font-bold text-orange-600">
-                    {maintenanceRequests.filter(req => req.priority === 'high').length}
-              </div>
-                  <div className="text-sm text-orange-600">High</div>
-              </div>
-                <div className="text-center p-4 bg-yellow-50 rounded-lg">
-                  <div className="text-2xl font-bold text-yellow-600">
-                    {maintenanceRequests.filter(req => req.priority === 'medium').length}
-              </div>
-                  <div className="text-sm text-yellow-600">Medium</div>
-                </div>
-                <div className="text-center p-4 bg-green-50 rounded-lg">
-                  <div className="text-2xl font-bold text-green-600">
-                    {maintenanceRequests.filter(req => req.priority === 'low').length}
-                  </div>
-                  <div className="text-sm text-green-600">Low</div>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
         </div>
       </div>
     </div>
