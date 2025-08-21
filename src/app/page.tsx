@@ -464,7 +464,7 @@ export default function LandingPage() {
                   <img
                     src="/VC.jpg"
                     alt="UNN Campus"
-                    className="w-full lg:h-96 object-cover"
+                    className="w-full lg:h-96 object-cover rounded-md"
                     // style={{
                     //   clipPath: 'polygon(0% 0%, 100% 0%, 85% 100%, 0% 100%)'
                     // }}
@@ -502,7 +502,7 @@ export default function LandingPage() {
                   <img
                     src="/unn13.png"
                     alt="UNN Campus Excellence"
-                    className="w-full lg:h-96 object-cover"
+                    className="w-full lg:h-96 object-cover rounded-md"
                     // style={{
                     //   clipPath: 'polygon(0% 0%, 100% 0%, 85% 100%, 0% 100%)'
                     // }}

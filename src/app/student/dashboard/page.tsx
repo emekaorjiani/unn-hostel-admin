@@ -371,7 +371,7 @@ export default function StudentDashboardPage() {
                       }`}></div>
                       <div className="flex-1">
                         <p className="text-sm font-medium text-gray-900">{event.title}</p>
-                        <p className="text-sm text-gray-600">{event.description}</p>
+                        <p className="text-xs text-gray-600">{event.description}</p>
                         <p className="text-xs text-gray-400 mt-1">{formatDate(event.date)}</p>
                       </div>
                     </div>
@@ -404,7 +404,7 @@ export default function StudentDashboardPage() {
                       }`}></div>
                       <div className="flex-1">
                         <p className="text-sm font-medium text-gray-900">{notification.title}</p>
-                        <p className="text-sm text-gray-600">{notification.message}</p>
+                        <p className="text-xs text-gray-600">{notification.message}</p>
                         <p className="text-xs text-gray-400 mt-1">{formatDate(notification.created_at)}</p>
                       </div>
                       {!notification.read && (
@@ -478,26 +478,26 @@ export default function StudentDashboardPage() {
                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                  <div className="text-center p-4 bg-orange-50 rounded-lg">
                    <GraduationCap className="h-8 w-8 text-orange-600 mx-auto mb-2" />
-                   <p className="text-lg font-semibold text-gray-900">{student?.user?.faculty || 'Not Assigned'}</p>
-                   <p className="text-sm text-gray-600">Faculty</p>
+                   <p className="text-md font-semibold text-gray-900">{student?.user?.faculty || 'Not Assigned'}</p>
+                   <p className="text-xs text-gray-600">Faculty</p>
                  </div>
                  
                  <div className="text-center p-4 bg-yellow-50 rounded-lg">
                    <BookOpen className="h-8 w-8 text-yellow-600 mx-auto mb-2" />
-                   <p className="text-lg font-semibold text-gray-900">{student?.user?.department || 'Not Assigned'}</p>
-                   <p className="text-sm text-gray-600">Department</p>
+                   <p className="text-md font-semibold text-gray-900">{student?.user?.department || 'Not Assigned'}</p>
+                   <p className="text-xs text-gray-600">Department</p>
                  </div>
                  
                  <div className="text-center p-4 bg-blue-50 rounded-lg">
                    <MapPin className="h-8 w-8 text-blue-600 mx-auto mb-2" />
-                   <p className="text-lg font-semibold text-gray-900">{student?.user?.state_of_origin || 'Not Assigned'}</p>
-                   <p className="text-sm text-gray-600">State of Origin</p>
+                   <p className="text-md font-semibold text-gray-900">{student?.user?.state_of_origin || 'Not Assigned'}</p>
+                   <p className="text-xs text-gray-600">State of Origin</p>
                  </div>
                  
                  <div className="text-center p-4 bg-purple-50 rounded-lg">
                    <Map className="h-8 w-8 text-purple-600 mx-auto mb-2" />
-                   <p className="text-lg font-semibold text-gray-900">{student?.user?.nationality || 'Nigerian'}</p>
-                   <p className="text-sm text-gray-600">Nationality</p>
+                   <p className="text-md font-semibold text-gray-900">{student?.user?.nationality || 'Nigerian'}</p>
+                   <p className="text-xs text-gray-600">Nationality</p>
                  </div>
                </div>
              </CardContent>
