@@ -238,7 +238,7 @@ export default function StudentDashboardPage() {
         <div className='bg-unn-primary p-28 md:p-40 rounded-full w-20 shadow-3xl shadow-green-500 fixed ml-2 lg:ml-[13%] top-0 left-0' />
         <div className='bg-unn-primary p-10 md:p-24 rounded-full w-20 shadow-3xl shadow-green-500 fixed mr-2 lg:mr-[13%] bottom-0 right-0' />
       </div>
-      <div className='backdrop-blur-lg w-full'>
+      <div className='backdrop-blur-3xl w-full'>
         <div className="pt-24 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="space-y-8">
             <div className="bg-unn-primary rounded-2xl p-8 text-white">
