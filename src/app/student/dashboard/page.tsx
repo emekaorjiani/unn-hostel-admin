@@ -6,7 +6,7 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { formatCurrency, formatDate, getInitials } from '@/lib/utils'
 import { studentService, StudentDashboardData } from '@/lib/studentService'
-import QuickActions  from '@/components/ui/quick-actions'
+import QuickActions from '@/components/ui/quick-actions'
 import {
   User,
   Building2,
@@ -228,22 +228,22 @@ export default function StudentDashboardPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50">
-      <StudentHeader 
+      <StudentHeader
         title="Student Portal"
         subtitle="UNN Student Portal"
       />
 
       <QuickActions />
-
-      <div className='bg-unn-primary p-28 md:p-40 rounded-full w-20 shadow-3xl shadow-green-500 fixed ml-2 md:ml-20' />
-      <div className='bg-unn-primary p-10 md:p-24 rounded-full w-40 shadow-3xl shadow-green-500 fixed mr-2 md:mr-20 bottom-0 right-0' />
+      <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 relative'>
+        <div className='bg-unn-primary p-28 md:p-40 rounded-full w-20 shadow-3xl shadow-green-500 fixed ml-2 lg:ml-[13%] top-0 left-0' />
+        <div className='bg-unn-primary p-10 md:p-24 rounded-full w-20 shadow-3xl shadow-green-500 fixed mr-2 lg:mr-[13%] bottom-0 right-0' />
+      </div>
       <div className='backdrop-blur-lg w-full'>
-      <div className="pt-40 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="space-y-8">
-          {/* Welcome Section */}
-          <div className="bg-unn-primary rounded-2xl p-8 text-white">
-            <div className="flex items-center justify-between">
-              <div>
+        <div className="pt-24 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          <div className="space-y-8">
+            <div className="bg-unn-primary rounded-2xl p-8 text-white">
+              <div className="flex items-center justify-between">
+                <div>
                   <h2 className="text-xl font-bold mb-2">
                     Welcome back, {student?.user?.first_name}
                   </h2>
@@ -264,251 +264,247 @@ export default function StudentDashboardPage() {
                       <span>Matric: {student?.user?.matric_number}</span>
                     </div>
                   </div>
-              </div>
-              <div className="hidden lg:block">
-                <div className="h-24 w-24 bg-white/20 rounded-full flex items-center justify-center">
-                  <span className="text-xl font-bold">
-                    {getInitials(student?.user?.first_name, student?.user?.last_name)}
-                  </span>
+                </div>
+                <div className="hidden lg:block">
+                  <div className="h-24 w-24 bg-white/20 rounded-full flex items-center justify-center">
+                    <span className="text-xl font-bold">
+                      {getInitials(student?.user?.first_name, student?.user?.last_name)}
+                    </span>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
 
-          {/* Quick Stats */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {quickStats.map((stat, index) => (
-              <Card key={index} className="hover:shadow-lg transition-shadow">
-                <CardContent className="p-6">
-                  <div className="flex items-center justify-between mb-4">
-                    <div className={`h-10 w-10 ${stat.bgColor} rounded-lg flex items-center justify-center`}>
-                      <stat.icon className={`h-5 w-5 ${stat.color}`} />
+            {/* Quick Stats */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              {quickStats.map((stat, index) => (
+                <Card key={index} className="hover:shadow-lg transition-shadow">
+                  <CardContent className="p-6">
+                    <div className="flex items-center justify-between mb-4">
+                      <div className={`h-10 w-10 ${stat.bgColor} rounded-lg flex items-center justify-center`}>
+                        <stat.icon className={`h-5 w-5 ${stat.color}`} />
+                      </div>
+                      <div className="flex items-center">
+                        {stat.changeType === 'positive' ? (
+                          <ArrowUpRight className="h-4 w-4 text-unn-primary" />
+                        ) : stat.changeType === 'negative' ? (
+                          <ArrowDownRight className="h-4 w-4 text-red-600" />
+                        ) : (
+                          <Minus className="h-4 w-4 text-gray-400" />
+                        )}
+                      </div>
                     </div>
-                    <div className="flex items-center">
-                      {stat.changeType === 'positive' ? (
-                        <ArrowUpRight className="h-4 w-4 text-unn-primary" />
-                      ) : stat.changeType === 'negative' ? (
-                        <ArrowDownRight className="h-4 w-4 text-red-600" />
-                      ) : (
-                        <Minus className="h-4 w-4 text-gray-400" />
-                      )}
-                    </div>
-                  </div>
-                  <h3 className="text-sm font-medium text-gray-600 mb-1">{stat.title}</h3>
-                  <p className="text-2xl font-bold text-gray-900 mb-2">{stat.value}</p>
-                  <p className={`text-sm ${
-                    stat.changeType === 'positive' ? 'text-unn-primary' : 
-                    stat.changeType === 'negative' ? 'text-red-600' : 'text-gray-500'
-                  }`}>
-                    {stat.change} from last month
-                  </p>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
+                    <h3 className="text-sm font-medium text-gray-600 mb-1">{stat.title}</h3>
+                    <p className="text-2xl font-bold text-gray-900 mb-2">{stat.value}</p>
+                    <p className={`text-sm ${stat.changeType === 'positive' ? 'text-unn-primary' :
+                        stat.changeType === 'negative' ? 'text-red-600' : 'text-gray-500'
+                      }`}>
+                      {stat.change} from last month
+                    </p>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
 
-          {/* Main Content Grid */}
-          <div className="grid grid-cols-1 lg:grid-cols-1 gap-8">
-            {/* Recent Activity */}
-            <div className="lg:col-span-1">
+            {/* Main Content Grid */}
+            <div className="grid grid-cols-1 lg:grid-cols-1 gap-8">
+              {/* Recent Activity */}
+              <div className="lg:col-span-1">
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center justify-between">
+                      Recent Activity
+                      <Button variant="ghost" size="sm">
+                        View All
+                      </Button>
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-4">
+                      {recentActivities.map((activity) => (
+                        <div key={activity.id} className="flex items-start space-x-4 p-4 bg-gray-50 rounded-lg">
+                          <div className="flex-shrink-0">
+                            <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center">
+                              {activity.type === 'payment' && <CreditCard className="h-4 w-4 text-blue-600" />}
+                              {activity.type === 'application' && <FileText className="h-4 w-4 text-unn-primary" />}
+                              {activity.type === 'maintenance' && <Wrench className="h-4 w-4 text-orange-600" />}
+                            </div>
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <p className="text-sm font-medium text-gray-900">
+                              {activity.action}
+                            </p>
+                            <p className="text-sm text-gray-500">
+                              {activity.description}
+                              {'amount' in activity && activity.amount && ` - ${formatCurrency(activity.amount)}`}
+                            </p>
+                            <p className="text-xs text-gray-400 mt-1">
+                              {formatDate(activity.date)}
+                            </p>
+                          </div>
+                          <Badge variant={activity.status === 'completed' || activity.status === 'approved' || activity.status === 'resolved' ? 'default' : 'secondary'}>
+                            {activity.status}
+                          </Badge>
+                        </div>
+                      ))}
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+            </div>
+
+            {/* Additional Sections */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+              {/* Upcoming Events */}
               <Card>
                 <CardHeader>
-                  <CardTitle className="flex items-center justify-between">
-                    Recent Activity
-                    <Button variant="ghost" size="sm">
-                      View All
-                    </Button>
+                  <CardTitle className="flex items-center">
+                    <Calendar className="h-5 w-5 mr-2" />
+                    Upcoming Events
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-4">
-                    {recentActivities.map((activity) => (
-                      <div key={activity.id} className="flex items-start space-x-4 p-4 bg-gray-50 rounded-lg">
-                        <div className="flex-shrink-0">
-                          <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center">
-                            {activity.type === 'payment' && <CreditCard className="h-4 w-4 text-blue-600" />}
-                            {activity.type === 'application' && <FileText className="h-4 w-4 text-unn-primary" />}
-                            {activity.type === 'maintenance' && <Wrench className="h-4 w-4 text-orange-600" />}
-                          </div>
+                    {upcomingEvents.map((event) => (
+                      <div key={event.id} className="flex items-start space-x-3 p-3 bg-gray-50 rounded-lg">
+                        <div className={`w-2 h-2 rounded-full mt-2 ${event.priority === 'high' ? 'bg-red-500' :
+                            event.priority === 'medium' ? 'bg-yellow-500' : 'bg-unn-primary'
+                          }`}></div>
+                        <div className="flex-1">
+                          <p className="text-sm font-medium text-gray-900">{event.title}</p>
+                          <p className="text-xs text-gray-600">{event.description}</p>
+                          <p className="text-xs text-gray-400 mt-1">{formatDate(event.date)}</p>
                         </div>
-                        <div className="flex-1 min-w-0">
-                          <p className="text-sm font-medium text-gray-900">
-                            {activity.action}
-                          </p>
-                          <p className="text-sm text-gray-500">
-                            {activity.description}
-                            {'amount' in activity && activity.amount && ` - ${formatCurrency(activity.amount)}`}
-                          </p>
-                          <p className="text-xs text-gray-400 mt-1">
-                            {formatDate(activity.date)}
-                          </p>
-                        </div>
-                        <Badge variant={activity.status === 'completed' || activity.status === 'approved' || activity.status === 'resolved' ? 'default' : 'secondary'}>
-                          {activity.status}
-                        </Badge>
                       </div>
                     ))}
                   </div>
                 </CardContent>
               </Card>
-            </div>
-          </div>
 
-          {/* Additional Sections */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            {/* Upcoming Events */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center">
-                  <Calendar className="h-5 w-5 mr-2" />
-                  Upcoming Events
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  {upcomingEvents.map((event) => (
-                    <div key={event.id} className="flex items-start space-x-3 p-3 bg-gray-50 rounded-lg">
-                      <div className={`w-2 h-2 rounded-full mt-2 ${
-                        event.priority === 'high' ? 'bg-red-500' :
-                        event.priority === 'medium' ? 'bg-yellow-500' : 'bg-unn-primary'
-                      }`}></div>
-                      <div className="flex-1">
-                        <p className="text-sm font-medium text-gray-900">{event.title}</p>
-                        <p className="text-xs text-gray-600">{event.description}</p>
-                        <p className="text-xs text-gray-400 mt-1">{formatDate(event.date)}</p>
-                      </div>
+              {/* Notifications */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center justify-between">
+                    <div className="flex items-center">
+                      <Bell className="h-5 w-5 mr-2" />
+                      Notifications
                     </div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Notifications */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center justify-between">
-                  <div className="flex items-center">
-                    <Bell className="h-5 w-5 mr-2" />
-                    Notifications
-                  </div>
-                  <Badge variant="secondary">
-                    {dashboardData?.quickStats.unreadNotifications || 0} new
-                  </Badge>
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  {dashboardData?.notifications.slice(0, 3).map((notification) => (
-                    <div key={notification.id} className={`flex items-start space-x-3 p-3 rounded-lg ${
-                      notification.read ? 'bg-gray-50' : 'bg-blue-50'
-                    }`}>
-                      <div className={`w-2 h-2 rounded-full mt-2 ${
-                        notification.type === 'success' ? 'bg-unn-primary' : 'bg-blue-500'
-                      }`}></div>
-                      <div className="flex-1">
-                        <p className="text-sm font-medium text-gray-900">{notification.title}</p>
-                        <p className="text-xs text-gray-600">{notification.message}</p>
-                        <p className="text-xs text-gray-400 mt-1">{formatDate(notification.created_at)}</p>
-                      </div>
-                      {!notification.read && (
-                        <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
-                      )}
-                    </div>
-                  )) || (
-                    <div className="text-center py-4 text-gray-500">
-                      No notifications
-                    </div>
-                  )}
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-
-          {/* Current Applications */}
-          {dashboardData?.applications && dashboardData.applications.length > 0 && (
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center">
-                  <FileText className="h-5 w-5 mr-2" />
-                  Current Applications
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  {dashboardData.applications.map((application) => (
-                    <div key={application.id} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
-                      <div className="flex-1">
-                        <h4 className="font-medium text-gray-900">{application.hostel_name}</h4>
-                        <p className="text-sm text-gray-600">
-                          {application.room_type} Room • {formatCurrency(application.amount)}
-                        </p>
-                        <p className="text-xs text-gray-400 mt-1">
-                          Applied on {formatDate(application.application_date)}
-                        </p>
-                      </div>
-                      <div className="flex items-center space-x-2">
-                        <Badge 
-                          variant={
-                            application.status === 'approved' ? 'default' :
-                            application.status === 'pending' ? 'secondary' :
-                            application.status === 'rejected' ? 'destructive' : 'outline'
-                          }
-                        >
-                          {application.status}
-                        </Badge>
-                        {application.payment_status === 'pending' && (
-                          <Badge variant="outline" className="text-orange-600">
-                            Payment Pending
-                          </Badge>
+                    <Badge variant="secondary">
+                      {dashboardData?.quickStats.unreadNotifications || 0} new
+                    </Badge>
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    {dashboardData?.notifications.slice(0, 3).map((notification) => (
+                      <div key={notification.id} className={`flex items-start space-x-3 p-3 rounded-lg ${notification.read ? 'bg-gray-50' : 'bg-blue-50'
+                        }`}>
+                        <div className={`w-2 h-2 rounded-full mt-2 ${notification.type === 'success' ? 'bg-unn-primary' : 'bg-blue-500'
+                          }`}></div>
+                        <div className="flex-1">
+                          <p className="text-sm font-medium text-gray-900">{notification.title}</p>
+                          <p className="text-xs text-gray-600">{notification.message}</p>
+                          <p className="text-xs text-gray-400 mt-1">{formatDate(notification.created_at)}</p>
+                        </div>
+                        {!notification.read && (
+                          <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
                         )}
                       </div>
-                    </div>
-                  ))}
+                    )) || (
+                        <div className="text-center py-4 text-gray-500">
+                          No notifications
+                        </div>
+                      )}
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+
+            {/* Current Applications */}
+            {dashboardData?.applications && dashboardData.applications.length > 0 && (
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center">
+                    <FileText className="h-5 w-5 mr-2" />
+                    Current Applications
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    {dashboardData.applications.map((application) => (
+                      <div key={application.id} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                        <div className="flex-1">
+                          <h4 className="font-medium text-gray-900">{application.hostel_name}</h4>
+                          <p className="text-sm text-gray-600">
+                            {application.room_type} Room • {formatCurrency(application.amount)}
+                          </p>
+                          <p className="text-xs text-gray-400 mt-1">
+                            Applied on {formatDate(application.application_date)}
+                          </p>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <Badge
+                            variant={
+                              application.status === 'approved' ? 'default' :
+                                application.status === 'pending' ? 'secondary' :
+                                  application.status === 'rejected' ? 'destructive' : 'outline'
+                            }
+                          >
+                            {application.status}
+                          </Badge>
+                          {application.payment_status === 'pending' && (
+                            <Badge variant="outline" className="text-orange-600">
+                              Payment Pending
+                            </Badge>
+                          )}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+
+            {/* Student Information */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center">
+                  <User className="h-5 w-5 mr-2" />
+                  Student Information
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                  <div className="text-center p-4 bg-orange-50 rounded-lg">
+                    <GraduationCap className="h-8 w-8 text-orange-600 mx-auto mb-2" />
+                    <p className="text-md font-semibold text-gray-900">{student?.user?.faculty || 'Not Assigned'}</p>
+                    <p className="text-xs text-gray-600">Faculty</p>
+                  </div>
+
+                  <div className="text-center p-4 bg-yellow-50 rounded-lg">
+                    <BookOpen className="h-8 w-8 text-yellow-600 mx-auto mb-2" />
+                    <p className="text-md font-semibold text-gray-900">{student?.user?.department || 'Not Assigned'}</p>
+                    <p className="text-xs text-gray-600">Department</p>
+                  </div>
+
+                  <div className="text-center p-4 bg-blue-50 rounded-lg">
+                    <MapPin className="h-8 w-8 text-blue-600 mx-auto mb-2" />
+                    <p className="text-md font-semibold text-gray-900">{student?.user?.state_of_origin || 'Not Assigned'}</p>
+                    <p className="text-xs text-gray-600">State of Origin</p>
+                  </div>
+
+                  <div className="text-center p-4 bg-purple-50 rounded-lg">
+                    <Map className="h-8 w-8 text-purple-600 mx-auto mb-2" />
+                    <p className="text-md font-semibold text-gray-900">{student?.user?.nationality || 'Nigerian'}</p>
+                    <p className="text-xs text-gray-600">Nationality</p>
+                  </div>
                 </div>
               </CardContent>
             </Card>
-          )}
-
-          {/* Student Information */}
-           <Card>
-             <CardHeader>
-               <CardTitle className="flex items-center">
-                 <User className="h-5 w-5 mr-2" />
-                 Student Information
-               </CardTitle>
-             </CardHeader>
-             <CardContent>
-               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                 <div className="text-center p-4 bg-orange-50 rounded-lg">
-                   <GraduationCap className="h-8 w-8 text-orange-600 mx-auto mb-2" />
-                   <p className="text-md font-semibold text-gray-900">{student?.user?.faculty || 'Not Assigned'}</p>
-                   <p className="text-xs text-gray-600">Faculty</p>
-                 </div>
-                 
-                 <div className="text-center p-4 bg-yellow-50 rounded-lg">
-                   <BookOpen className="h-8 w-8 text-yellow-600 mx-auto mb-2" />
-                   <p className="text-md font-semibold text-gray-900">{student?.user?.department || 'Not Assigned'}</p>
-                   <p className="text-xs text-gray-600">Department</p>
-                 </div>
-                 
-                 <div className="text-center p-4 bg-blue-50 rounded-lg">
-                   <MapPin className="h-8 w-8 text-blue-600 mx-auto mb-2" />
-                   <p className="text-md font-semibold text-gray-900">{student?.user?.state_of_origin || 'Not Assigned'}</p>
-                   <p className="text-xs text-gray-600">State of Origin</p>
-                 </div>
-                 
-                 <div className="text-center p-4 bg-purple-50 rounded-lg">
-                   <Map className="h-8 w-8 text-purple-600 mx-auto mb-2" />
-                   <p className="text-md font-semibold text-gray-900">{student?.user?.nationality || 'Nigerian'}</p>
-                   <p className="text-xs text-gray-600">Nationality</p>
-                 </div>
-               </div>
-             </CardContent>
-           </Card>
 
 
+          </div>
         </div>
-      </div>
       </div>
     </div>
   )
